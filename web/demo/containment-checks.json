@@ -1,0 +1,42 @@
+{
+  "executed_on": "Vultr VM 139.84.249.47",
+  "reference_programs_only": true,
+  "model_requests": 0,
+  "sandbox_runs": 10,
+  "all_sandboxes_removed": true,
+  "whole_backup_rejected": true,
+  "selected_reference_passed": true,
+  "containment_probe": {
+    "ok": true,
+    "nonroot": true,
+    "no_network": true,
+    "readonly_inputs": true,
+    "credentials_and_socket_not_exposed": true,
+    "input_artifact_unchanged": true,
+    "source_sha256": "c2dfc48a707700ca362d23d06df43e2d81e7a7166cc4c00f6ca695e8d0260c5d"
+  },
+  "deadline": {
+    "fixed_test_program": "def recover(a,b,c,d):\n    while True: pass\n",
+    "deadline_seconds": 2,
+    "stop_reason": "timeout",
+    "elapsed_ms": 2003,
+    "sandbox_id": "rewind-b71318066dad4f7797fe14e87279ceb0",
+    "policy_verified": true,
+    "teardown": {
+      "confirmed": true,
+      "remove_exit_code": 0,
+      "absence_query_exit_code": 0
+    }
+  },
+  "output_limit": {
+    "stop_reason": "output_limit",
+    "stdout_bytes": 393216,
+    "teardown": {
+      "confirmed": true,
+      "remove_exit_code": 0,
+      "absence_query_exit_code": 0
+    }
+  },
+  "full_report_sha256": "a7c84fb0f07db5aa05397d2a8d47a8e87cc55de834f8fbbb6dc68030079c36b7",
+  "host_attestation": false
+}

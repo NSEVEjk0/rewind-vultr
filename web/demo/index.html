@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Rewind — fix damaged prices, keep newer work</title>
+  <meta name="description" content="Watch Rewind restore 120 damaged invoice prices while keeping seven newer invoices and twenty payment updates. A real recovery runs on Vultr.">
+  <link rel="stylesheet" href="/demo/style.css">
+  <script src="/demo/player.js" defer></script>
+</head>
+<body>
+<main>
+  <nav>
+    <a class="brand" href="https://rewind.139.84.249.47.sslip.io">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11"/><path d="M7 18l9-8v16zm10 0l9-8v16z"/></svg>
+      rewind
+    </a>
+    <a href="https://rewind.139.84.249.47.sslip.io">Open the live app ↗</a>
+  </nav>
+  <p class="eyebrow">A real database recovery on Vultr</p>
+  <div class="intro">
+    <div>
+      <h1>Fix damaged prices.<br>Keep newer work.</h1>
+      <p>A bad import changed 120 invoice prices. Rewind restored them from a good backup while keeping seven newer invoices and twenty payment updates.</p>
+    </div>
+    <button id="play-video" type="button">Play the video ▶</button>
+  </div>
+  <video id="demo-video" controls playsinline preload="metadata" poster="/demo/poster.jpg" aria-label="Rewind actual Vultr recovery demonstration">
+    <source src="/demo/rewind-demo.mp4" type="video/mp4">
+    <track kind="captions" src="/demo/rewind-captions.vtt" srclang="en" label="English" default>
+    <a href="/demo/rewind-demo.mp4">Download the video</a>.
+  </video>
+  <p id="player-status" class="details" aria-live="polite">Fictional invoice example · Actual Vultr recovery · Synthetic narration</p>
+  <div class="facts">
+    <div><strong>120</strong><span>prices restored</span></div>
+    <div><strong>127</strong><span>invoices kept</span></div>
+    <div><strong>7</strong><span>newer invoices kept</span></div>
+    <div><strong>20</strong><span>payment updates kept</span></div>
+  </div>
+  <div class="links">
+    <a href="/demo/rewind-demo.mp4" download>Download the narrated video</a>
+    <a href="/demo/rewind-slides.pdf" download>Download the PDF</a>
+    <a href="/demo/cover.png" download>Download the cover image</a>
+    <a href="/demo/live-evidence.json">Read the recovery checks</a>
+    <a href="/demo/recording.json">Read the recording details</a>
+    <a href="/demo/containment-checks.json">Read the Vultr containment test</a>
+    <a href="https://github.com/NSEVEjk0/rewind-vultr">Read the source on GitHub</a>
+    <a href="https://rewind-vultr-ckay.vercel.app/source.zip" download>Download the source</a>
+  </div>
+  <section class="explanation">
+    <h2>How you use Rewind</h2>
+    <p>Upload a good backup and today's database copy. Choose the damaged fields and records, review what will change, and download a checked recovery copy. Every value outside your selection keeps today's data.</p>
+    <p class="details">The first version accepts small SQLite snapshots with one matching table. Selected cells are replaced with their backup values, including any later edits in those same cells. The recovery app runs on Vultr; this page shares its completed demonstration.</p>
+    <p class="details">The final video segment shows the recorded result of a separate fixed-program containment test on Vultr. It made no model request. The test ran for 2.003 seconds before the sandbox stopped it and removed its container.</p>
+  </section>
+</main>
+</body>
+</html>

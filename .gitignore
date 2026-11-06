@@ -11,3 +11,8 @@ __pycache__/
 .venv/
 test-results/
 playwright-report/
+preview/.vercel/
+preview/.env*
+preview/source.zip
+preview/demo/
+preview/index.html

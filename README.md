@@ -1,10 +1,27 @@
 # Rewind
 
-**Restore damaged prices. Keep newer invoices and payment updates.**
+**Fix a bad database import. Keep the work that came after it.**
 
-Rewind helps you fix selected database values using a good backup. You choose the damaged columns and records, review what will change, and download a checked recovery copy. Every other value comes from today's database.
+Rewind helps you restore damaged prices or other database values from a good backup while keeping newer records and updates. Upload two database copies, choose the values to restore, review the plan, and download a checked recovery copy.
 
-For example, a bad import multiplies 120 invoice prices by 100. Since the backup, you have added 7 invoices and marked 20 invoices paid. Rewind restores those 120 prices and keeps all 127 invoices and the 20 payment updates.
+For example, an import multiplies 120 invoice prices by 100. Since the backup, your team has added seven invoices and marked twenty invoices paid. Rewind restores the 120 prices and keeps all 127 invoices and the twenty payment updates. That recovery has been run and checked on Vultr.
+
+[Open Rewind](https://rewind.139.84.249.47.sslip.io) · [Watch the narrated demo](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery evidence](web/demo/live-evidence.json)
+
+![Rewind's database recovery workflow](presentation/cover.png)
+
+## The problem
+
+A small team running a billing or inventory app can have a usable backup and still face a difficult recovery. The old copy has the correct values. Today's copy has newer orders, payments and other work the team needs to keep.
+
+Rewind makes that choice visible. You select damaged fields and records, see their old and current values, and approve only those replacements. It is built first for an app operator working with small SQLite snapshots after a bad import or bulk update.
+
+| In the demonstrated invoice example | Invoices kept | Newer invoices kept | Later payment updates kept |
+| --- | --- | --- | --- |
+| Replace today's database with the whole backup | 120 | 0 | 0 |
+| Rewind's checked recovery | 127 | 7 | 20 |
+
+The model writes the recovery program for the selected table and fields. A separate checker compares its output with both originals, including every value outside the selection. A program that restores the right prices but loses newer work fails the check.
 
 ## Use it
 
@@ -16,15 +33,35 @@ For example, a bad import multiplies 120 invoice prices by 100. Since the backup
 
 The downloaded file is a recovery copy. Connecting it to your application is a separate operator decision. You can inspect snapshots and review a plan before connecting a model; starting the recovery requires configured Vultr Inference.
 
-## Why use a recovery copy
+Select only damaged cells. If a selected cell also contains a newer legitimate edit, that edit would be replaced. You decide which cells to restore.
 
-Restoring the whole backup would discard the seven newer invoices and the twenty payment updates in the example. Rewind takes only the values you explicitly selected from the backup and keeps everything else from the current snapshot.
+## Why Vultr is part of the work
 
-Select only damaged cells. If a selected cell also contains a newer legitimate edit, that edit would be replaced. This version cannot decide which change you intended to keep.
+Rewind was built for [Vultr Agent Rush, Challenge 1: Blast Radius Zero](https://lablab.ai/ai-hackathons/vultr-hackathon). The challenge calls for a web app on Vultr that plans a task, runs code in an isolated environment and returns verifiable output. Rewind applies that workflow to a database recovery people can inspect before using it.
 
-## Vultr and isolated execution
+| Technology | What it does here | Implementation |
+| --- | --- | --- |
+| Vultr VM | Serves the working app, holds the temporary database copies, schedules workers and checks the result | [Controller](rewind/server.py), [recovery pipeline](rewind/pipeline.py), [deployment](rewind/deploy.py) |
+| Vultr Serverless Inference | Writes a recovery program for the table structure and the operator's selection | [Provider integration](rewind/provider.py) |
+| Docker with gVisor | Inspects uploaded SQLite files and executes the generated program in separate, temporary containers | [Sandbox runner](rewind/sandbox.py), [trusted worker](rewind/worker.py) |
+| Independent data checks | Accepts only the selected replacements while preserving today's other values and records | [Recovery checks](rewind/contract.py) |
 
-The deployment package runs the controller on a Vultr VM and connects it to Vultr Serverless Inference. The model receives table and column names, declared types, selected column names, and the selected record count. Database files, row values, selected primary-key values, access codes, and credentials stay on the controller and its copies.
+The live recovery used Vultr's `glm-5.3-flash` model. It receives table and column names, declared types, selected column names, and the selected record count. Database files, row values, selected primary-key values, access codes, and credentials stay on the controller and its copies.
+
+```mermaid
+flowchart LR
+    U[Operator selects values] --> C
+    M[Vultr Serverless Inference] -->|Recovery program| C
+    subgraph VM[Vultr VM]
+        C[Controller] -->|Inspect both copies| I[Trusted gVisor worker]
+        C -->|Run program on copies| R[Separate gVisor container]
+        R --> O[Candidate database]
+        O --> V[Fresh trusted gVisor worker]
+        V --> A[Compare every value with both originals]
+        A --> D[Checked recovery copy and evidence]
+    end
+    C -->|Schema and selection metadata| M
+```
 
 All uploaded SQLite inspection runs in fixed trusted gVisor workers. The generated recovery program runs in a separate gVisor container. A fresh trusted container reads the candidate output, and the controller compares it with the original snapshots. The generated program never receives the acceptance checks.
 
@@ -94,8 +131,18 @@ sudo python3 -m rewind.deploy \
 
 Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private reviewer code and sandbox cleanup timer. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
 
-## Current evidence
+## What has been demonstrated
 
-Seventeen focused unit tests and actual gVisor integration pass, including selective reference recovery with 120 restored prices, 127 retained invoices, seven newer records, and twenty preserved payment updates. Ten bounded sandbox runs verify recovery, inspection, rejection of whole-backup replacement, containment, time/output limits and confirmed removal. The desktop/mobile interface and actual database-selection plan have passed browser checks. Live Vultr deployment, a genuine model recovery recording, and public demo playback remain pending.
+The [video](https://rewind-vultr-ckay.vercel.app/demo/) shows the working app with fictional invoices and one genuine Vultr model request. The recovered file passed six independent data checks: database integrity, unchanged schema, retained records, unchanged ID counters, correct restored values and preserved unselected values. All five temporary worker containers were removed. The downloaded database's SHA-256 matched the checked artifact.
+
+| Observed result | Evidence |
+| --- | --- |
+| 120 prices restored; all 127 invoices, seven newer invoices and twenty payment updates kept | [Complete live recovery evidence](web/demo/live-evidence.json) |
+| A fixed program that runs forever stopped at the two-second test deadline; its container was removed | [Vultr containment checks](web/demo/containment-checks.json) |
+| Network access and writes to inputs blocked; controller credentials and Docker socket unavailable; output limit enforced | [Vultr containment checks](web/demo/containment-checks.json) |
+| Whole-backup replacement rejected; a selective reference recovery accepted; all ten test containers removed | [Vultr containment checks](web/demo/containment-checks.json) |
+| Seventeen unit tests, actual browser selection and live recovery checks passed | [Tests](tests/), [browser verifier](scripts/browser-check.mjs) |
+
+The final video segment shows the recorded result of the separate containment test. Those fixed probes make no model requests. The recording details distinguish the original recovery footage, narration and containment segment. These are prototype checks and containment evidence, not a security audit.
 
 See [THIRD_PARTY.md](THIRD_PARTY.md) for the MIT-licensed ReproLab components used here.

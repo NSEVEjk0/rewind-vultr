@@ -11,7 +11,7 @@ from rewind.evidence import canonical, sha256_bytes
 ROOT = Path(__file__).resolve().parent.parent
 TOP = {"AGENTS.md", "README.md", "LICENSE", "THIRD_PARTY.md", "pyproject.toml", "package.json", "package-lock.json", ".gitignore", ".env.example"}
 FOLDERS = {"rewind", "web", "infra", "scripts", "tests", "presentation"}
-SUFFIXES = {".py", ".mjs", ".html", ".css", ".js", ".svg", ".sh", ".service", ".timer", ".md", ".pdf", ".vtt", ".json"}
+SUFFIXES = {".py", ".mjs", ".html", ".css", ".js", ".svg", ".sh", ".service", ".timer", ".md", ".pdf", ".vtt", ".json", ".mp4", ".jpg", ".png"}
 
 
 def main():

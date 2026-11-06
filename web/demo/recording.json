@@ -1,0 +1,162 @@
+{
+  "completed": true,
+  "fictional_invoice_example": true,
+  "actual_vultr_recovery": true,
+  "live_app_url": "https://rewind.139.84.249.47.sslip.io",
+  "model_attempts": 1,
+  "provider": [
+    {
+      "name": "vultr-serverless-inference",
+      "model": "glm-5.3-flash",
+      "response_id": "chatcmpl-66c02365-d840-4ccf-84c1-f9d6943c464a",
+      "usage": {
+        "prompt_tokens": 415,
+        "completion_tokens": 481,
+        "total_tokens": 896
+      }
+    }
+  ],
+  "verification": {
+    "ok": true,
+    "checks": [
+      {
+        "id": "sqlite-integrity",
+        "label": "Database integrity and foreign keys pass",
+        "ok": true
+      },
+      {
+        "id": "same-schema",
+        "label": "Table definitions and columns are unchanged",
+        "ok": true
+      },
+      {
+        "id": "same-records",
+        "label": "Every current record is retained, with no added records",
+        "ok": true
+      },
+      {
+        "id": "same-sequences",
+        "label": "Automatic ID counters are unchanged",
+        "ok": true
+      },
+      {
+        "id": "restored-cells",
+        "label": "Selected cells match the good backup",
+        "ok": true
+      },
+      {
+        "id": "protected-cells",
+        "label": "Every unselected cell keeps today's value",
+        "ok": true
+      }
+    ],
+    "restored_cells": 120,
+    "retained_rows": 127,
+    "retained_new_rows": 7,
+    "protected_update_count": 20,
+    "failures": {
+      "target_cells": [],
+      "protected_cells": [],
+      "missing_rows": 0,
+      "unexpected_rows": 0
+    }
+  },
+  "sandbox_runs": 5,
+  "all_sandboxes_removed": true,
+  "evidence_sha256": "0fa9ac1d035bfcef9c26ab4a8f4aaf4abeb6e1960a5983f428b96099645d4f07",
+  "artifact_sha256": "db63e57d491a45593027028e1a460c4f9649c786ba919bc45c51dbb451f33066",
+  "source_video_sha256": "3a27230386d458ca7ddcd8ad3972147a736385f6104dd8b98857368043b1a41f",
+  "mp4_sha256": "e1c76d0bd636e5502361aad01c5aa085192b48383294645bd2d6124d4dca4b2b",
+  "duration_seconds": 75.157032,
+  "narration": "Synthetic voice added with Microsoft Edge TTS",
+  "editing": "An actual screenshot introduces the problem. Recorded recovery movements are slowed for narration. The final segment shows an actual completed Vultr containment test. No additional model recovery was run.",
+  "scenes": [
+    {
+      "name": "problem",
+      "source_start_seconds": null,
+      "source_end_seconds": null,
+      "source_kind": "actual-browser-screenshot",
+      "film_start_seconds": 0.0,
+      "film_seconds": 11.858,
+      "narration_seconds": 11.208,
+      "text": "Rewind helps you fix damaged database values without losing newer work. Here, a bad import multiplied one hundred twenty invoice prices by one hundred. These invoices are fictional."
+    },
+    {
+      "name": "selection",
+      "source_start_seconds": 6.991,
+      "source_end_seconds": 9.603,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 11.858,
+      "film_seconds": 7.058000000000001,
+      "narration_seconds": 6.408,
+      "text": "I choose only the damaged prices. Rewind shows each current price beside its value in the good backup."
+    },
+    {
+      "name": "plan",
+      "source_start_seconds": 9.603,
+      "source_end_seconds": 11.498,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 18.916,
+      "film_seconds": 10.178,
+      "narration_seconds": 9.528,
+      "text": "Restoring the whole backup would lose seven new invoices and reset twenty payment updates. This plan keeps those changes and restores only the prices."
+    },
+    {
+      "name": "recovery",
+      "source_start_seconds": 11.498,
+      "source_end_seconds": 17.452,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 29.094,
+      "film_seconds": 9.866,
+      "narration_seconds": 9.216,
+      "text": "Vultr AI writes the recovery program. It runs on copies in an isolated container. A separate checker reads the result and compares every value."
+    },
+    {
+      "name": "result",
+      "source_start_seconds": 17.452,
+      "source_end_seconds": 19.514,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 38.96,
+      "film_seconds": 9.626000000000001,
+      "narration_seconds": 8.976,
+      "text": "The one hundred twenty prices are fixed. All one hundred twenty seven invoices remain, including seven newer invoices and twenty payment updates."
+    },
+    {
+      "name": "checks",
+      "source_start_seconds": 19.514,
+      "source_end_seconds": 21.921,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 48.586,
+      "film_seconds": 9.002,
+      "narration_seconds": 8.352,
+      "text": "All checks passed. Five isolated runs finished, and every temporary container was removed. The checked database is ready to download."
+    },
+    {
+      "name": "download",
+      "source_start_seconds": 21.921,
+      "source_end_seconds": 25.44,
+      "source_kind": "actual-screen-recording",
+      "film_start_seconds": 57.588,
+      "film_seconds": 7.394,
+      "narration_seconds": 6.744,
+      "text": "I download the recovery copy and its checks. Rewind restores the damaged prices and keeps today's work."
+    },
+    {
+      "name": "containment-test",
+      "source_kind": "actual-browser-rendering-of-recorded-Vultr-test-result",
+      "film_start_seconds": 65.037032,
+      "film_seconds": 10.106,
+      "narration_seconds": 9.456,
+      "text": "Here is a separate containment test. This fixed program tries to run forever. The Vultr sandbox stops it at the two second limit and removes the container."
+    }
+  ],
+  "containment_test": {
+    "reference_programs_only": true,
+    "executed_on_vultr": true,
+    "sandbox_runs": 10,
+    "deadline_seconds": 2,
+    "observed_elapsed_ms": 2003,
+    "stop_reason": "timeout",
+    "all_test_containers_removed": true
+  }
+}

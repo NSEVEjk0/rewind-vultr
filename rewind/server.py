@@ -210,7 +210,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         relative = "index.html" if path == "/" else path.lstrip("/")
         target = (WEB / relative).resolve()
-        if not target.is_relative_to(WEB) or not target.is_file() or target.suffix not in {".html", ".css", ".js", ".svg", ".mp4", ".vtt", ".pdf", ".json"}:
+        if target.is_relative_to(WEB) and target.is_dir():
+            target = (target / "index.html").resolve()
+        if not target.is_relative_to(WEB) or not target.is_file() or target.suffix not in {".html", ".css", ".js", ".svg", ".mp4", ".vtt", ".pdf", ".json", ".jpg", ".png"}:
             self.json(404, {"error": "Page not found."})
             return
         self.send(200, target.read_bytes(), mimetypes.guess_type(target)[0] or "application/octet-stream")
