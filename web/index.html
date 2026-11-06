@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Rewind — restore damaged data, keep today’s work</title>
+  <meta name="description" content="Restore selected damaged database fields from a good backup while keeping newer invoices and payment updates. Check the result before downloading it.">
+  <link rel="icon" href="/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="rail">
+    <a class="brand" href="/"><img src="/mark.svg" alt="" width="33" height="33">rewind<span class="beta">EARLY BUILD</span></a>
+    <div class="rail-label">YOUR WORKSPACE</div>
+    <a class="nav active" href="/"><span aria-hidden="true">↶</span> Data recovery</a>
+    <button class="nav" id="how-button"><span aria-hidden="true">≋</span> How it works</button>
+    <a class="nav" id="video-link" href="/demo/" hidden><span aria-hidden="true">▷</span> Watch the demo</a>
+    <div class="rail-note"><span class="dot"></span> Originals stay unchanged<p>Restore a copy.<br>Check it. Then download it.</p></div>
+    <div class="built">Powered by <strong>Vultr</strong></div>
+  </aside>
+  <main>
+    <header class="top"><div>Workspace <span>/</span> <strong>Data recovery</strong></div><span id="connection" class="connection"><i></i> Checking worker</span></header>
+    <div id="notice" class="notice" role="alert" hidden></div>
+    <section id="welcome">
+      <div class="eyebrow"><span class="dot"></span> KEEP THE GOOD CHANGES</div>
+      <h1>Undo a bad import.<br><span>Keep today’s work.</span></h1>
+      <p class="intro">Rewind helps you restore damaged prices or other database fields from a good backup, while keeping newer invoices and updates. Choose what to fix, check the result, and download the recovered copy.</p>
+      <div class="actions"><button class="primary" id="example-button">Try the invoice example <span>↗</span></button><button class="secondary" id="upload-toggle">Use my own snapshots</button></div>
+      <div class="example-card">
+        <div class="section-top"><span class="small-label">A FICTIONAL EXAMPLE</span><span class="pill neutral">Bad price import</span></div>
+        <h2>Your prices broke. Your business kept going.</h2>
+        <p>An import multiplied 120 invoice prices by 100. Since the backup, 7 new invoices were created and 20 invoices were marked paid.</p>
+        <div class="story">
+          <div><span class="file-icon">▤</span><small>Yesterday’s good backup</small><strong>120 invoices</strong><span>Correct prices · older payment status</span></div>
+          <span class="story-arrow" aria-hidden="true">→</span>
+          <div><span class="file-icon amber">▤</span><small>Today’s snapshot</small><strong>127 invoices</strong><span>Broken prices · newer work</span></div>
+          <span class="story-arrow" aria-hidden="true">→</span>
+          <div class="story-result"><span class="file-icon green">↶</span><small>What we want to keep</small><strong>127 invoices</strong><span>Correct prices · newer work</span></div>
+        </div>
+        <div class="reference-note"><span>!</span> Replacing today’s whole database with the backup would lose the 7 newer invoices and reset the 20 payment updates.</div>
+      </div>
+      <section class="upload-card" id="upload-panel" hidden>
+        <h2>Use two consistent SQLite snapshots.</h2><p>Choose a good backup and a current export. This first version supports one table, one stable primary key, and files up to 256 KB each.</p>
+        <div class="uploads"><label>Good backup<input id="backup-file" type="file" accept=".sqlite,.sqlite3,.db"></label><label>Current snapshot<input id="current-file" type="file" accept=".sqlite,.sqlite3,.db"></label></div>
+        <p class="help">Export consistent copies with SQLite’s Online Backup API. A live database file without its WAL or journal is not a complete snapshot.</p><button class="primary" id="inspect-button">Read and compare my files</button>
+      </section>
+      <div class="steps"><div><b>01</b><strong>Choose the damaged cells</strong><p>Compare the backup with today’s data and decide what to restore.</p></div><div><b>02</b><strong>Try a recovery on copies</strong><p>Vultr AI writes the recovery. It runs in a disposable environment.</p></div><div><b>03</b><strong>Check every other value</strong><p>A separate checker confirms the result before you can download it.</p></div></div>
+    </section>
+    <section id="workspace" hidden>
+      <div class="workspace-head"><div><div class="eyebrow" id="workspace-label">YOUR RECOVERY</div><h1 id="workspace-title">Reading your snapshots</h1><p id="workspace-message">Both copies are being inspected.</p></div><button class="secondary" id="start-over">New recovery</button></div>
+      <div class="source-cards"><div><span class="file-icon">▤</span><section><small>Good backup</small><strong id="backup-count">Reading…</strong><span id="backup-detail">Your original copy stays unchanged</span></section><button class="text-button" id="download-backup" hidden>Download</button></div><div><span class="file-icon amber">▤</span><section><small>Current snapshot</small><strong id="current-count">Reading…</strong><span id="current-detail">Newer records and updates must stay</span></section><button class="text-button" id="download-current" hidden>Download</button></div></div>
+      <div class="work-grid" id="selection-panel" hidden>
+        <section class="panel">
+          <div class="panel-head"><div><h2>Which fields were damaged?</h2><p>Choose fields, then select the affected records below.</p></div><span id="table-name" class="pill neutral"></span></div>
+          <div id="columns" class="column-choices"></div>
+          <div id="compare-empty" class="empty">Choose at least one field to see its changes.</div>
+          <div id="comparison" hidden><div class="table-top"><label><input id="select-all" type="checkbox"> Select all changed records</label><span id="selection-count"></span></div><div class="table-wrap"><table><thead><tr><th>Restore</th><th>Record</th><th>Field</th><th>Today’s value</th><th>Good backup value</th></tr></thead><tbody id="changes-body"></tbody></table></div><div class="pagination"><span id="page-info"></span><div><button class="secondary compact" id="previous-page">←</button><button class="secondary compact" id="next-page">→</button></div></div></div>
+          <p class="scope-note">Select only cells damaged by the mistake. A later legitimate edit to a selected cell would also be replaced.</p>
+        </section>
+        <aside class="plan-side panel"><span class="small-label">WHAT WILL STAY</span><h3 id="keep-rows">Every current record</h3><p>Newer records stay. All fields and records outside your selection keep today’s values.</p><div class="keep-line"><span>✓</span> No records removed or added</div><div class="keep-line"><span>✓</span> Other values stay unchanged</div><div class="keep-line"><span>✓</span> Original files stay unchanged</div><button class="primary full" id="review-button" disabled>Review my selection</button><small>The next screen shows exactly what you are approving.</small></aside>
+      </div>
+      <section id="plan-panel" class="panel" hidden>
+        <div class="panel-head"><div><span class="small-label">YOUR RECOVERY PLAN</span><h2 id="plan-title"></h2><p id="plan-description"></p></div><span class="pill green">Ready to try on a copy</span></div>
+        <div class="plan-compare"><div class="control-box"><small>Whole backup replacement · reference</small><strong id="control-rows"></strong><p id="control-detail"></p></div><div class="recovery-box"><small>Your selected recovery · planned outcome</small><strong id="planned-rows"></strong><p id="planned-detail"></p></div></div>
+        <div class="approval"><p>Vultr AI receives the table structure and your chosen fields. Database rows and file contents stay in the isolated copies.</p><div><button class="secondary" id="edit-selection">Edit selection</button><button class="primary" id="recover-button">Restore selected cells</button></div></div>
+      </section>
+      <section id="progress-panel" class="panel progress-panel" aria-live="polite" hidden><div class="spinner"></div><h2 id="progress-title">Reading your snapshots</h2><p id="progress-message"></p><div class="progress-steps"><span id="stage-write">1. Write recovery</span><span id="stage-run">2. Run on copies</span><span id="stage-check">3. Check every cell</span></div><small id="elapsed"></small></section>
+      <section id="result-panel" hidden>
+        <div id="result-banner" class="result-banner"><span class="result-check">✓</span><div><span class="small-label">INDEPENDENT CHECKS PASSED</span><h2 id="result-title"></h2><p id="result-detail"></p></div></div>
+        <div class="result-stats"><div><strong id="stat-restored"></strong><span>Cells restored from backup</span></div><div><strong id="stat-rows"></strong><span>Current records retained</span></div><div><strong id="stat-new"></strong><span>Newer records retained</span></div><div><strong id="stat-updates"></strong><span>Other updates preserved</span></div></div>
+        <div class="result-actions"><button class="primary" id="download-database">Download recovered database <span>↓</span></button><button class="secondary" id="download-diff">Download changes</button><button class="text-button" id="download-evidence">Download checks</button></div>
+        <section class="panel"><div class="panel-head"><div><h2>Exactly what changed</h2><p>These values were restored. Every other value was checked against today’s copy.</p></div><span id="diff-total" class="pill green"></span></div><div class="table-wrap"><table><thead><tr><th>Record</th><th>Field</th><th>Before recovery</th><th>Recovered value</th><th>Checked</th></tr></thead><tbody id="result-body"></tbody></table></div><p class="table-foot" id="result-page-note"></p></section>
+        <details class="panel evidence"><summary>How we checked this recovery <span>＋</span></summary><div id="evidence-checks" class="evidence-checks"></div><div id="runtime-details" class="runtime-details"></div></details>
+      </section>
+    </section>
+    <footer>Rewind · Restore the damaged data. Keep the newer work.<span>A small SQLite recovery prototype.</span></footer>
+  </main>
+  <dialog id="access-dialog"><form id="access-form"><span class="small-label">PRIVATE DEMO WORKER</span><h2>Enter your demo access code</h2><p>The code unlocks the bounded inspection and recovery worker. Your API key stays on the server.</p><label>Demo access code<input id="access-input" type="password" autocomplete="off" required></label><div class="dialog-actions"><button class="secondary" type="button" id="access-cancel">Cancel</button><button class="primary" type="submit">Continue</button></div></form></dialog>
+  <dialog id="how-dialog"><h2>Restore only what went wrong.</h2><p>Give Rewind a good backup and a consistent current snapshot. Choose the damaged fields and records.</p><p>Vultr AI writes a recovery program for that selection. A disposable gVisor environment runs it on copies. A fresh, separate checker compares the resulting database with both inputs.</p><p>You can download the result only when the selected cells match the backup, every other cell matches today’s snapshot, and all temporary environments have been removed.</p><p>This first version supports small SQLite files with matching schemas and one stable primary key. It cannot tell whether a later edit to the same selected cell was legitimate; you decide which cells to restore.</p><button class="primary" id="how-close">Got it</button></dialog>
+</body>
+</html>

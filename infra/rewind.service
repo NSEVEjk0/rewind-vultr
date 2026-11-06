@@ -1,0 +1,34 @@
+# Rewind managed controller
+[Unit]
+Description=Rewind selective database recovery
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=rewind
+Group=rewind
+SupplementaryGroups=docker
+WorkingDirectory=/opt/rewind/current
+EnvironmentFile=/etc/rewind/rewind.env
+ExecStart=/usr/bin/python3 -m rewind.server
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=12
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/var/lib/rewind
+CPUQuota=150%
+MemoryMax=512M
+TasksMax=96
+
+[Install]
+WantedBy=multi-user.target

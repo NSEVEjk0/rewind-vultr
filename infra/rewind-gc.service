@@ -1,0 +1,20 @@
+# Rewind managed cleanup
+[Unit]
+Description=Remove expired Rewind-owned recovery sandboxes
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=rewind
+Group=rewind
+SupplementaryGroups=docker
+WorkingDirectory=/opt/rewind/current
+ExecStart=/usr/bin/python3 -m rewind.gc --state-dir /var/lib/rewind
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/rewind
+TimeoutStartSec=20

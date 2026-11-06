@@ -1,0 +1,12 @@
+# Rewind managed cleanup timer
+[Unit]
+Description=Check for expired Rewind sandboxes every thirty seconds
+
+[Timer]
+OnBootSec=30
+OnUnitActiveSec=30
+AccuracySec=1
+Unit=rewind-gc.service
+
+[Install]
+WantedBy=timers.target
