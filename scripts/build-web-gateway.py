@@ -62,7 +62,8 @@ def main():
                       {"source": "/tour", "destination": "/tour/", "permanent": False}]
     config = {"framework": None, "buildCommand": "", "outputDirectory": ".",
               "redirects": redirects,
-              "rewrites": [{"source": "/:path*", "destination": args.upstream + "/__web/:path*"}],
+              "rewrites": ([{"source": "/", "destination": args.upstream + "/__web/"}] if not args.tour else [])
+                          + [{"source": "/:path*", "destination": args.upstream + "/__web/:path*"}],
               "headers": [{"source": "/(.*)", "headers": [
                   {"key": "Cache-Control", "value": "no-store"},
                   {"key": "Vercel-CDN-Cache-Control", "value": "no-store"},
