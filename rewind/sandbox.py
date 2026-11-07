@@ -215,11 +215,11 @@ class Sandbox:
     def run(self, operation: str, files: dict[str, bytes] | None = None, *, scope: dict | None = None,
             seconds: float = SANDBOX_SECONDS) -> dict[str, Any]:
         files = files or {}
-        if operation not in {"inspect", "candidate", "demo"} or not 1 <= seconds <= 15:
+        if operation not in {"inspect", "candidate", "diagnose", "demo"} or not 1 <= seconds <= 15:
             raise ValueError("Unsupported bounded sandbox operation.")
-        if set(files) - {"backup.sqlite", "current.sqlite", "repair.py"} or sum(len(raw) for raw in files.values()) > 600 * 1024:
+        if set(files) - {"backup.sqlite", "checkpoint.sqlite", "current.sqlite", "backup.csv", "checkpoint.csv", "current.csv", "repair.py", "diagnose.py"} or sum(len(raw) for raw in files.values()) > 800 * 1024:
             raise ValueError("Invalid sandbox input files.")
-        if any(not isinstance(raw, bytes) or len(raw) > (24 * 1024 if name == "repair.py" else 256 * 1024) for name, raw in files.items()):
+        if any(not isinstance(raw, bytes) or len(raw) > (24 * 1024 if name in {"repair.py", "diagnose.py"} else 256 * 1024) for name, raw in files.items()):
             raise ValueError("Sandbox input exceeds its byte limit.")
         nonce, name = uuid.uuid4().hex, "rewind-" + uuid.uuid4().hex
         work = Path(tempfile.mkdtemp(prefix="run-", dir=self.work_root))

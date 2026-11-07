@@ -9,15 +9,15 @@ import re
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
-from .contract import ScopeError, compare, compatible, make_plan
+from .contract import MAX_TARGETS, ScopeError, compare, compatible, make_plan
 from .evidence import sha256_bytes
-from .pipeline import InspectionError, decode_file, inspect_input, public_run, run_recovery
+from .pipeline import InspectionError, decode_file, inspect_input, public_run, removed_and_isolated, run_diagnosis, run_recovery
 from .provider import VultrProvider
 from .sandbox import Sandbox, SandboxUnavailable
 from .store import AdmissionDenied, Store
 
 WEB = Path(__file__).resolve().parent.parent / "web"
-MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|recover|evidence|database|backup|current))?")
+MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|diagnose|recover|delete|evidence|database|backup|checkpoint|current))?")
 
 
 class Controller:
@@ -57,37 +57,56 @@ class Controller:
             workspace_id, operation = self.queue.get()
             path = self.store.path(workspace_id)
             try:
+                value = json.loads((path / "workspace.json").read_text())
+                format = value.get("format", "sqlite")
                 if operation == "inspect":
-                    value = json.loads((path / "workspace.json").read_text())
                     runs = []
                     if value["example"]:
-                        run = self.sandbox.run("demo")
+                        run = self.sandbox.run("demo", scope={"format": format, "scenario": value.get("scenario", "legacy")})
                         if not run["ok"]:
-                            raise InspectionError("The fictional example could not be created in its sandbox.", run=public_run(run))
+                            raise InspectionError("The example files could not be created in their isolated environment.", run=public_run(run))
                         runs.append(public_run(run))
-                        for name in ("backup", "current"):
-                            (path / (name + ".sqlite")).write_bytes(decode_file(run["payload"][name]))
-                    backup, backup_run = inspect_input((path / "backup.sqlite").read_bytes(), self.sandbox)
-                    runs.append(backup_run)
-                    self.store.update(workspace_id, inspection_runs=runs)
-                    current, current_run = inspect_input((path / "current.sqlite").read_bytes(), self.sandbox)
-                    runs.append(current_run)
-                    compatible(backup, current)
-                    self.store.update(workspace_id, status="ready", message="Both snapshots were read and checked. Choose the damaged cells to restore.",
-                                      backup=backup, current=current, inspection_runs=runs)
-                else:
-                    value = json.loads((path / "workspace.json").read_text())
-                    evidence, artifact = run_recovery(backup=value["backup"], current=value["current"], plan=value["plan"],
-                        backup_raw=(path / "backup.sqlite").read_bytes(), current_raw=(path / "current.sqlite").read_bytes(),
+                        for name in ("backup", "current", * (("checkpoint",) if value.get("has_checkpoint") else ())):
+                            (path / (name + "." + format)).write_bytes(decode_file(run["payload"][name], format))
+                    versions = {}
+                    for name in ("backup", * (("checkpoint",) if value.get("has_checkpoint") else ()), "current"):
+                        snapshot, run = inspect_input((path / (name + "." + format)).read_bytes(), self.sandbox,
+                                                       format=format, primary_key=value.get("primary_key", ""))
+                        versions[name] = snapshot
+                        runs.append(run)
+                        self.store.update(workspace_id, inspection_runs=runs)
+                        if name != "backup":
+                            compatible(versions["backup"], snapshot)
+                    self.store.update(workspace_id, status="ready",
+                        message="All three versions passed inspection. Describe the mistake to investigate, or choose the fields yourself." if value.get("has_checkpoint") else
+                                "Both versions passed inspection. Choose the damaged cells to restore.",
+                        **versions, inspection_runs=runs)
+                elif operation == "diagnose":
+                    diagnosis, runs = run_diagnosis(backup=value["backup"], checkpoint=value["checkpoint"], current=value["current"],
+                        backup_raw=(path / ("backup." + format)).read_bytes(), checkpoint_raw=(path / ("checkpoint." + format)).read_bytes(),
+                        current_raw=(path / ("current." + format)).read_bytes(), instruction=value["instruction"],
                         prior_runs=value["inspection_runs"], sandbox=self.sandbox, provider=self.provider,
-                        progress=lambda stage, message: self.store.update(workspace_id, status=stage, message=message))
+                        progress=lambda stage, message: self.store.update(workspace_id, status=stage, message=message),
+                        consume_call=lambda: self.store.consume_model_call(workspace_id))
+                    self.store.update(workspace_id, status="ready", active_operation=None, message=diagnosis["message"],
+                                      diagnosis=diagnosis, inspection_runs=runs)
+                else:
+                    used = value.get("model_calls", 0)
+                    evidence, artifact = run_recovery(backup=value["backup"], current=value["current"], plan=value["plan"],
+                        backup_raw=(path / ("backup." + format)).read_bytes(), current_raw=(path / ("current." + format)).read_bytes(),
+                        checkpoint=value.get("checkpoint"),
+                        checkpoint_raw=(path / ("checkpoint." + format)).read_bytes() if value.get("checkpoint") else None,
+                        diagnosis=value.get("diagnosis"), max_attempts=2-used, model_calls_prior=used,
+                        prior_runs=value["inspection_runs"], sandbox=self.sandbox, provider=self.provider,
+                        progress=lambda stage, message: self.store.update(workspace_id, status=stage, message=message),
+                        consume_call=lambda: self.store.consume_model_call(workspace_id))
                     if artifact is not None:
-                        (path / "verified.sqlite").write_bytes(artifact)
+                        (path / ("verified." + format)).write_bytes(artifact)
                     payload = evidence["payload"]
                     if not payload["all_sandboxes_removed"]:
                         self.sandbox_ready = False
                         self.readiness = "Temporary sandbox removal could not be confirmed."
-                    self.store.update(workspace_id, status=payload["status"], message=payload["message"], evidence=evidence)
+                    self.store.update(workspace_id, status=payload["status"], active_operation=None, message=payload["message"], evidence=evidence)
             except (InspectionError, ScopeError) as error:
                 failed_run = getattr(error, "run", None)
                 changes = {"status": "failed", "message": str(error)[:350]}
@@ -201,7 +220,8 @@ class Handler(BaseHTTPRequestHandler):
                             "message": "The Vultr recovery worker is connected." if controller.available else controller.readiness,
                             "model": controller.provider.model, "access_required": not controller.public_demo, "daily_limit": None,
                             "max_file_bytes": 256 * 1024, "max_rows": 1000, "demo_available": (WEB / "demo/index.html").is_file(),
-                            "data_sent": "Only table/column names and types, selected columns and record count are sent to Vultr AI."})
+                            "formats": ["csv", "sqlite"], "checkpoint_supported": True, "max_model_calls": 2, "max_target_cells": MAX_TARGETS,
+                            "data_sent": "Your incident description, file structure and aggregate change counts are sent to Vultr AI. Files, row values and record IDs stay in the isolated copies."})
             return
         match = MATCH.fullmatch(path)
         if match:
@@ -215,15 +235,25 @@ class Handler(BaseHTTPRequestHandler):
                     self.json(409, {"error": "There is no completed recovery evidence yet."})
                 else:
                     self.json(200, value["evidence"])
-            elif operation in {"database", "backup", "current"}:
+            elif operation in {"database", "backup", "checkpoint", "current"}:
+                format = value.get("format", "sqlite")
                 if operation == "database":
                     evidence = value.get("evidence", {}).get("payload", {})
-                    if value["status"] != "verified" or not evidence.get("all_sandboxes_removed"):
+                    verification = evidence.get("verification") or {}
+                    checks = verification.get("checks") or []
+                    required = {"same-schema", "same-records", "same-sequences", "restored-cells", "protected-cells",
+                                "csv-integrity" if format == "csv" else "sqlite-integrity"}
+                    if format == "csv":
+                        required.add("same-record-order")
+                    if (value["status"] != "verified" or not evidence.get("all_sandboxes_removed")
+                            or not verification.get("ok") or not required <= {check.get("id") for check in checks}
+                            or not all(check.get("ok") for check in checks)
+                            or not removed_and_isolated(evidence.get("sandbox_runs") or [])):
                         self.json(409, {"error": "A recovery can be downloaded only after every check and cleanup passes."})
                         return
-                    filename = "verified.sqlite"
+                    filename = "verified." + format
                 else:
-                    filename = operation + ".sqlite"
+                    filename = operation + "." + format
                 target = controller.store.path(workspace_id) / filename
                 if not target.is_file() or target.is_symlink():
                     self.json(409, {"error": "The database copy is not ready."})
@@ -233,7 +263,8 @@ class Handler(BaseHTTPRequestHandler):
                 if sha256_bytes(raw) != expected:
                     self.json(409, {"error": "The file differs from the checked fingerprint."})
                     return
-                self.send(200, raw, "application/vnd.sqlite3", "rewind-recovered.sqlite" if operation == "database" else "rewind-" + operation + ".sqlite")
+                self.send(200, raw, "text/csv; charset=utf-8" if format == "csv" else "application/vnd.sqlite3",
+                          "rewind-recovered." + format if operation == "database" else "rewind-" + operation + "." + format)
             elif operation is None:
                 self.json(200, value)
             else:
@@ -256,7 +287,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if not 1 <= length <= 750000 or not self.headers.get("Content-Type", "").startswith("application/json"):
+            if not 1 <= length <= 1100000 or not self.headers.get("Content-Type", "").startswith("application/json"):
                 raise ValueError("Send a bounded JSON request.")
             request = json.loads(self.rfile.read(length))
             if not isinstance(request, dict):
@@ -265,13 +296,22 @@ class Handler(BaseHTTPRequestHandler):
                 if not self.has_access(require_inference=False):
                     return
                 if path == "/api/example":
-                    if request:
-                        raise ValueError("The example action takes no fields.")
-                    admission = controller.store.create(None, None, example=True)
+                    if request and (set(request) != {"format", "scenario"} or request["format"] not in {"csv", "sqlite"} or request["scenario"] != "overlap"):
+                        raise ValueError("Choose the supported bad-import example.")
+                    format = request.get("format", "sqlite")
+                    admission = controller.store.create(None, None, example=True, format=format,
+                                primary_key="invoice_id" if format == "csv" else "", scenario=request.get("scenario", "legacy"))
                 else:
-                    if set(request) != {"backup", "current"}:
-                        raise ValueError("Provide a good backup and today's consistent snapshot.")
-                    admission = controller.store.create(decode_file(request["backup"]), decode_file(request["current"]))
+                    if (not {"backup", "current"} <= set(request)
+                            or set(request) - {"backup", "current", "checkpoint", "format", "primary_key"}):
+                        raise ValueError("Provide a good version, today's copy and an optional after-incident version.")
+                    format = request.get("format", "sqlite")
+                    primary_key = request.get("primary_key", "")
+                    if format not in {"csv", "sqlite"} or not isinstance(primary_key, str) or len(primary_key) > 100 or format == "csv" and not primary_key:
+                        raise ValueError("Choose CSV with a unique record ID, or SQLite.")
+                    admission = controller.store.create(decode_file(request["backup"], format), decode_file(request["current"], format),
+                                decode_file(request["checkpoint"], format) if "checkpoint" in request else None,
+                                format=format, primary_key=primary_key)
                 try:
                     controller.queue.put_nowait((admission["id"], "inspect"))
                 except queue.Full:
@@ -288,6 +328,12 @@ class Handler(BaseHTTPRequestHandler):
             if not value:
                 self.json(404, {"error": "Workspace not found or access token missing."})
                 return
+            if operation == "delete":
+                if request:
+                    raise ValueError("The delete action takes no fields.")
+                controller.store.delete(workspace_id, self.token())
+                self.json(200, {"deleted": True})
+                return
             if operation == "recover":
                 if not self.has_access() or not controller.available:
                     return
@@ -301,22 +347,38 @@ class Handler(BaseHTTPRequestHandler):
                     raise AdmissionDenied("The bounded queue is full.")
                 self.json(202, {"status": "queued"})
                 return
+            if operation == "diagnose":
+                if not self.has_access():
+                    return
+                if (set(request) != {"instruction", "expected_version"} or not isinstance(request["instruction"], str)
+                        or not 1 <= len(request["instruction"].strip()) <= 1000 or type(request["expected_version"]) is not int):
+                    raise ValueError("Describe the mistake in up to 1,000 characters and use the current workspace.")
+                controller.store.reserve_diagnosis(workspace_id, self.token(), request["instruction"].strip(), request["expected_version"])
+                try:
+                    controller.queue.put_nowait((workspace_id, "diagnose"))
+                except queue.Full:
+                    controller.store.update(workspace_id, status="failed", message="The bounded queue is full; no model request was started.")
+                    raise AdmissionDenied("The bounded queue is full.")
+                self.json(202, {"status": "queued"})
+                return
             if operation not in {"compare", "plan"} or value["status"] != "ready":
                 self.json(409, {"error": "Wait for both snapshots to be checked before choosing a recovery."})
                 return
             if operation == "compare":
                 if set(request) != {"columns"}:
                     raise ValueError("Choose the columns to compare.")
-                self.json(200, compare(value["backup"], value["current"], request["columns"]))
+                self.json(200, compare(value["backup"], value["current"], request["columns"], value.get("checkpoint")))
             else:
-                if set(request) != {"columns", "keys", "expected_version"}:
-                    raise ValueError("Choose columns and records from the current workspace.")
+                if set(request) not in ({"columns", "keys", "expected_version"}, {"targets", "expected_version"}) or type(request["expected_version"]) is not int:
+                    raise ValueError("Choose precise cells from the current workspace.")
                 with controller.store.lock:
                     value = self.workspace(workspace_id)
                     if value["status"] != "ready" or value["version"] != request["expected_version"]:
                         self.json(409, {"error": "The workspace changed. Review the current selection."})
                         return
-                    plan = make_plan(value["backup"], value["current"], request["columns"], request["keys"])
+                    plan = make_plan(value["backup"], value["current"], request.get("columns"), request.get("keys"),
+                        targets=request.get("targets"), checkpoint=value.get("checkpoint"), workspace_version=value["version"]+1,
+                        diagnosis_sha256=(value.get("diagnosis") or {}).get("proposal", {}).get("sha256"))
                     controller.store.update(workspace_id, plan=plan)
                 self.json(200, self.workspace(workspace_id))
         except AdmissionDenied as error:

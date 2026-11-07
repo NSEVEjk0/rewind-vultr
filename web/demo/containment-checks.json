@@ -1,42 +1,2306 @@
 {
-  "executed_on": "Vultr VM 139.84.249.47",
+  "project": "Rewind",
+  "executed_on_vultr": true,
   "reference_programs_only": true,
-  "model_requests": 0,
-  "sandbox_runs": 10,
+  "live_inference": false,
+  "sandbox_runs": 38,
   "all_sandboxes_removed": true,
-  "whole_backup_rejected": true,
-  "selected_reference_passed": true,
-  "containment_probe": {
-    "ok": true,
-    "nonroot": true,
-    "no_network": true,
-    "readonly_inputs": true,
-    "credentials_and_socket_not_exposed": true,
-    "input_artifact_unchanged": true,
-    "source_sha256": "c2dfc48a707700ca362d23d06df43e2d81e7a7166cc4c00f6ca695e8d0260c5d"
-  },
   "deadline": {
-    "fixed_test_program": "def recover(a,b,c,d):\n    while True: pass\n",
-    "deadline_seconds": 2,
-    "stop_reason": "timeout",
-    "elapsed_ms": 2003,
-    "sandbox_id": "rewind-b71318066dad4f7797fe14e87279ceb0",
+    "operation": "candidate",
+    "sandbox_id": "rewind-ba5b923e63334520be274f01af7fe61c",
+    "nonce": "98f7e43d87f2485cb6b843cc9a8ac3c5",
+    "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+    "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+    "input_hashes": {
+      "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+      "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+      "repair.py": "b1309f28b5bc22a0a53b54d877da35c0c62d2f478b7461b61f507434e4cc2a96"
+    },
+    "policy": {
+      "gvisor": true,
+      "pinned_image": true,
+      "no_network": true,
+      "readonly_root": true,
+      "nonroot": true,
+      "memory_limit": true,
+      "cpu_limit": true,
+      "pid_limit": true,
+      "no_privilege": true,
+      "readonly_inputs": true,
+      "bounded_tmp": true,
+      "no_docker_logs": true
+    },
     "policy_verified": true,
+    "ok": false,
+    "started_at": 1794069015190,
+    "exit_code": -9,
+    "stop_reason": "timeout",
+    "elapsed_ms": 2005,
+    "stdout_bytes": 0,
+    "stderr_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime": "runsc",
+    "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+    "oom_killed": false,
+    "error": "The sandbox exceeded its limits or did not finish.",
     "teardown": {
       "confirmed": true,
       "remove_exit_code": 0,
       "absence_query_exit_code": 0
-    }
+    },
+    "finished_at": 1794069017348
   },
   "output_limit": {
+    "operation": "candidate",
+    "sandbox_id": "rewind-df0019d30e974eb5be18b6866798b903",
+    "nonce": "5b0e81f50a0944aca526997cf2c00ded",
+    "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+    "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+    "input_hashes": {
+      "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+      "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+      "repair.py": "4d74b4be4ca90dbe53dd4e54591a0fe04a8e611b95f46983545e590d206afa55"
+    },
+    "policy": {
+      "gvisor": true,
+      "pinned_image": true,
+      "no_network": true,
+      "readonly_root": true,
+      "nonroot": true,
+      "memory_limit": true,
+      "cpu_limit": true,
+      "pid_limit": true,
+      "no_privilege": true,
+      "readonly_inputs": true,
+      "bounded_tmp": true,
+      "no_docker_logs": true
+    },
+    "policy_verified": true,
+    "ok": false,
+    "started_at": 1794069017349,
+    "exit_code": -9,
     "stop_reason": "output_limit",
+    "elapsed_ms": 729,
     "stdout_bytes": 393216,
+    "stderr_bytes": 0,
+    "stdout_sha256": "4354ea9737c4b5afa2e01d0f7b95769ce9a228605a6317687cffad970815bc91",
+    "runtime": "runsc",
+    "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+    "oom_killed": false,
+    "error": "The sandbox exceeded its limits or did not finish.",
     "teardown": {
       "confirmed": true,
       "remove_exit_code": 0,
       "absence_query_exit_code": 0
+    },
+    "finished_at": 1794069018234
+  },
+  "containment_probe": {
+    "nonroot": true,
+    "network_blocked": true,
+    "readonly_inputs": true,
+    "no_docker_socket": true,
+    "controller_credentials_absent": true
+  },
+  "checkpoint_workflows": {
+    "csv": {
+      "proposed_restorations": 117,
+      "protected_overlaps": 3,
+      "outcomes": {
+        "selective-reference": {
+          "ok": true,
+          "checks": [
+            {
+              "id": "csv-integrity",
+              "label": "CSV structure and unique keys pass",
+              "ok": true
+            },
+            {
+              "id": "same-schema",
+              "label": "File format, fields and unique key are unchanged",
+              "ok": true
+            },
+            {
+              "id": "same-records",
+              "label": "Every current record is retained, with no added records",
+              "ok": true
+            },
+            {
+              "id": "same-sequences",
+              "label": "Automatic ID counters are unchanged",
+              "ok": true
+            },
+            {
+              "id": "restored-cells",
+              "label": "Every approved cell matches the good version",
+              "ok": true
+            },
+            {
+              "id": "protected-cells",
+              "label": "Every other cell keeps today's value",
+              "ok": true
+            },
+            {
+              "id": "same-record-order",
+              "label": "CSV records keep today's order",
+              "ok": true
+            }
+          ],
+          "restored_cells": 117,
+          "retained_rows": 127,
+          "retained_new_rows": 7,
+          "protected_update_count": 23,
+          "protected_overlap_count": 3,
+          "failures": {
+            "target_cells": [],
+            "protected_cells": [],
+            "missing_rows": 0,
+            "unexpected_rows": 0
+          }
+        },
+        "full-backup-reference": {
+          "ok": false,
+          "checks": [
+            {
+              "id": "csv-integrity",
+              "label": "CSV structure and unique keys pass",
+              "ok": true
+            },
+            {
+              "id": "same-schema",
+              "label": "File format, fields and unique key are unchanged",
+              "ok": true
+            },
+            {
+              "id": "same-records",
+              "label": "Every current record is retained, with no added records",
+              "ok": false
+            },
+            {
+              "id": "same-sequences",
+              "label": "Automatic ID counters are unchanged",
+              "ok": true
+            },
+            {
+              "id": "restored-cells",
+              "label": "Every approved cell matches the good version",
+              "ok": true
+            },
+            {
+              "id": "protected-cells",
+              "label": "Every other cell keeps today's value",
+              "ok": false
+            },
+            {
+              "id": "same-record-order",
+              "label": "CSV records keep today's order",
+              "ok": false
+            }
+          ],
+          "restored_cells": 117,
+          "retained_rows": 120,
+          "retained_new_rows": 0,
+          "protected_update_count": 23,
+          "protected_overlap_count": 3,
+          "failures": {
+            "target_cells": [],
+            "protected_cells": [
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0001"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0002"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0003"
+                },
+                "column": "price"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0003"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0004"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0005"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0006"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0007"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0008"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0009"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0010"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0011"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0012"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0013"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0014"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0015"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0016"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0017"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0018"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0019"
+                },
+                "column": "payment_status"
+              }
+            ],
+            "missing_rows": 7,
+            "unexpected_rows": 0
+          }
+        },
+        "blind-price-reference": {
+          "ok": false,
+          "checks": [
+            {
+              "id": "csv-integrity",
+              "label": "CSV structure and unique keys pass",
+              "ok": true
+            },
+            {
+              "id": "same-schema",
+              "label": "File format, fields and unique key are unchanged",
+              "ok": true
+            },
+            {
+              "id": "same-records",
+              "label": "Every current record is retained, with no added records",
+              "ok": true
+            },
+            {
+              "id": "same-sequences",
+              "label": "Automatic ID counters are unchanged",
+              "ok": true
+            },
+            {
+              "id": "restored-cells",
+              "label": "Every approved cell matches the good version",
+              "ok": true
+            },
+            {
+              "id": "protected-cells",
+              "label": "Every other cell keeps today's value",
+              "ok": false
+            },
+            {
+              "id": "same-record-order",
+              "label": "CSV records keep today's order",
+              "ok": true
+            }
+          ],
+          "restored_cells": 117,
+          "retained_rows": 127,
+          "retained_new_rows": 7,
+          "protected_update_count": 23,
+          "protected_overlap_count": 3,
+          "failures": {
+            "target_cells": [],
+            "protected_cells": [
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0003"
+                },
+                "column": "price"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0042"
+                },
+                "column": "price"
+              },
+              {
+                "key": {
+                  "type": "text",
+                  "value": "INV-0088"
+                },
+                "column": "price"
+              }
+            ],
+            "missing_rows": 0,
+            "unexpected_rows": 0
+          }
+        }
+      }
+    },
+    "sqlite": {
+      "proposed_restorations": 117,
+      "protected_overlaps": 3,
+      "outcomes": {
+        "selective-reference": {
+          "ok": true,
+          "checks": [
+            {
+              "id": "sqlite-integrity",
+              "label": "Database integrity and foreign keys pass",
+              "ok": true
+            },
+            {
+              "id": "same-schema",
+              "label": "File format, fields and unique key are unchanged",
+              "ok": true
+            },
+            {
+              "id": "same-records",
+              "label": "Every current record is retained, with no added records",
+              "ok": true
+            },
+            {
+              "id": "same-sequences",
+              "label": "Automatic ID counters are unchanged",
+              "ok": true
+            },
+            {
+              "id": "restored-cells",
+              "label": "Every approved cell matches the good version",
+              "ok": true
+            },
+            {
+              "id": "protected-cells",
+              "label": "Every other cell keeps today's value",
+              "ok": true
+            }
+          ],
+          "restored_cells": 117,
+          "retained_rows": 127,
+          "retained_new_rows": 7,
+          "protected_update_count": 23,
+          "protected_overlap_count": 3,
+          "failures": {
+            "target_cells": [],
+            "protected_cells": [],
+            "missing_rows": 0,
+            "unexpected_rows": 0
+          }
+        },
+        "full-backup-reference": {
+          "ok": false,
+          "checks": [
+            {
+              "id": "sqlite-integrity",
+              "label": "Database integrity and foreign keys pass",
+              "ok": true
+            },
+            {
+              "id": "same-schema",
+              "label": "File format, fields and unique key are unchanged",
+              "ok": true
+            },
+            {
+              "id": "same-records",
+              "label": "Every current record is retained, with no added records",
+              "ok": false
+            },
+            {
+              "id": "same-sequences",
+              "label": "Automatic ID counters are unchanged",
+              "ok": true
+            },
+            {
+              "id": "restored-cells",
+              "label": "Every approved cell matches the good version",
+              "ok": true
+            },
+            {
+              "id": "protected-cells",
+              "label": "Every other cell keeps today's value",
+              "ok": false
+            }
+          ],
+          "restored_cells": 117,
+          "retained_rows": 120,
+          "retained_new_rows": 0,
+          "protected_update_count": 23,
+          "protected_overlap_count": 3,
+          "failures": {
+            "target_cells": [],
+            "protected_cells": [
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "1"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "10"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "11"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "12"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "121"
+                },
+                "column": "invoice_id"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "121"
+                },
+                "column": "customer"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "121"
+                },
+                "column": "price_cents"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "121"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "121"
+                },
+                "column": "created_on"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "122"
+                },
+                "column": "invoice_id"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "122"
+                },
+                "column": "customer"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "122"
+                },
+                "column": "price_cents"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "122"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "122"
+                },
+                "column": "created_on"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "123"
+                },
+                "column": "invoice_id"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "123"
+                },
+                "column": "customer"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "123"
+                },
+                "column": "price_cents"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "123"
+                },
+                "column": "payment_status"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "123"
+                },
+                "column": "created_on"
+              },
+              {
+                "key": {
+                  "type": "integer",
+                  "value": "124"
+                },
+                "column": "invoice_id"
+              }
+            ],
+            "missing_rows": 7,
+            "unexpected_rows": 0
+          }
+        }
+      }
     }
   },
-  "full_report_sha256": "a7c84fb0f07db5aa05397d2a8d47a8e87cc55de834f8fbbb6dc68030079c36b7",
-  "host_attestation": false
+  "csv_rejections": [
+    "duplicate-key",
+    "empty-key",
+    "duplicate-header",
+    "row-width",
+    "invalid-utf8",
+    "invalid-quoting",
+    "large-cell"
+  ],
+  "csv_literal_values_preserved": true,
+  "full_report_sha256": "4414004a6ad08a58bfeb0e6f068614bc7142ee43ef05139cb96bd4300b07c881",
+  "runs": [
+    {
+      "operation": "demo",
+      "sandbox_id": "rewind-8e16b739da6d4ee6be719caa1a39d760",
+      "nonce": "a985b97a98df4168ae24e8d48d2732e1",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {},
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068979349,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 773,
+      "stdout_bytes": 43788,
+      "stderr_bytes": 0,
+      "stdout_sha256": "f4d0b80c9da60d8d206675e05c275d045fcd60b48292e61a0bf7888dfa9d69d2",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068980219
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-d4c9fb581d634ab69049395c8db3a859",
+      "nonce": "28461d2526d143db88968dbff012bf1b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068980220,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 859,
+      "stdout_bytes": 36836,
+      "stderr_bytes": 0,
+      "stdout_sha256": "eb6e20b6391a9a4f53480779d59f706cf80cf4d0a0d666186b0cfc1bba0e5934",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068981167
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-8ae1ad397c8d4de2a71a6cda61bf486d",
+      "nonce": "d3e71bff8ec949d69dd2a8acf51b70b6",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068981167,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 910,
+      "stdout_bytes": 39150,
+      "stderr_bytes": 0,
+      "stdout_sha256": "247df523cafb03930622db512cd402e9825561c9ce815377b37f4d11b9922c3b",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068982187
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-a673876078f0405f8d15e60ffc85c7b8",
+      "nonce": "de6fe0ad04bf41869cc92597288e5c32",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+        "repair.py": "67bea23a94724c0d56c783ee66e40f9f498daa9909b367a3b3aede3c4dabab24"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068982200,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 778,
+      "stdout_bytes": 21929,
+      "stderr_bytes": 0,
+      "stdout_sha256": "20c196ddebad55e291bfa278560f87c9e3b47167f31a8e02b8f70f3faeb6520b",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068983082
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-5315b8cd294f43298ad131794f94309a",
+      "nonce": "cbd446dcc4464463a59c9d6ae7b13d07",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068983082,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 877,
+      "stdout_bytes": 36836,
+      "stderr_bytes": 0,
+      "stdout_sha256": "8e47a405a638a1b83887dd4ea334a4997a3e804451653469a39b81623ed50fcc",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068984050
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-00b0d16f8f024a42803ad17c841119e5",
+      "nonce": "c86893a3870b44179ab1856085b4c342",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+        "repair.py": "98557c9e7b8b7e949738ca719aaca36b565463b35cea485a142e883c33b6c003"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068984053,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 882,
+      "stdout_bytes": 21929,
+      "stderr_bytes": 0,
+      "stdout_sha256": "4a77b35fea2f018c296aba02a86201704b2b04c1fe0f6d6a8435823c12a2ec4e",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068985049
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-ad5f0fd8e5204f95abaefc7ed52e51af",
+      "nonce": "3520b136177c44fda3255d6c2ec01c8b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "adb7745ccf21e2c5c6b29341dad66135ca8eea0cfd536068ce4a4a57725452f6"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068985050,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 787,
+      "stdout_bytes": 38910,
+      "stderr_bytes": 0,
+      "stdout_sha256": "99bdf4e4d7ebd01b0eae9b7198e9e93e2e2ed1c3bab48a7416522cdd37d58963",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068985929
+    },
+    {
+      "operation": "demo",
+      "sandbox_id": "rewind-c3b5f30868634c419d21b10f2b0151d6",
+      "nonce": "a31c5fbd72c24b4ca83e431971d97b71",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {},
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068985932,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 770,
+      "stdout_bytes": 27144,
+      "stderr_bytes": 0,
+      "stdout_sha256": "22589a468471e8f6b4b3d2f1117ed43b5de3417437062e63989791b8974e5ede",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068986792
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-1b696b054b7f41ada7bd85e317681456",
+      "nonce": "4053f9f76a2446d4ac2984728a0b1d9d",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068986793,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 844,
+      "stdout_bytes": 36671,
+      "stderr_bytes": 0,
+      "stdout_sha256": "2f68242544e537d2a35b9e78734ebe5e631dd884bc283c7a28ea6fb11bf9994d",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068987739
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-61fa7b86c2ec4380aec10f1a66c355c1",
+      "nonce": "7f7d1ce6bc8541d9a80deb2f60b65ea7",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068987740,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 843,
+      "stdout_bytes": 36911,
+      "stderr_bytes": 0,
+      "stdout_sha256": "cee32ad1ba903addcc3dcb0db97b3bb4d30ddf0b4cdf77ce89d07252fa1f3c8d",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068988687
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-50d6111b8e00442f8225c71fcef2a402",
+      "nonce": "d3f4b6f0c51d4a02a6e0f4c0f00185d0",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068988688,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 794,
+      "stdout_bytes": 38965,
+      "stderr_bytes": 0,
+      "stdout_sha256": "a0a63f50c377ec8b271f7c99c5d334daf00c08bc047cbbfc0de5c1032f79dcde",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068989570
+    },
+    {
+      "operation": "diagnose",
+      "sandbox_id": "rewind-1522c184549749ba99f22f8545cfc6da",
+      "nonce": "a6c05bf5e8b64c5293725ce868f231ca",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
+        "checkpoint.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
+        "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
+        "diagnose.py": "0fae2610318699e7c36b39bae14678b24b34c532eb60d45ee6b96ec1fd63e0f2"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068989571,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 810,
+      "stdout_bytes": 7364,
+      "stderr_bytes": 0,
+      "stdout_sha256": "6ce64a0ac0c36c12eb81b1ce372726a755d486178f90ec3b73b003782fc89cfd",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068990569
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-e1195308da8b4e8d931b0947b938b03a",
+      "nonce": "71768a4af69a4535932ef93335513d04",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
+        "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
+        "repair.py": "7b22a57d739379b68ac55e62b1ae2a695614e1c2fac0fac3a96c0756ee52c577"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068990584,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 750,
+      "stdout_bytes": 9189,
+      "stderr_bytes": 0,
+      "stdout_sha256": "017c121cf71a8fbf01ca9f3dfc3ce886bc5c3ed3d5def06d6947287fe60017e5",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068991430
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-c58af9e0b1f141ed929a8b31f1fb2672",
+      "nonce": "4ea6997db9d04849b2f051a70b29f05d",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068991431,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 838,
+      "stdout_bytes": 38731,
+      "stderr_bytes": 0,
+      "stdout_sha256": "f31405e9ac0230064959dd1f38696d85cc6b7e6fd79089d33f842ecf7bd84c2f",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068992363
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-eae00816bff94909b3f25b51096775e3",
+      "nonce": "1b173af1e06c470493b4f92748349e47",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
+        "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
+        "repair.py": "67bea23a94724c0d56c783ee66e40f9f498daa9909b367a3b3aede3c4dabab24"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068992367,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 820,
+      "stdout_bytes": 8729,
+      "stderr_bytes": 0,
+      "stdout_sha256": "77eb9c431922e539fe22b1e8b58feaa8dcda2a24e8079730d40f5650800935b7",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068993275
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-23dd093de89945968cf653e8760bcc89",
+      "nonce": "dcb694e21fc047d5b2eb946c92b92a9e",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068993276,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 886,
+      "stdout_bytes": 36671,
+      "stderr_bytes": 0,
+      "stdout_sha256": "a51e47c56967f5eb61f5348d874b6d1ef569870daa0480b0444a341c2aee6f3e",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068994253
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-f760c4a9e7c34d609e74de75a63ce7b4",
+      "nonce": "6e0be16ba9d344e89159d92a4b471346",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
+        "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
+        "repair.py": "14058b738bd900aa397ca5a42711a968c381c995e2cd0d63ad874dd7746ece24"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068994257,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 887,
+      "stdout_bytes": 9189,
+      "stderr_bytes": 0,
+      "stdout_sha256": "c6d87a8869cf4280fd46486e7e1b532957caa34fcbdee7c18e94a0a7533f4bdd",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068995235
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-6963d810e3af42b09a240fedc1cbf52e",
+      "nonce": "0dbf2120f88549eda8aaed284108baad",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "4cdf80014ba982dfa4b28a1ca5e09208169e3655e2930f04c25b6f0434ae48e0"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068995235,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 801,
+      "stdout_bytes": 38731,
+      "stderr_bytes": 0,
+      "stdout_sha256": "f3c1afb0826f9af812e3ab2f3f6835e8920021da85d85c862d90021e4b3e3fc9",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068996130
+    },
+    {
+      "operation": "demo",
+      "sandbox_id": "rewind-05a2ca4597c343989b2447eb03e2eef9",
+      "nonce": "56db97764163437aa22c8241968dfba3",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {},
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068996133,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 926,
+      "stdout_bytes": 65652,
+      "stderr_bytes": 0,
+      "stdout_sha256": "1cbdc1f3a54048bfd7e4a43ff8274b924e68b1fde7184d7dbc64af8da5396821",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068997153
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-499c6a089587469eb122ed25dcfbf940",
+      "nonce": "b8fdaf2310114dbc8490ae872330eb95",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068997153,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 837,
+      "stdout_bytes": 36836,
+      "stderr_bytes": 0,
+      "stdout_sha256": "b6a10eccedcaecfb5bbad0bd70e8b8c1d8758dfa6ea0d30e7418c128dd3b0970",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068998086
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-8ccdf51e86f9439cbc4334b84b97d252",
+      "nonce": "6cae257ed5cf4c09bb951a9e04175b30",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "be051da9526aef06687a71a6ba57ddc7089a44bea18180f93077cad76ca22ca1"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068998087,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 892,
+      "stdout_bytes": 37076,
+      "stderr_bytes": 0,
+      "stdout_sha256": "b24c72fc4d4fb8ed1a828b84a5a1fda2b10d8b14057a45528c2faa9576ad7539",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794068999083
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-71b21e6e43524c9b8645289d96504f68",
+      "nonce": "f42249a9fc0f4cceb093e14007c44af4",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794068999083,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 860,
+      "stdout_bytes": 39144,
+      "stderr_bytes": 0,
+      "stdout_sha256": "c61178ca6a0bae8598876db06e770c8fd673efb40662bbfb63e7c5d43b85cc1a",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069000041
+    },
+    {
+      "operation": "diagnose",
+      "sandbox_id": "rewind-177de87ad6ca49b0a6788a097496713d",
+      "nonce": "7096841944f84d0e883306689eaae321",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "checkpoint.sqlite": "be051da9526aef06687a71a6ba57ddc7089a44bea18180f93077cad76ca22ca1",
+        "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4",
+        "diagnose.py": "0fae2610318699e7c36b39bae14678b24b34c532eb60d45ee6b96ec1fd63e0f2"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069000043,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 1005,
+      "stdout_bytes": 7736,
+      "stderr_bytes": 0,
+      "stdout_sha256": "d9c64c77ab7f2a595ab196413c47b734bc8f739857ac5e33d87b96647e54bb0a",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069001156
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-44c0bee1557342158ff5c3c474b6061c",
+      "nonce": "36f850da9ddc4fdcbedd71dfd9065eba",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4",
+        "repair.py": "98557c9e7b8b7e949738ca719aaca36b565463b35cea485a142e883c33b6c003"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069001173,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 1332,
+      "stdout_bytes": 21929,
+      "stderr_bytes": 0,
+      "stdout_sha256": "ac01f8dda9faed077ff52566f89d616a85c5908e5774e57688b280dd33368fc0",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069002635
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-5a03df8e2a6e4fd2861004673bb1fec1",
+      "nonce": "a851b4887b9744a3b121afc38df66200",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "f5e4685fcf5f105350d0337d474f5268841e008e120e8d4388c880c8b7c9bb8a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069002636,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 1220,
+      "stdout_bytes": 38910,
+      "stderr_bytes": 0,
+      "stdout_sha256": "0a831c427bba2d59c1fd6038aa8827f740a0d6b53f725faa15632b2243c741e5",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069003983
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-766b307f1c3e430b86f72ee7c7a18825",
+      "nonce": "5e543274437347938734b2a9fca8b0eb",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4",
+        "repair.py": "67bea23a94724c0d56c783ee66e40f9f498daa9909b367a3b3aede3c4dabab24"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069003987,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 1120,
+      "stdout_bytes": 21929,
+      "stderr_bytes": 0,
+      "stdout_sha256": "81ade22b396027b074b8cf48d01027fe54fc708a2df2073bac8f23c91896152c",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069005235
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-7d162d2e2b1b4245b798b8490a040b11",
+      "nonce": "dd70e9899e6b4045b9b9e22cc682a9a0",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069005236,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 1062,
+      "stdout_bytes": 36836,
+      "stderr_bytes": 0,
+      "stdout_sha256": "df4cc68789b3d5f6d60f0646ed54af82d5802cccfd068e4daeab2381055f9b6c",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069006394
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-faf214646fb14f49bae52c217ea7c611",
+      "nonce": "2151ac21e5334c699728e40982e12913",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "17e2fa8c37ce4d10fd5638c83d7e0169c675e414e33b6e934b8f181d975f3469"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069006397,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 864,
+      "stdout_bytes": 127,
+      "stderr_bytes": 0,
+      "stdout_sha256": "aa4d5daae786bbd21be36efe64c247fd773a34ff6e7f57d9be63f9a3cec68700",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "CSV record IDs must be nonempty and unique in every version.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069007356
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-5feb4699920945e19ac9315b90b28573",
+      "nonce": "1a756608725a4aa3a68524d7cdfbd9b2",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "3c47f02e8b65f1f4f62891c2cba44b211e9d5645591d2d673533dbcb343abaeb"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069007357,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 925,
+      "stdout_bytes": 127,
+      "stderr_bytes": 0,
+      "stdout_sha256": "eff4590535008dc9b78db6327091b58d21a3e7b7179a599f70d1cbadfd4f8eac",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "CSV record IDs must be nonempty and unique in every version.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069008387
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-e618d91ee7784ccd9c8dc916e6ba3c2e",
+      "nonce": "984ed956401a40e8813ed3bc118fa941",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "abd81353b07a4b9bc30ac4e3650e761b1fd42cc4af1645a20c63e5dfe962784a"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069008387,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 869,
+      "stdout_bytes": 138,
+      "stderr_bytes": 0,
+      "stdout_sha256": "f3143877349ada155e70d7734c79c22b225688f5acd4b37cc8be89ce77ea0bbb",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "Include 2\u201316 unique, nonempty field names, up to 100 characters each.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069009344
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-cd06641ebee24eb19eb80a729139fd6b",
+      "nonce": "222e8d6537f14c6589bbedb50800da4c",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "0bb6d91686cb264c82274867377ff5d8752009bd79de4666ee9cf1643245263c"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069009344,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 850,
+      "stdout_bytes": 139,
+      "stderr_bytes": 0,
+      "stdout_sha256": "9aab537300fff7d5960f9affb404e2b949f07d773dd47613036b1d2a54f707ab",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "Every CSV row must match the header and use values up to 512 characters.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069010288
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-16865ef0f24b4f968284bc4a1a27838d",
+      "nonce": "e0d663a0a26a4767baa0f60d0dd2fe57",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "188fd55296cf5d61494afa46fa0881fc52df9d52d16f7e4ac99f0fde1b62739d"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069010289,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 836,
+      "stdout_bytes": 101,
+      "stderr_bytes": 0,
+      "stdout_sha256": "ea3fcf069cbd715a3407d25b67e1709e8c489ae02695c14ac1d5e5d6d68c7bd2",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "CSV files must use UTF-8 encoding.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069011229
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-23724f448a6f4999b26052df0e5c06b0",
+      "nonce": "82c21f67a5b6439fbe8b5b4321cf849b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "f3b049bad3c8d7526706135277262dd2c0b2d080fe690741fd49a6fdadd3c48e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069011230,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 846,
+      "stdout_bytes": 108,
+      "stderr_bytes": 0,
+      "stdout_sha256": "8627a19703ece67da5fa6ce235fdf6b9da8dedc5a22b1b921485ba4f579c3902",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "The CSV quoting or field size is invalid.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069012165
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-d3363c80180f4e0c859caf936d14d58e",
+      "nonce": "b5ed7715b67e4e37833a743131b2ad1b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "25b69b63e2cc064eaefd9d10e1bd196280534330f9a5f3d8f9ab56f6149b8e51"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069012166,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 899,
+      "stdout_bytes": 139,
+      "stderr_bytes": 0,
+      "stdout_sha256": "c812bf5656bbbbc60e08557c486ff50dd717e2f6df6ce494e7701612265bda89",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "Every CSV row must match the header and use values up to 512 characters.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069013159
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-b586c43304eb4e1fb85266ee8fc35971",
+      "nonce": "37d660d1cf384262b9878c67316e8a21",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "current.csv": "fcfd7e7c1228f5a947e2fd4b4ea311ef0b0e8757a3d188f7568f5b005c880280"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069013160,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 888,
+      "stdout_bytes": 1094,
+      "stderr_bytes": 0,
+      "stdout_sha256": "1c2013b7ec9be2f1e60186336cd75445161aa6435b2081cf3e63dfaf9311a1fc",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069014136
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-3d9238d2027a4ad3a3f90ef0e1279bbf",
+      "nonce": "c70f67afb851426484005b452de7caf4",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+        "repair.py": "c2dfc48a707700ca362d23d06df43e2d81e7a7166cc4c00f6ca695e8d0260c5d"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794069014137,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 959,
+      "stdout_bytes": 21929,
+      "stderr_bytes": 0,
+      "stdout_sha256": "26ffa76c48954761de2da4a74e990e699dd62accde697dd87c6742bd4bc67cb8",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069015189
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-ba5b923e63334520be274f01af7fe61c",
+      "nonce": "98f7e43d87f2485cb6b843cc9a8ac3c5",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+        "repair.py": "b1309f28b5bc22a0a53b54d877da35c0c62d2f478b7461b61f507434e4cc2a96"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069015190,
+      "exit_code": -9,
+      "stop_reason": "timeout",
+      "elapsed_ms": 2005,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "The sandbox exceeded its limits or did not finish.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069017348
+    },
+    {
+      "operation": "candidate",
+      "sandbox_id": "rewind-df0019d30e974eb5be18b6866798b903",
+      "nonce": "5b0e81f50a0944aca526997cf2c00ded",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "input_hashes": {
+        "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
+        "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
+        "repair.py": "4d74b4be4ca90dbe53dd4e54591a0fe04a8e611b95f46983545e590d206afa55"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794069017349,
+      "exit_code": -9,
+      "stop_reason": "output_limit",
+      "elapsed_ms": 729,
+      "stdout_bytes": 393216,
+      "stderr_bytes": 0,
+      "stdout_sha256": "4354ea9737c4b5afa2e01d0f7b95769ce9a228605a6317687cffad970815bc91",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "The sandbox exceeded its limits or did not finish.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794069018234
+    }
+  ]
 }

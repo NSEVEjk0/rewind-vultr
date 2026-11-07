@@ -5,10 +5,14 @@ import os
 from pathlib import Path
 import re
 import secrets
+import shutil
 import tempfile
 import threading
 import time
 from .evidence import sha256_bytes
+
+ACTIVE = {"inspecting", "generating", "running", "checking", "finishing", "queued",
+          "diagnosing", "investigating", "diagnostic-checking"}
 
 
 class AdmissionDenied(ValueError):
@@ -39,7 +43,7 @@ class Store:
         # Never resume an interrupted model request automatically.
         for path in self.root.glob("*/workspace.json"):
             value = json.loads(path.read_text())
-            if value["status"] in {"inspecting", "generating", "running", "checking", "finishing", "queued"}:
+            if value["status"] in ACTIVE:
                 value.update({"status": "failed", "message": "The controller restarted before completing this operation. No automatic model retry was started."})
                 atomic_json(path, value)
 
@@ -53,13 +57,16 @@ class Store:
         day = int(time.time()) // 86400
         if value["day"] != day:
             value = {"day": day, "uploads": 0, "recoveries": 0}
-        value[kind] += 1
+        value[kind] = value.get(kind, 0) + 1
         atomic_json(self.admission_path, value)
 
-    def create(self, backup: bytes | None, current: bytes | None, *, example: bool = False) -> dict:
+    def active_count(self):
+        return sum(json.loads(path.read_text())["status"] in ACTIVE for path in self.root.glob("*/workspace.json"))
+
+    def create(self, backup: bytes | None, current: bytes | None, checkpoint: bytes | None = None, *,
+               format: str = "sqlite", primary_key: str = "", example: bool = False, scenario: str = "legacy") -> dict:
         with self.lock:
-            active = sum(json.loads(path.read_text())["status"] in {"inspecting", "generating", "running", "checking", "finishing", "queued"}
-                         for path in self.root.glob("*/workspace.json"))
+            active = self.active_count()
             if active >= 4:
                 raise AdmissionDenied("The four-place inspection and recovery queue is full.")
             self.admit("uploads")
@@ -67,10 +74,14 @@ class Store:
             path = self.path(workspace_id)
             path.mkdir(mode=0o700)
             if backup is not None and current is not None:
-                (path / "backup.sqlite").write_bytes(backup)
-                (path / "current.sqlite").write_bytes(current)
+                (path / ("backup." + format)).write_bytes(backup)
+                (path / ("current." + format)).write_bytes(current)
+                if checkpoint is not None:
+                    (path / ("checkpoint." + format)).write_bytes(checkpoint)
             value = {"id": workspace_id, "token_sha256": sha256_bytes(token.encode()), "status": "inspecting",
-                     "message": "Reading both snapshots in separate temporary sandboxes.", "example": example,
+                     "message": "Reading the file versions in separate temporary environments.", "example": example,
+                     "format": format, "primary_key": primary_key, "scenario": scenario,
+                     "has_checkpoint": checkpoint is not None or scenario == "overlap", "model_calls": 0,
                      "created_at": int(time.time() * 1000), "events": [], "version": 1}
             atomic_json(path / "workspace.json", value)
             return {"id": workspace_id, "token": token, "status": value["status"]}
@@ -102,8 +113,44 @@ class Store:
     def reserve_recovery(self, workspace_id: str, token: str, plan_sha256: str) -> dict:
         with self.lock:
             value = self.read(workspace_id, token)
-            if not value or value["status"] != "ready" or value.get("plan", {}).get("sha256") != plan_sha256:
+            plan = (value.get("plan") or {}) if value else {}
+            if (not value or value["status"] != "ready" or plan.get("sha256") != plan_sha256
+                    or plan.get("workspace_version") is not None and plan["workspace_version"] != value["version"]
+                    or value.get("model_calls", 0) >= 2):
                 raise AdmissionDenied("The selected recovery changed or is already running. Review it again.")
+            if self.active_count() >= 4:
+                raise AdmissionDenied("The four-place investigation and recovery queue is full.")
             self.admit("recoveries")
-            self.update(workspace_id, status="queued", message="Your selected recovery is queued.")
+            self.update(workspace_id, status="queued", active_operation="recover", message="Your approved recovery is queued.")
             return value
+
+    def reserve_diagnosis(self, workspace_id: str, token: str, instruction: str, expected_version: int) -> dict:
+        with self.lock:
+            value = self.read(workspace_id, token)
+            if (not value or value["status"] != "ready" or not value.get("checkpoint")
+                    or value["version"] != expected_version or value.get("diagnosis_started") or value.get("model_calls", 0)):
+                raise AdmissionDenied("Investigation needs three checked versions and can run once per workspace. Review the current workspace.")
+            if self.active_count() >= 4:
+                raise AdmissionDenied("The four-place investigation and recovery queue is full.")
+            self.admit("diagnoses")
+            self.update(workspace_id, status="queued", active_operation="diagnose", instruction=instruction,
+                        diagnosis_started=True, plan=None, message="Your investigation is queued.")
+            return value
+
+    def consume_model_call(self, workspace_id: str):
+        with self.lock:
+            value = json.loads((self.path(workspace_id) / "workspace.json").read_text())
+            count = value.get("model_calls", 0)
+            if count >= 2:
+                raise AdmissionDenied("The two-call model budget has been used.")
+            self.update(workspace_id, model_calls=count + 1)
+
+    def delete(self, workspace_id: str, token: str):
+        with self.lock:
+            value = self.read(workspace_id, token)
+            if not value or value["status"] in ACTIVE:
+                raise AdmissionDenied("Wait for this operation to finish before deleting its workspace.")
+            path = self.path(workspace_id)
+            if path.is_symlink() or not path.is_dir() or not path.resolve().is_relative_to(self.root):
+                raise ValueError("The owned workspace path could not be confirmed.")
+            shutil.rmtree(path)

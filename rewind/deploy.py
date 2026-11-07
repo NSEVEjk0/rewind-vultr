@@ -21,7 +21,7 @@ from .sandbox import capture
 
 SOURCE = Path(__file__).resolve().parent.parent
 MANAGED_FILES = {"rewind.service", "rewind-gc.service", "rewind-gc.timer"}
-ACTIVE = {"inspecting", "generating", "running", "checking", "finishing", "queued"}
+from .store import ACTIVE
 
 
 def hostname(value):
@@ -247,6 +247,7 @@ def install(args):
     raw_env = "# Rewind managed environment\n" + "".join(name + "=" + json.dumps(value) + "\n" for name,value in settings.items())
     atomic_write(env_path, raw_env.encode(), private=True)
     atomic_write(private_dir / "reviewer-access.txt", (code + "\n").encode(), private=True)
+    require(not active_jobs(state), "A Rewind operation started during preparation; the current release was preserved. Install again after it completes.")
     require(not link.exists() or link.is_symlink(), "The current release path contains an unrelated directory.")
     temporary_link = releases.parent / (".current-" + secrets.token_hex(8))
     temporary_link.symlink_to(release)
