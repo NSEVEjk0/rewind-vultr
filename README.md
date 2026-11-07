@@ -8,7 +8,7 @@ For example, an import multiplies 120 invoice prices by 100. Since the backup, y
 
 [Open Rewind](https://rewind.139.84.249.47.sslip.io) · [Watch the narrated demo](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery evidence](web/demo/live-evidence.json)
 
-The hosted demo is open to try without a shared access code. Its existing limits are twelve inspections and four recoveries per day across the demo. Each browser keeps private access to its own workspace.
+The hosted demo is open to try without a shared access code or daily trial quota. You can repeat the example or try your own snapshots. Each browser keeps private access to its own workspace.
 
 ![Rewind's database recovery workflow](presentation/cover.png)
 
@@ -71,7 +71,7 @@ A result must preserve the schema, current primary keys, automatic ID sequences,
 
 Sandboxes use the complete checksum-pinned gVisor bundle and digest-pinned Python image. They run without network access, as user 65532, with read-only inputs and root filesystem, 192 MiB RAM, half a CPU, 48 PIDs, an eight-second deadline, bounded output, and no controller credentials. Download requires verified output, confirmed removal of every sandbox, and a fresh artifact fingerprint check.
 
-The controller processes one job at a time, has a four-place queue, allows twelve uploads and four recoveries per day by default, and stores at most 32 workspaces. Workspace reads and downloads require a private capability. A restart fails interrupted jobs instead of silently restarting a model request.
+The controller processes one job at a time and has a four-place queue. It has no daily inspection or recovery quota and no fixed workspace-count quota. Workspace reads and downloads require a private capability. A restart fails interrupted jobs instead of silently restarting a model request.
 
 ## First-version scope
 
@@ -88,7 +88,7 @@ sudo bash infra/install-gvisor.sh
 cp .env.example .env
 ```
 
-Add your Vultr Inference key and a private demo access code to `.env`. Private access is the default for a new installation. Set `REWIND_PUBLIC_DEMO=1` to allow people to try it without a shared code; the queue, daily limits and private workspace capabilities still apply. Load that file through your service manager or shell, then run:
+Add your Vultr Inference key and a private demo access code to `.env`. Private access is the default for a new installation. Set `REWIND_PUBLIC_DEMO=1` to allow people to try it without a shared code. There is no daily trial quota; the execution queue and private workspace capabilities still apply. Load that file through your service manager or shell, then run:
 
 ```sh
 python3 -m rewind.server
@@ -132,7 +132,7 @@ sudo python3 -m rewind.deploy \
   --public-demo
 ```
 
-Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private access code and sandbox cleanup timer. `--public-demo` enables access without asking users for that code and preserves the existing admission limits. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
+Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private access code and sandbox cleanup timer. `--public-demo` enables access without asking users for that code. There is no daily trial quota. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
 
 ## What has been demonstrated
 

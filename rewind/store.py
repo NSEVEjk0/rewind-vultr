@@ -29,11 +29,10 @@ def atomic_json(path: Path, value: dict):
 
 
 class Store:
-    def __init__(self, root: Path, *, daily_limit: int = 4):
+    def __init__(self, root: Path):
         self.root = root.resolve()
         self.root.mkdir(mode=0o700, parents=True, exist_ok=True)
         self.lock = threading.RLock()
-        self.daily_limit = max(1, min(daily_limit, 8))
         self.admission_path = self.root / "admission.json"
         if not self.admission_path.exists():
             atomic_json(self.admission_path, {"day": int(time.time()) // 86400, "uploads": 0, "recoveries": 0})
@@ -54,9 +53,6 @@ class Store:
         day = int(time.time()) // 86400
         if value["day"] != day:
             value = {"day": day, "uploads": 0, "recoveries": 0}
-        limit = 12 if kind == "uploads" else self.daily_limit
-        if value[kind] >= limit:
-            raise AdmissionDenied("Today's bounded demo allowance is used up. No model request was started.")
         value[kind] += 1
         atomic_json(self.admission_path, value)
 
@@ -66,8 +62,6 @@ class Store:
                          for path in self.root.glob("*/workspace.json"))
             if active >= 4:
                 raise AdmissionDenied("The four-place inspection and recovery queue is full.")
-            if sum(1 for _ in self.root.glob("*/workspace.json")) >= 32:
-                raise AdmissionDenied("The bounded demonstration storage is full.")
             self.admit("uploads")
             workspace_id, token = secrets.token_hex(16), secrets.token_urlsafe(32)
             path = self.path(workspace_id)

@@ -197,7 +197,7 @@ def install(args):
     private_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     settings = {"VULTR_INFERENCE_API_KEY": key, "VULTR_INFERENCE_MODEL": model, "REWIND_ACCESS_CODE": code,
         "REWIND_ORIGIN": "https://" + host, "REWIND_HOST": "127.0.0.1", "REWIND_PORT": "18182",
-        "REWIND_STATE_DIR": str(state), "REWIND_DAILY_RECOVERIES": "4",
+        "REWIND_STATE_DIR": str(state),
         "REWIND_PUBLIC_DEMO": "1" if args.public_demo else previous.get("REWIND_PUBLIC_DEMO", "0")}
     raw_env = "# Rewind managed environment\n" + "".join(name + "=" + json.dumps(value) + "\n" for name,value in settings.items())
     atomic_write(env_path, raw_env.encode(), private=True)
@@ -242,7 +242,7 @@ def install(args):
     atomic_write(private_dir / "deployment.json", canonical(report)+b"\n", private=True)
     print("Rewind is ready at https://" + host + ". Existing HTTPS configuration was preserved.")
     if settings["REWIND_PUBLIC_DEMO"] == "1":
-        print("Public demo access is enabled. No shared access code is required; admission limits and workspace capabilities still apply.")
+        print("Public demo access is enabled without a shared code or daily trial quota. Each workspace still needs its private capability.")
     else:
         print("Read the demo access code privately from /etc/rewind/reviewer-access.txt.")
 

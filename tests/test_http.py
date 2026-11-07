@@ -132,7 +132,7 @@ class PublicDemoTests(unittest.TestCase):
         self.controller.sandbox_ready = True
         self.controller.readiness = "The recovery worker is unavailable."
         self.controller.provider = SimpleNamespace(configured=True, model="test-model")
-        self.controller.store = Store(Path(self.temporary.name), daily_limit=1)
+        self.controller.store = Store(Path(self.temporary.name))
         self.controller.queue = queue.Queue(maxsize=4)
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         self.server.controller = self.controller
@@ -173,7 +173,7 @@ class PublicDemoTests(unittest.TestCase):
         self.assertFalse(config["access_required"])
         self.assertTrue(config["available"])
         self.assertTrue(config["inspection_available"])
-        self.assertEqual(config["daily_limit"], 1)
+        self.assertIsNone(config["daily_limit"])
         status, admission = self.request("POST", "/api/example", {})
         self.assertEqual(status, 202)
         self.assertEqual(self.controller.queue.get_nowait(), (admission["id"], "inspect"))
@@ -208,14 +208,14 @@ class PublicDemoTests(unittest.TestCase):
         self.assertTrue(self.controller.queue.empty())
         self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["uploads"], 0)
 
-    def test_public_inspection_allowance_is_preserved(self):
-        for _ in range(12):
+    def test_public_inspections_can_repeat_without_daily_or_workspace_quotas(self):
+        for _ in range(40):
             self.ready_workspace()
         status, _ = self.request("POST", "/api/example", {})
-        self.assertEqual(status, 429)
-        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["uploads"], 12)
+        self.assertEqual(status, 202)
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["uploads"], 41)
 
-    def test_public_recovery_requires_approved_plan_and_keeps_the_daily_limit(self):
+    def test_public_recovery_requires_owner_and_approval_without_a_daily_quota(self):
         admission = self.ready_workspace()
         path = "/api/workspaces/" + admission["id"] + "/recover"
         headers = {"Authorization": "Bearer " + admission["token"]}
@@ -229,11 +229,16 @@ class PublicDemoTests(unittest.TestCase):
         self.assertEqual(status, 429)
         self.assertEqual(self.controller.queue.get_nowait(), (admission["id"], "recover"))
         self.controller.queue.task_done()
-        second = self.ready_workspace()
-        status, _ = self.request("POST", "/api/workspaces/" + second["id"] + "/recover",
-                                 {"plan_sha256": "f" * 64}, {"Authorization": "Bearer " + second["token"]})
-        self.assertEqual(status, 429)
-        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["recoveries"], 1)
+        self.controller.store.update(admission["id"], status="failed")
+        for _ in range(8):
+            another = self.ready_workspace()
+            status, _ = self.request("POST", "/api/workspaces/" + another["id"] + "/recover",
+                                     {"plan_sha256": "f" * 64}, {"Authorization": "Bearer " + another["token"]})
+            self.assertEqual(status, 202)
+            self.assertEqual(self.controller.queue.get_nowait(), (another["id"], "recover"))
+            self.controller.queue.task_done()
+            self.controller.store.update(another["id"], status="failed")
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["recoveries"], 9)
 
     def test_public_mode_still_requires_ready_isolation_and_configured_inference(self):
         self.controller.sandbox_ready = False

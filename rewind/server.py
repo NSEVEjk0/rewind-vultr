@@ -21,13 +21,13 @@ MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|recover|evi
 
 
 class Controller:
-    def __init__(self, state: Path, origin: str, access_code: str, daily_limit: int, *, public_demo: bool = False):
+    def __init__(self, state: Path, origin: str, access_code: str, *, public_demo: bool = False):
         self.origin = origin.rstrip("/")
         self.access_code = access_code
         self.public_demo = public_demo
         self.provider = VultrProvider.from_environment()
         self.sandbox = Sandbox(state / "work")
-        self.store = Store(state / "workspaces", daily_limit=daily_limit)
+        self.store = Store(state / "workspaces")
         self.queue = queue.Queue(maxsize=4)
         self.sandbox_ready = False
         self.readiness = "The isolated recovery worker is not ready yet."
@@ -199,7 +199,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/config":
             self.json(200, {"available": controller.available, "inspection_available": controller.inspection_available,
                             "message": "The Vultr recovery worker is connected." if controller.available else controller.readiness,
-                            "model": controller.provider.model, "access_required": not controller.public_demo, "daily_limit": controller.store.daily_limit,
+                            "model": controller.provider.model, "access_required": not controller.public_demo, "daily_limit": None,
                             "max_file_bytes": 256 * 1024, "max_rows": 1000, "demo_available": (WEB / "demo/index.html").is_file(),
                             "data_sent": "Only table/column names and types, selected columns and record count are sent to Vultr AI."})
             return
@@ -341,7 +341,7 @@ def main():
     os.umask(0o077)
     state = Path(os.environ.get("REWIND_STATE_DIR", ".local/state"))
     controller = Controller(state, os.environ.get("REWIND_ORIGIN", "http://127.0.0.1:18182"),
-                            os.environ.get("REWIND_ACCESS_CODE", ""), int(os.environ.get("REWIND_DAILY_RECOVERIES", "4")),
+                            os.environ.get("REWIND_ACCESS_CODE", ""),
                             public_demo=os.environ.get("REWIND_PUBLIC_DEMO", "0") == "1")
     server = Server((os.environ.get("REWIND_HOST", "127.0.0.1"), int(os.environ.get("REWIND_PORT", "18182"))), controller)
     server.serve_forever()
