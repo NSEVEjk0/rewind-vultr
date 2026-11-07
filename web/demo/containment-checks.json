@@ -3,14 +3,14 @@
   "executed_on_vultr": true,
   "reference_programs_only": true,
   "live_inference": false,
-  "sandbox_runs": 38,
+  "sandbox_runs": 55,
   "all_sandboxes_removed": true,
   "deadline": {
     "operation": "candidate",
-    "sandbox_id": "rewind-ba5b923e63334520be274f01af7fe61c",
-    "nonce": "98f7e43d87f2485cb6b843cc9a8ac3c5",
+    "sandbox_id": "rewind-7f4fcf113c50406b9caecdc2d52e0168",
+    "nonce": "4db7e908a8e1444ab94e7abb4ddd0596",
     "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-    "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+    "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
     "input_hashes": {
       "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
       "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -32,7 +32,7 @@
     },
     "policy_verified": true,
     "ok": false,
-    "started_at": 1794069015190,
+    "started_at": 1794082316079,
     "exit_code": -9,
     "stop_reason": "timeout",
     "elapsed_ms": 2005,
@@ -48,14 +48,14 @@
       "remove_exit_code": 0,
       "absence_query_exit_code": 0
     },
-    "finished_at": 1794069017348
+    "finished_at": 1794082318246
   },
   "output_limit": {
     "operation": "candidate",
-    "sandbox_id": "rewind-df0019d30e974eb5be18b6866798b903",
-    "nonce": "5b0e81f50a0944aca526997cf2c00ded",
+    "sandbox_id": "rewind-6184b978b5364d458b61b204e9f54976",
+    "nonce": "662e87e54f464cf4b9872a202e692f4f",
     "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-    "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+    "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
     "input_hashes": {
       "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
       "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -77,10 +77,10 @@
     },
     "policy_verified": true,
     "ok": false,
-    "started_at": 1794069017349,
+    "started_at": 1794082318246,
     "exit_code": -9,
     "stop_reason": "output_limit",
-    "elapsed_ms": 729,
+    "elapsed_ms": 710,
     "stdout_bytes": 393216,
     "stderr_bytes": 0,
     "stdout_sha256": "4354ea9737c4b5afa2e01d0f7b95769ce9a228605a6317687cffad970815bc91",
@@ -93,7 +93,7 @@
       "remove_exit_code": 0,
       "absence_query_exit_code": 0
     },
-    "finished_at": 1794069018234
+    "finished_at": 1794082319099
   },
   "containment_probe": {
     "nonroot": true,
@@ -104,6 +104,7 @@
   },
   "checkpoint_workflows": {
     "csv": {
+      "diagnostic_source": "fixed-reference-program",
       "proposed_restorations": 117,
       "protected_overlaps": 3,
       "outcomes": {
@@ -426,6 +427,7 @@
       }
     },
     "sqlite": {
+      "diagnostic_source": "fixed-reference-program",
       "proposed_restorations": 117,
       "protected_overlaps": 3,
       "outcomes": {
@@ -665,6 +667,152 @@
       }
     }
   },
+  "import_preflight": {
+    "approved_updates": 22,
+    "held_changes": 26,
+    "unknown_ids_held": 1,
+    "records_kept": 24,
+    "verification": {
+      "ok": true,
+      "checks": [
+        {
+          "id": "approved-csv-integrity",
+          "label": "The approved import passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "approved-columns",
+          "label": "Only the ID and approved fields are included",
+          "ok": true
+        },
+        {
+          "id": "approved-records",
+          "label": "Only records with approved changes are included",
+          "ok": true
+        },
+        {
+          "id": "approved-record-order",
+          "label": "Approved records keep their export order",
+          "ok": true
+        },
+        {
+          "id": "exact-import-values",
+          "label": "Every import value matches the exact approved plan",
+          "ok": true
+        },
+        {
+          "id": "preview-csv-integrity",
+          "label": "The import result passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "same-schema",
+          "label": "The resulting export keeps every original field",
+          "ok": true
+        },
+        {
+          "id": "same-records",
+          "label": "All existing records stay, with no additions or deletions",
+          "ok": true
+        },
+        {
+          "id": "same-record-order",
+          "label": "The resulting export keeps every record in order",
+          "ok": true
+        },
+        {
+          "id": "approved-cells",
+          "label": "Every approved update has its requested value",
+          "ok": true
+        },
+        {
+          "id": "protected-cells",
+          "label": "Every cell outside approval keeps today's value",
+          "ok": true
+        },
+        {
+          "id": "input-fingerprints",
+          "label": "Approval is bound to both uploaded files",
+          "ok": true
+        }
+      ],
+      "updated_cells": 22,
+      "retained_rows": 24,
+      "withheld_cells": 26,
+      "unknown_ids": 1
+    },
+    "unchecked_import_rejected": {
+      "ok": false,
+      "checks": [
+        {
+          "id": "approved-csv-integrity",
+          "label": "The approved import passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "approved-columns",
+          "label": "Only the ID and approved fields are included",
+          "ok": false
+        },
+        {
+          "id": "approved-records",
+          "label": "Only records with approved changes are included",
+          "ok": false
+        },
+        {
+          "id": "approved-record-order",
+          "label": "Approved records keep their export order",
+          "ok": false
+        },
+        {
+          "id": "exact-import-values",
+          "label": "Every import value matches the exact approved plan",
+          "ok": false
+        },
+        {
+          "id": "preview-csv-integrity",
+          "label": "The import result passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "same-schema",
+          "label": "The resulting export keeps every original field",
+          "ok": true
+        },
+        {
+          "id": "same-records",
+          "label": "All existing records stay, with no additions or deletions",
+          "ok": true
+        },
+        {
+          "id": "same-record-order",
+          "label": "The resulting export keeps every record in order",
+          "ok": true
+        },
+        {
+          "id": "approved-cells",
+          "label": "Every approved update has its requested value",
+          "ok": true
+        },
+        {
+          "id": "protected-cells",
+          "label": "Every cell outside approval keeps today's value",
+          "ok": false
+        },
+        {
+          "id": "input-fingerprints",
+          "label": "Approval is bound to both uploaded files",
+          "ok": true
+        }
+      ],
+      "updated_cells": 22,
+      "retained_rows": 24,
+      "withheld_cells": 26,
+      "unknown_ids": 1
+    },
+    "partial_columns_verified": true,
+    "model_calls": 0
+  },
   "csv_rejections": [
     "duplicate-key",
     "empty-key",
@@ -675,14 +823,14 @@
     "large-cell"
   ],
   "csv_literal_values_preserved": true,
-  "full_report_sha256": "4414004a6ad08a58bfeb0e6f068614bc7142ee43ef05139cb96bd4300b07c881",
+  "full_report_sha256": "92493f509bfe387b321c4c21cbe541a83263de58a61e012f797bbb29da02c170",
   "runs": [
     {
       "operation": "demo",
-      "sandbox_id": "rewind-8e16b739da6d4ee6be719caa1a39d760",
-      "nonce": "a985b97a98df4168ae24e8d48d2732e1",
+      "sandbox_id": "rewind-e9b1dcf217094ec18c3544f067da5846",
+      "nonce": "885a407835674ae584991b18cff10627",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {},
       "policy": {
         "gvisor": true,
@@ -700,13 +848,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068979349,
+      "started_at": 1794082268335,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 773,
+      "elapsed_ms": 823,
       "stdout_bytes": 43788,
       "stderr_bytes": 0,
-      "stdout_sha256": "f4d0b80c9da60d8d206675e05c275d045fcd60b48292e61a0bf7888dfa9d69d2",
+      "stdout_sha256": "8195605d061cbbe2cca1567c9c626ba83c2fb15756517cca84affd4648244b66",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -715,14 +863,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068980219
+      "finished_at": 1794082269254
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-d4c9fb581d634ab69049395c8db3a859",
-      "nonce": "28461d2526d143db88968dbff012bf1b",
+      "sandbox_id": "rewind-0e6dbb1e8051471fa80de56ed86204b5",
+      "nonce": "89600f2e662b4226adf9a26849e62b05",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
       },
@@ -742,13 +890,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068980220,
+      "started_at": 1794082269255,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 859,
+      "elapsed_ms": 754,
       "stdout_bytes": 36836,
       "stderr_bytes": 0,
-      "stdout_sha256": "eb6e20b6391a9a4f53480779d59f706cf80cf4d0a0d666186b0cfc1bba0e5934",
+      "stdout_sha256": "ba595008f83808ad22eb6f52eb753bbf335353ae48193ec504a8c7675c0d0867",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -757,14 +905,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068981167
+      "finished_at": 1794082270104
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-8ae1ad397c8d4de2a71a6cda61bf486d",
-      "nonce": "d3e71bff8ec949d69dd2a8acf51b70b6",
+      "sandbox_id": "rewind-340af51f7d1344fea26d102046e7822c",
+      "nonce": "07e3340906934133a1c307f59f387243",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb"
       },
@@ -784,13 +932,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068981167,
+      "started_at": 1794082270105,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 910,
+      "elapsed_ms": 860,
       "stdout_bytes": 39150,
       "stderr_bytes": 0,
-      "stdout_sha256": "247df523cafb03930622db512cd402e9825561c9ce815377b37f4d11b9922c3b",
+      "stdout_sha256": "2d785c1a7da7187c0eacb0493be7584d5e77350c8cc6c7dc4887ad6d6b90a816",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -799,14 +947,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068982187
+      "finished_at": 1794082271059
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-a673876078f0405f8d15e60ffc85c7b8",
-      "nonce": "de6fe0ad04bf41869cc92597288e5c32",
+      "sandbox_id": "rewind-43bf2e5b2e3c4af5a28042d62af1c4d8",
+      "nonce": "2bd341a72b2b40498aa9641e84ec01b1",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -828,13 +976,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068982200,
+      "started_at": 1794082271067,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 778,
+      "elapsed_ms": 771,
       "stdout_bytes": 21929,
       "stderr_bytes": 0,
-      "stdout_sha256": "20c196ddebad55e291bfa278560f87c9e3b47167f31a8e02b8f70f3faeb6520b",
+      "stdout_sha256": "3b562a841a8ea3be65655fcf1221adfe8f6541723e1e8d76d0fd85c78b34c855",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -843,14 +991,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068983082
+      "finished_at": 1794082271928
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-5315b8cd294f43298ad131794f94309a",
-      "nonce": "cbd446dcc4464463a59c9d6ae7b13d07",
+      "sandbox_id": "rewind-a4aa8a52b08d4254adfe39e58ca4890f",
+      "nonce": "ef4e9297435049ea920e894f682cf4ad",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
       },
@@ -870,13 +1018,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068983082,
+      "started_at": 1794082271929,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 877,
+      "elapsed_ms": 792,
       "stdout_bytes": 36836,
       "stderr_bytes": 0,
-      "stdout_sha256": "8e47a405a638a1b83887dd4ea334a4997a3e804451653469a39b81623ed50fcc",
+      "stdout_sha256": "03f98d6491a4a769ba061c47aaedef1b00ce6d3443407147d2bb549e28f415a7",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -885,14 +1033,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068984050
+      "finished_at": 1794082272813
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-00b0d16f8f024a42803ad17c841119e5",
-      "nonce": "c86893a3870b44179ab1856085b4c342",
+      "sandbox_id": "rewind-7fa37133e2174343bf03dff8223a0631",
+      "nonce": "8b5ea58213cd4ad0b06a7aa494565a4c",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -914,13 +1062,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068984053,
+      "started_at": 1794082272818,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 882,
+      "elapsed_ms": 758,
       "stdout_bytes": 21929,
       "stderr_bytes": 0,
-      "stdout_sha256": "4a77b35fea2f018c296aba02a86201704b2b04c1fe0f6d6a8435823c12a2ec4e",
+      "stdout_sha256": "55ce8c66cd0989ea27a2fec07d909762ada3a8bf9ff2c969e6eef36f2e268651",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -929,14 +1077,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068985049
+      "finished_at": 1794082273673
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-ad5f0fd8e5204f95abaefc7ed52e51af",
-      "nonce": "3520b136177c44fda3255d6c2ec01c8b",
+      "sandbox_id": "rewind-c3e2b95e87eb401c949bd834c0850d0a",
+      "nonce": "2753043463694b18a2b7e25db6a78acb",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "adb7745ccf21e2c5c6b29341dad66135ca8eea0cfd536068ce4a4a57725452f6"
       },
@@ -956,13 +1104,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068985050,
+      "started_at": 1794082273673,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 787,
+      "elapsed_ms": 778,
       "stdout_bytes": 38910,
       "stderr_bytes": 0,
-      "stdout_sha256": "99bdf4e4d7ebd01b0eae9b7198e9e93e2e2ed1c3bab48a7416522cdd37d58963",
+      "stdout_sha256": "a9d8180c1d737e699430b55a02dd5523123493a768cffdbf9c92dd95e5f4e518",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -971,14 +1119,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068985929
+      "finished_at": 1794082274543
     },
     {
       "operation": "demo",
-      "sandbox_id": "rewind-c3b5f30868634c419d21b10f2b0151d6",
-      "nonce": "a31c5fbd72c24b4ca83e431971d97b71",
+      "sandbox_id": "rewind-8c1ac92074304fb8a37ecf3dc73fac83",
+      "nonce": "020bbc3e979e418e895e9cae7ad77dd1",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {},
       "policy": {
         "gvisor": true,
@@ -996,13 +1144,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068985932,
+      "started_at": 1794082274546,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 770,
+      "elapsed_ms": 816,
       "stdout_bytes": 27144,
       "stderr_bytes": 0,
-      "stdout_sha256": "22589a468471e8f6b4b3d2f1117ed43b5de3417437062e63989791b8974e5ede",
+      "stdout_sha256": "a40eef68de89f5f2a984f96c555e76cc3a4f46b179a6c97488ce480ad9eff9b4",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1011,14 +1159,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068986792
+      "finished_at": 1794082275449
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-1b696b054b7f41ada7bd85e317681456",
-      "nonce": "4053f9f76a2446d4ac2984728a0b1d9d",
+      "sandbox_id": "rewind-57868a4063704ea38b089f8ebe2b4faf",
+      "nonce": "5919f14524b344eb94c54bd2c8c77488",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13"
       },
@@ -1038,13 +1186,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068986793,
+      "started_at": 1794082275450,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 844,
+      "elapsed_ms": 788,
       "stdout_bytes": 36671,
       "stderr_bytes": 0,
-      "stdout_sha256": "2f68242544e537d2a35b9e78734ebe5e631dd884bc283c7a28ea6fb11bf9994d",
+      "stdout_sha256": "f299ced6e568aaa8788ba5504a38f0f3ee31051eb5057685a89ea659aec346e1",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1053,14 +1201,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068987739
+      "finished_at": 1794082276325
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-61fa7b86c2ec4380aec10f1a66c355c1",
-      "nonce": "7f7d1ce6bc8541d9a80deb2f60b65ea7",
+      "sandbox_id": "rewind-4eb5523c3f454481a799ac1247b9c988",
+      "nonce": "892fb3568dc046c3978a1d7cc46b8dbb",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4"
       },
@@ -1080,13 +1228,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068987740,
+      "started_at": 1794082276325,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 843,
+      "elapsed_ms": 826,
       "stdout_bytes": 36911,
       "stderr_bytes": 0,
-      "stdout_sha256": "cee32ad1ba903addcc3dcb0db97b3bb4d30ddf0b4cdf77ce89d07252fa1f3c8d",
+      "stdout_sha256": "80d73af336baf769e4fa730a4dde1191125fd22a0aca8cb94ed356b2793f4358",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1095,14 +1243,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068988687
+      "finished_at": 1794082277252
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-50d6111b8e00442f8225c71fcef2a402",
-      "nonce": "d3f4b6f0c51d4a02a6e0f4c0f00185d0",
+      "sandbox_id": "rewind-4d63185333224c51b1e4b6214f24d4ba",
+      "nonce": "ba0f2d1aebdf495ca26b5b225c8016b6",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838"
       },
@@ -1122,13 +1270,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068988688,
+      "started_at": 1794082277252,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 794,
+      "elapsed_ms": 818,
       "stdout_bytes": 38965,
       "stderr_bytes": 0,
-      "stdout_sha256": "a0a63f50c377ec8b271f7c99c5d334daf00c08bc047cbbfc0de5c1032f79dcde",
+      "stdout_sha256": "23ae78a0ba8511b119f0ffe428fb8474a81d207874aad6090fd1c435ae4c8315",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1137,14 +1285,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068989570
+      "finished_at": 1794082278167
     },
     {
       "operation": "diagnose",
-      "sandbox_id": "rewind-1522c184549749ba99f22f8545cfc6da",
-      "nonce": "a6c05bf5e8b64c5293725ce868f231ca",
+      "sandbox_id": "rewind-9edd5454415b4b308f9142baf52efc2a",
+      "nonce": "74a5074a1c7147d1a2419b7995917328",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
         "checkpoint.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
@@ -1167,13 +1315,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068989571,
+      "started_at": 1794082278168,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 810,
+      "elapsed_ms": 776,
       "stdout_bytes": 7364,
       "stderr_bytes": 0,
-      "stdout_sha256": "6ce64a0ac0c36c12eb81b1ce372726a755d486178f90ec3b73b003782fc89cfd",
+      "stdout_sha256": "0f304404702f9ce14ef04afa05683176fc0f0737712545595aa0826eb82cc790",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1182,14 +1330,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068990569
+      "finished_at": 1794082279040
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-e1195308da8b4e8d931b0947b938b03a",
-      "nonce": "71768a4af69a4535932ef93335513d04",
+      "sandbox_id": "rewind-9671ebe6d40d45198b1823723183cef2",
+      "nonce": "b27f5396184c40e39c3058abe05ea5b0",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
         "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
@@ -1211,13 +1359,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068990584,
+      "started_at": 1794082279055,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 750,
+      "elapsed_ms": 796,
       "stdout_bytes": 9189,
       "stderr_bytes": 0,
-      "stdout_sha256": "017c121cf71a8fbf01ca9f3dfc3ce886bc5c3ed3d5def06d6947287fe60017e5",
+      "stdout_sha256": "b76380ea604df4c3474e69278b7981b87953e95550d26b9a2c1a9da7c6df762d",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1226,14 +1374,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068991430
+      "finished_at": 1794082279943
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-c58af9e0b1f141ed929a8b31f1fb2672",
-      "nonce": "4ea6997db9d04849b2f051a70b29f05d",
+      "sandbox_id": "rewind-f5a550f8874446e3bc5e8cd3a3f11dff",
+      "nonce": "f5a3688de33f4544a9802688021aee31",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384"
       },
@@ -1253,13 +1401,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068991431,
+      "started_at": 1794082279944,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 838,
+      "elapsed_ms": 814,
       "stdout_bytes": 38731,
       "stderr_bytes": 0,
-      "stdout_sha256": "f31405e9ac0230064959dd1f38696d85cc6b7e6fd79089d33f842ecf7bd84c2f",
+      "stdout_sha256": "352f54411e33fec506256f0f9304ccc68a39696c434b064a77d00337ece58038",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1268,14 +1416,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068992363
+      "finished_at": 1794082280856
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-eae00816bff94909b3f25b51096775e3",
-      "nonce": "1b173af1e06c470493b4f92748349e47",
+      "sandbox_id": "rewind-d066cbd9313d4b6bbaff4fdfa0f67d63",
+      "nonce": "ede70e5fe3cf46bca582c2040fb1e1a6",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
         "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
@@ -1297,13 +1445,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068992367,
+      "started_at": 1794082280859,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 820,
+      "elapsed_ms": 777,
       "stdout_bytes": 8729,
       "stderr_bytes": 0,
-      "stdout_sha256": "77eb9c431922e539fe22b1e8b58feaa8dcda2a24e8079730d40f5650800935b7",
+      "stdout_sha256": "2bbf694cba722359fdf13493cb6c3edc1bb489b7a9c0c749e454697d530ad4d6",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1312,14 +1460,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068993275
+      "finished_at": 1794082281719
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-23dd093de89945968cf653e8760bcc89",
-      "nonce": "dcb694e21fc047d5b2eb946c92b92a9e",
+      "sandbox_id": "rewind-1c483c78f1524d61b2aa7ecbaada140a",
+      "nonce": "9714b6e5b40c4dc6858753b54cab8e95",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13"
       },
@@ -1339,13 +1487,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068993276,
+      "started_at": 1794082281719,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 886,
+      "elapsed_ms": 759,
       "stdout_bytes": 36671,
       "stderr_bytes": 0,
-      "stdout_sha256": "a51e47c56967f5eb61f5348d874b6d1ef569870daa0480b0444a341c2aee6f3e",
+      "stdout_sha256": "1af711c839f8cfd42b903fecaeec66c562f4b3d9ca85e9bc54c6ba6429f645d0",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1354,14 +1502,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068994253
+      "finished_at": 1794082282563
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-f760c4a9e7c34d609e74de75a63ce7b4",
-      "nonce": "6e0be16ba9d344e89159d92a4b471346",
+      "sandbox_id": "rewind-41988232dc524e938b1235e32c91807e",
+      "nonce": "b2977a528ebe4a1392d5975b2ca12f1d",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
         "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
@@ -1383,13 +1531,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068994257,
+      "started_at": 1794082282566,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 887,
+      "elapsed_ms": 751,
       "stdout_bytes": 9189,
       "stderr_bytes": 0,
-      "stdout_sha256": "c6d87a8869cf4280fd46486e7e1b532957caa34fcbdee7c18e94a0a7533f4bdd",
+      "stdout_sha256": "f6c4699e2b74e55d790f79d9eb5b5653c35caf81d1e87d7f06e368d3ac464acf",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1398,14 +1546,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068995235
+      "finished_at": 1794082283412
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-6963d810e3af42b09a240fedc1cbf52e",
-      "nonce": "0dbf2120f88549eda8aaed284108baad",
+      "sandbox_id": "rewind-110f6c1295ad43ffa10b61ce8acdff9e",
+      "nonce": "69500a8dde7e4952ad9017d06bf2fa80",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "4cdf80014ba982dfa4b28a1ca5e09208169e3655e2930f04c25b6f0434ae48e0"
       },
@@ -1425,13 +1573,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068995235,
+      "started_at": 1794082283413,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 801,
+      "elapsed_ms": 825,
       "stdout_bytes": 38731,
       "stderr_bytes": 0,
-      "stdout_sha256": "f3c1afb0826f9af812e3ab2f3f6835e8920021da85d85c862d90021e4b3e3fc9",
+      "stdout_sha256": "4a35201f178d5ebad85aafa62b90b151bd41dc4f0b1b045a6b768249732994ee",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1440,14 +1588,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068996130
+      "finished_at": 1794082284339
     },
     {
       "operation": "demo",
-      "sandbox_id": "rewind-05a2ca4597c343989b2447eb03e2eef9",
-      "nonce": "56db97764163437aa22c8241968dfba3",
+      "sandbox_id": "rewind-4dd97bade5694771bf6ab3a50c7cf407",
+      "nonce": "b9a7ed22b71d499ea08a59db4bd0c944",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {},
       "policy": {
         "gvisor": true,
@@ -1465,13 +1613,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068996133,
+      "started_at": 1794082284342,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 926,
+      "elapsed_ms": 775,
       "stdout_bytes": 65652,
       "stderr_bytes": 0,
-      "stdout_sha256": "1cbdc1f3a54048bfd7e4a43ff8274b924e68b1fde7184d7dbc64af8da5396821",
+      "stdout_sha256": "dc5e06684d24dfa0d4987d3888531f7f872c9fa18f6e377823408468ee30ef3b",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1480,14 +1628,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068997153
+      "finished_at": 1794082285220
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-499c6a089587469eb122ed25dcfbf940",
-      "nonce": "b8fdaf2310114dbc8490ae872330eb95",
+      "sandbox_id": "rewind-4a5ac66364c942dd8b013402d6e06937",
+      "nonce": "0927c865e0024998975a424d85202b08",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
       },
@@ -1507,13 +1655,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068997153,
+      "started_at": 1794082285221,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 837,
+      "elapsed_ms": 805,
       "stdout_bytes": 36836,
       "stderr_bytes": 0,
-      "stdout_sha256": "b6a10eccedcaecfb5bbad0bd70e8b8c1d8758dfa6ea0d30e7418c128dd3b0970",
+      "stdout_sha256": "38a7f13f85c1490d062c36dff5f38682fe97377def5eb818aef01f1691c0d363",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1522,14 +1670,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068998086
+      "finished_at": 1794082286117
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-8ccdf51e86f9439cbc4334b84b97d252",
-      "nonce": "6cae257ed5cf4c09bb951a9e04175b30",
+      "sandbox_id": "rewind-4ff30ca908f5469bb22b1b127fa7118d",
+      "nonce": "5e28c97d01f14c16aaeac4e254e7e636",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "be051da9526aef06687a71a6ba57ddc7089a44bea18180f93077cad76ca22ca1"
       },
@@ -1549,13 +1697,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068998087,
+      "started_at": 1794082286118,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 892,
+      "elapsed_ms": 760,
       "stdout_bytes": 37076,
       "stderr_bytes": 0,
-      "stdout_sha256": "b24c72fc4d4fb8ed1a828b84a5a1fda2b10d8b14057a45528c2faa9576ad7539",
+      "stdout_sha256": "82b28418a5a8c362f13ee1614805c6f96ac62e844f813d73a0c7ab6b33ba54de",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1564,14 +1712,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794068999083
+      "finished_at": 1794082286975
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-71b21e6e43524c9b8645289d96504f68",
-      "nonce": "f42249a9fc0f4cceb093e14007c44af4",
+      "sandbox_id": "rewind-558f3f008dc94fe8bc76b5cca8e03683",
+      "nonce": "1743394843174daeab57a02a34e7edbc",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4"
       },
@@ -1591,13 +1739,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794068999083,
+      "started_at": 1794082286976,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 860,
+      "elapsed_ms": 744,
       "stdout_bytes": 39144,
       "stderr_bytes": 0,
-      "stdout_sha256": "c61178ca6a0bae8598876db06e770c8fd673efb40662bbfb63e7c5d43b85cc1a",
+      "stdout_sha256": "1fd9ced4f435a0ec41f8dfdea3f9b8df0dd42b7f168647ca66dd747acfbc310e",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1606,14 +1754,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069000041
+      "finished_at": 1794082287807
     },
     {
       "operation": "diagnose",
-      "sandbox_id": "rewind-177de87ad6ca49b0a6788a097496713d",
-      "nonce": "7096841944f84d0e883306689eaae321",
+      "sandbox_id": "rewind-cb17c0f3f812468da63db82bbacb5455",
+      "nonce": "36460ade2277485794994fa3331887d8",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "checkpoint.sqlite": "be051da9526aef06687a71a6ba57ddc7089a44bea18180f93077cad76ca22ca1",
@@ -1636,13 +1784,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069000043,
+      "started_at": 1794082287808,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 1005,
+      "elapsed_ms": 782,
       "stdout_bytes": 7736,
       "stderr_bytes": 0,
-      "stdout_sha256": "d9c64c77ab7f2a595ab196413c47b734bc8f739857ac5e33d87b96647e54bb0a",
+      "stdout_sha256": "f6a0223a8c7a6ac5ceaa7e564df2997a18c27f6f41cbfd49449a7f8f7a785bdd",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1651,14 +1799,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069001156
+      "finished_at": 1794082288680
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-44c0bee1557342158ff5c3c474b6061c",
-      "nonce": "36f850da9ddc4fdcbedd71dfd9065eba",
+      "sandbox_id": "rewind-516ecacbfc8f416db099ad90eca3341e",
+      "nonce": "c1b8d1eb3f474333af932b03f929f2e4",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4",
@@ -1680,13 +1828,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069001173,
+      "started_at": 1794082288697,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 1332,
+      "elapsed_ms": 844,
       "stdout_bytes": 21929,
       "stderr_bytes": 0,
-      "stdout_sha256": "ac01f8dda9faed077ff52566f89d616a85c5908e5774e57688b280dd33368fc0",
+      "stdout_sha256": "afe4d4e241f8563240015d52928a2cc26818ea5e3f8755ba46bcda0ccfb60d39",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1695,14 +1843,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069002635
+      "finished_at": 1794082289630
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-5a03df8e2a6e4fd2861004673bb1fec1",
-      "nonce": "a851b4887b9744a3b121afc38df66200",
+      "sandbox_id": "rewind-a24b6dc9fc7e44a187d912871f6efbfb",
+      "nonce": "b679ec7593b2479d84d54718516c6a76",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "f5e4685fcf5f105350d0337d474f5268841e008e120e8d4388c880c8b7c9bb8a"
       },
@@ -1722,13 +1870,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069002636,
+      "started_at": 1794082289631,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 1220,
+      "elapsed_ms": 855,
       "stdout_bytes": 38910,
       "stderr_bytes": 0,
-      "stdout_sha256": "0a831c427bba2d59c1fd6038aa8827f740a0d6b53f725faa15632b2243c741e5",
+      "stdout_sha256": "f89e6df01ccf1d054dbdef2214076a569015247a39f11523c6e0c4f4acc66c30",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1737,14 +1885,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069003983
+      "finished_at": 1794082290577
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-766b307f1c3e430b86f72ee7c7a18825",
-      "nonce": "5e543274437347938734b2a9fca8b0eb",
+      "sandbox_id": "rewind-483502fc7ea349df8f6fa6b7b37578e2",
+      "nonce": "1fc7c3f0a783458885ec832d1379d77d",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "9eb6a60f091f1611ba92e83ab4d4be4850ac950983f14f0106ac70be5319cac4",
@@ -1766,13 +1914,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069003987,
+      "started_at": 1794082290582,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 1120,
+      "elapsed_ms": 801,
       "stdout_bytes": 21929,
       "stderr_bytes": 0,
-      "stdout_sha256": "81ade22b396027b074b8cf48d01027fe54fc708a2df2073bac8f23c91896152c",
+      "stdout_sha256": "b1cbd2c771780b0042d71da861ee39ae60ed917623ed258bc0b36bbd9dc1d65a",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1781,14 +1929,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069005235
+      "finished_at": 1794082291491
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-7d162d2e2b1b4245b798b8490a040b11",
-      "nonce": "dd70e9899e6b4045b9b9e22cc682a9a0",
+      "sandbox_id": "rewind-222ab87677534ef78f4d33664846579c",
+      "nonce": "b628ecc94e554743945d96176a23e36a",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a"
       },
@@ -1808,13 +1956,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069005236,
+      "started_at": 1794082291492,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 1062,
+      "elapsed_ms": 826,
       "stdout_bytes": 36836,
       "stderr_bytes": 0,
-      "stdout_sha256": "df4cc68789b3d5f6d60f0646ed54af82d5802cccfd068e4daeab2381055f9b6c",
+      "stdout_sha256": "f3d4752c2ce4b6626950140c5ad230e736bb30768651d5758006f48030eec251",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1823,14 +1971,734 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069006394
+      "finished_at": 1794082292406
+    },
+    {
+      "operation": "demo",
+      "sandbox_id": "rewind-a0afbd1dfda54eb7a47181644ce5b9ea",
+      "nonce": "69768154ee894dffa4769671451b4559",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {},
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082292409,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 847,
+      "stdout_bytes": 2530,
+      "stderr_bytes": 0,
+      "stdout_sha256": "051efbbd5d031e11a3117e623d8a703d6d7d82d144728a9cb914d7a8e109ad3f",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082293347
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-faf214646fb14f49bae52c217ea7c611",
-      "nonce": "2151ac21e5334c699728e40982e12913",
+      "sandbox_id": "rewind-d33b91f154924b9e87dd666c0a6ee06f",
+      "nonce": "c8e2a6225003450c812c3fbd538a22cf",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082293347,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 781,
+      "stdout_bytes": 6380,
+      "stderr_bytes": 0,
+      "stdout_sha256": "279c91cf5413170e65b27b6da9acf967b2f1008381e418e232451316a826fbc1",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082294220
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-e0fb06c658674fb5a14409083eb52135",
+      "nonce": "fe60f24c27dc4465bd400c1a6b981611",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082294220,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 765,
+      "stdout_bytes": 6661,
+      "stderr_bytes": 0,
+      "stdout_sha256": "8b0593532058bed4c433f8d40cf17115f471036760da5bc8c038f0fd4a29b9c1",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082295073
+    },
+    {
+      "operation": "prepare-import",
+      "sandbox_id": "rewind-6eba682ccd5e4523995178dff15ebc8f",
+      "nonce": "12821dccc96345c8aea587d6fa20aa98",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082295077,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 944,
+      "stdout_bytes": 457,
+      "stderr_bytes": 0,
+      "stdout_sha256": "294f2c404ba9844cd4f8664f46245e83dfa36a4021c9fa4d495f54ce10dfc476",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082296117
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-0c1bb11c96bf412a9544d420d1096478",
+      "nonce": "6b8e76b961a644f382eef7c12d4a2e35",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082296118,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 807,
+      "stdout_bytes": 3451,
+      "stderr_bytes": 0,
+      "stdout_sha256": "bb9b111832327a49c93abe3148ad2578fa3fb691684ce1b986e8935324851959",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082297023
+    },
+    {
+      "operation": "import-preview",
+      "sandbox_id": "rewind-88e812ffe9554ab496804a13f8e6417d",
+      "nonce": "8bf4be3a6926453591c3bdfc7feeb94c",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082297024,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 741,
+      "stdout_bytes": 1245,
+      "stderr_bytes": 0,
+      "stdout_sha256": "00994e3b81d19b045f333beaa4024ea325d355c7b2ca87bca5567101941e696c",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082297852
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-6dc354d9dabc4d8e9594a3f3a9be4cb3",
+      "nonce": "eadc3baa151e4bdaaac259c3979b3819",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "7c31fdf58e0ab5884045957bd3806ae1e8687abc94df756fdcd7d8c4c9894dbd"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082297853,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 767,
+      "stdout_bytes": 6380,
+      "stderr_bytes": 0,
+      "stdout_sha256": "f0bcc759e3347088d00cba2c07f30e6a0bd221f1f3e8cb2a8d744beb44df5633",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082298726
+    },
+    {
+      "operation": "prepare-import",
+      "sandbox_id": "rewind-328e7677296e423ba217504e588115fb",
+      "nonce": "3bf210074dc4456b9d1a76931c63fde0",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082298730,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 831,
+      "stdout_bytes": 729,
+      "stderr_bytes": 0,
+      "stdout_sha256": "739e69b468175b355a8e59662ac3e93a93cf7078a50ef29e0d499812c0b57f88",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082299655
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-bde9ea9f3b8b4267bd5ac942e0409656",
+      "nonce": "e30d6dcd72bf483b815a7b4c17d3b26c",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ff53103622326c013268deae4b0a484f9ac97fd55c9511ba9422db86ffa6356f"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082299656,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 798,
+      "stdout_bytes": 5034,
+      "stderr_bytes": 0,
+      "stdout_sha256": "78ed31dd921274e000f42704f84b0f93111a7aaab693f702133cdcac89d95223",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082300549
+    },
+    {
+      "operation": "import-preview",
+      "sandbox_id": "rewind-d505372e2a634c18842d0621a7f7133e",
+      "nonce": "dcf797847e444773a95cae66529a8e33",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "ff53103622326c013268deae4b0a484f9ac97fd55c9511ba9422db86ffa6356f"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082300550,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 814,
+      "stdout_bytes": 1305,
+      "stderr_bytes": 0,
+      "stdout_sha256": "be555e1e58df992e3e9a9bdd38cf4463d660d3dd477407232f8514cbf989ef4e",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082301454
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-0e0c588f78af445d943aa20481630304",
+      "nonce": "b21636e9fde8407ab31a144ee3b65b0b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "4cb0a096b47b806566dabeb4a44bf911ecc733f82ce64756c7deb5d4dff399dd"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082301454,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 815,
+      "stdout_bytes": 6425,
+      "stderr_bytes": 0,
+      "stdout_sha256": "bc93613a1e73bf832031a96ca44a6c89a0d1cb588f83bc9bee7b0581f098a82f",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082302357
+    },
+    {
+      "operation": "import-preview",
+      "sandbox_id": "rewind-b37e9c47054e4491ae5ab496014a2acb",
+      "nonce": "3eba7dac59f645909ed28800e1527d25",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": false,
+      "started_at": 1794082302359,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 801,
+      "stdout_bytes": 122,
+      "stderr_bytes": 0,
+      "stdout_sha256": "64b896586d7f426e1913bdb2e0e2855224bf2412ab05dc719152e77948a6a1ea",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "error": "The isolated program could not complete this operation.",
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082303250
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-733a1610148346e78de0f79fc512435d",
+      "nonce": "a35969b2c9114d1aba8a7162516f6ffa",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "4957a16aeff39a727cdb1afb8171a2ed11feecb7b8312d977a9bd85e2846009e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082303250,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 815,
+      "stdout_bytes": 636,
+      "stderr_bytes": 0,
+      "stdout_sha256": "19227ce1828fc4bacd298c985f77a81018fe3f6af1186a9c27776c7558cacf12",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082304153
+    },
+    {
+      "operation": "prepare-import",
+      "sandbox_id": "rewind-44e718c7fe124629924afc9eec1c652c",
+      "nonce": "1724eda765e94a5ab1af8814906256ae",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "4957a16aeff39a727cdb1afb8171a2ed11feecb7b8312d977a9bd85e2846009e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082304155,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 754,
+      "stdout_bytes": 121,
+      "stderr_bytes": 0,
+      "stdout_sha256": "1ba889543b6fd887ee88c617afa66082e106291a10d5b0afc2bb4003cb9e2473",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082305009
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-9e59f0564e99434ebcb743ddeb5c7d80",
+      "nonce": "11e2f8dd1c9e40b7a90726ab77dffd79",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "4957a16aeff39a727cdb1afb8171a2ed11feecb7b8312d977a9bd85e2846009e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082305010,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 826,
+      "stdout_bytes": 636,
+      "stderr_bytes": 0,
+      "stdout_sha256": "d3052d98e3e73704590ea0dac4707f26fc86e32dbb38c333cc3214f497228f46",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082305924
+    },
+    {
+      "operation": "import-preview",
+      "sandbox_id": "rewind-07e515ad10ae4870b1c18864a97f1ad2",
+      "nonce": "56c5fda5f0944ef3994a6ca31bc89240",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+        "incoming.csv": "4957a16aeff39a727cdb1afb8171a2ed11feecb7b8312d977a9bd85e2846009e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082305924,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 757,
+      "stdout_bytes": 1245,
+      "stderr_bytes": 0,
+      "stdout_sha256": "635096968fa71464a50ab4c2d8e569b092e99369c2c9b34887890cb82502e332",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082306774
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-65876b9cf4ec470f9ef0569a9fddc8cd",
+      "nonce": "7c7153c4f38f4b48847d915ab864787b",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+      "input_hashes": {
+        "current.csv": "186025527f56f542befd0bce7b701bb040b4fd2fce801285c300086746de5a2e"
+      },
+      "policy": {
+        "gvisor": true,
+        "pinned_image": true,
+        "no_network": true,
+        "readonly_root": true,
+        "nonroot": true,
+        "memory_limit": true,
+        "cpu_limit": true,
+        "pid_limit": true,
+        "no_privilege": true,
+        "readonly_inputs": true,
+        "bounded_tmp": true,
+        "no_docker_logs": true
+      },
+      "policy_verified": true,
+      "ok": true,
+      "started_at": 1794082306774,
+      "exit_code": 0,
+      "stop_reason": null,
+      "elapsed_ms": 929,
+      "stdout_bytes": 6380,
+      "stderr_bytes": 0,
+      "stdout_sha256": "36e222b9ebd844933639a353e5793cba0c18e5ebe7ea48259fe3e2c9fa503b12",
+      "runtime": "runsc",
+      "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "oom_killed": false,
+      "teardown": {
+        "confirmed": true,
+        "remove_exit_code": 0,
+        "absence_query_exit_code": 0
+      },
+      "finished_at": 1794082307801
+    },
+    {
+      "operation": "inspect",
+      "sandbox_id": "rewind-92c5727303304b0aa1bc4ff0b51e6ac8",
+      "nonce": "2ec6fbbc9a464fca9ebd1ee4ca86bb46",
+      "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "17e2fa8c37ce4d10fd5638c83d7e0169c675e414e33b6e934b8f181d975f3469"
       },
@@ -1850,13 +2718,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069006397,
+      "started_at": 1794082307804,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 864,
+      "elapsed_ms": 802,
       "stdout_bytes": 127,
       "stderr_bytes": 0,
-      "stdout_sha256": "aa4d5daae786bbd21be36efe64c247fd773a34ff6e7f57d9be63f9a3cec68700",
+      "stdout_sha256": "0fe50d94ecfeeb9c73e13fc510fa0628cceceeaafe053c6e219f92391d906841",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1866,14 +2734,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069007356
+      "finished_at": 1794082308694
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-5feb4699920945e19ac9315b90b28573",
-      "nonce": "1a756608725a4aa3a68524d7cdfbd9b2",
+      "sandbox_id": "rewind-7f3afe9fd931408da5fef1465e418c25",
+      "nonce": "6f90cf30f5e54dafa0b2f0c751437389",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "3c47f02e8b65f1f4f62891c2cba44b211e9d5645591d2d673533dbcb343abaeb"
       },
@@ -1893,13 +2761,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069007357,
+      "started_at": 1794082308694,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 925,
+      "elapsed_ms": 784,
       "stdout_bytes": 127,
       "stderr_bytes": 0,
-      "stdout_sha256": "eff4590535008dc9b78db6327091b58d21a3e7b7179a599f70d1cbadfd4f8eac",
+      "stdout_sha256": "73b44f1ab3e7af99c16f336e0d37d30e793ec785a2397981788f745365642a1b",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1909,14 +2777,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069008387
+      "finished_at": 1794082309566
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-e618d91ee7784ccd9c8dc916e6ba3c2e",
-      "nonce": "984ed956401a40e8813ed3bc118fa941",
+      "sandbox_id": "rewind-c12403007a6b4f2890a28d9fb9379702",
+      "nonce": "6269e45706804cce94b42bef580e1799",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "abd81353b07a4b9bc30ac4e3650e761b1fd42cc4af1645a20c63e5dfe962784a"
       },
@@ -1936,13 +2804,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069008387,
+      "started_at": 1794082309567,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 869,
+      "elapsed_ms": 903,
       "stdout_bytes": 138,
       "stderr_bytes": 0,
-      "stdout_sha256": "f3143877349ada155e70d7734c79c22b225688f5acd4b37cc8be89ce77ea0bbb",
+      "stdout_sha256": "03441564e8b3b3c111598b3fa60da036857fae3346da7747d691e342b085aa62",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1952,14 +2820,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069009344
+      "finished_at": 1794082310559
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-cd06641ebee24eb19eb80a729139fd6b",
-      "nonce": "222e8d6537f14c6589bbedb50800da4c",
+      "sandbox_id": "rewind-417ecd0a785041ad812cac9fb357b5d4",
+      "nonce": "88e68c1a9d8e441d8ade5de01511202f",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "0bb6d91686cb264c82274867377ff5d8752009bd79de4666ee9cf1643245263c"
       },
@@ -1979,13 +2847,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069009344,
+      "started_at": 1794082310560,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 850,
+      "elapsed_ms": 779,
       "stdout_bytes": 139,
       "stderr_bytes": 0,
-      "stdout_sha256": "9aab537300fff7d5960f9affb404e2b949f07d773dd47613036b1d2a54f707ab",
+      "stdout_sha256": "f8e6c53ea828dd08ab23ab5b74e501f347aeb08053afd86e12b49c00ed4fcf74",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -1995,14 +2863,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069010288
+      "finished_at": 1794082311430
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-16865ef0f24b4f968284bc4a1a27838d",
-      "nonce": "e0d663a0a26a4767baa0f60d0dd2fe57",
+      "sandbox_id": "rewind-96ee6066f5b84d708a17efd6e28ae768",
+      "nonce": "2fa0e69ba4d143e09c9afede6e0828f7",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "188fd55296cf5d61494afa46fa0881fc52df9d52d16f7e4ac99f0fde1b62739d"
       },
@@ -2022,13 +2890,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069010289,
+      "started_at": 1794082311430,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 836,
+      "elapsed_ms": 813,
       "stdout_bytes": 101,
       "stderr_bytes": 0,
-      "stdout_sha256": "ea3fcf069cbd715a3407d25b67e1709e8c489ae02695c14ac1d5e5d6d68c7bd2",
+      "stdout_sha256": "9f720666dec1494d9583dc8c71c676feed5ab74f1830913bff9ca66a3b253470",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -2038,14 +2906,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069011229
+      "finished_at": 1794082312339
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-23724f448a6f4999b26052df0e5c06b0",
-      "nonce": "82c21f67a5b6439fbe8b5b4321cf849b",
+      "sandbox_id": "rewind-f8ca482f8ab041e5a28c510a48ee7af7",
+      "nonce": "4f7e5fa08f88402aa1929c9d35dc1e94",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "f3b049bad3c8d7526706135277262dd2c0b2d080fe690741fd49a6fdadd3c48e"
       },
@@ -2065,13 +2933,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069011230,
+      "started_at": 1794082312340,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 846,
+      "elapsed_ms": 811,
       "stdout_bytes": 108,
       "stderr_bytes": 0,
-      "stdout_sha256": "8627a19703ece67da5fa6ce235fdf6b9da8dedc5a22b1b921485ba4f579c3902",
+      "stdout_sha256": "e3b3cca900bebb35e03fa020a6433b476bd5f1e8c96feb352ab85dddee629932",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -2081,14 +2949,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069012165
+      "finished_at": 1794082313241
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-d3363c80180f4e0c859caf936d14d58e",
-      "nonce": "b5ed7715b67e4e37833a743131b2ad1b",
+      "sandbox_id": "rewind-4e120f95ebdc4c1dbae6e2cab55a637c",
+      "nonce": "066e5f1ac5274c8fa59d453f04fef4cf",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "25b69b63e2cc064eaefd9d10e1bd196280534330f9a5f3d8f9ab56f6149b8e51"
       },
@@ -2108,13 +2976,13 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069012166,
+      "started_at": 1794082313242,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 899,
+      "elapsed_ms": 762,
       "stdout_bytes": 139,
       "stderr_bytes": 0,
-      "stdout_sha256": "c812bf5656bbbbc60e08557c486ff50dd717e2f6df6ce494e7701612265bda89",
+      "stdout_sha256": "eafedd71fd046560a63621a9a2ea58c06d7eac08b737720b7caf857d9783a3df",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -2124,14 +2992,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069013159
+      "finished_at": 1794082314091
     },
     {
       "operation": "inspect",
-      "sandbox_id": "rewind-b586c43304eb4e1fb85266ee8fc35971",
-      "nonce": "37d660d1cf384262b9878c67316e8a21",
+      "sandbox_id": "rewind-d81a9a6cc40840728b9dd704e6e32537",
+      "nonce": "5f19e69e1e7a413095995466fa89ef6f",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "current.csv": "fcfd7e7c1228f5a947e2fd4b4ea311ef0b0e8757a3d188f7568f5b005c880280"
       },
@@ -2151,13 +3019,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069013160,
+      "started_at": 1794082314092,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 888,
+      "elapsed_ms": 772,
       "stdout_bytes": 1094,
       "stderr_bytes": 0,
-      "stdout_sha256": "1c2013b7ec9be2f1e60186336cd75445161aa6435b2081cf3e63dfaf9311a1fc",
+      "stdout_sha256": "28b35ddd8fd1f61fa621d17b7369ba8d94395b26a5c435ffa55ba30e0063503f",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -2166,14 +3034,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069014136
+      "finished_at": 1794082314964
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-3d9238d2027a4ad3a3f90ef0e1279bbf",
-      "nonce": "c70f67afb851426484005b452de7caf4",
+      "sandbox_id": "rewind-941a26d609514bc5b4905b0cd8c2445d",
+      "nonce": "ba986a59fdda4df1babd99f4ac9fe158",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -2195,13 +3063,13 @@
       },
       "policy_verified": true,
       "ok": true,
-      "started_at": 1794069014137,
+      "started_at": 1794082314965,
       "exit_code": 0,
       "stop_reason": null,
-      "elapsed_ms": 959,
+      "elapsed_ms": 1007,
       "stdout_bytes": 21929,
       "stderr_bytes": 0,
-      "stdout_sha256": "26ffa76c48954761de2da4a74e990e699dd62accde697dd87c6742bd4bc67cb8",
+      "stdout_sha256": "df941306b53618adc3955389850b918371b452fa31cc22a09584be594a9f4102",
       "runtime": "runsc",
       "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
       "oom_killed": false,
@@ -2210,14 +3078,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069015189
+      "finished_at": 1794082316078
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-ba5b923e63334520be274f01af7fe61c",
-      "nonce": "98f7e43d87f2485cb6b843cc9a8ac3c5",
+      "sandbox_id": "rewind-7f4fcf113c50406b9caecdc2d52e0168",
+      "nonce": "4db7e908a8e1444ab94e7abb4ddd0596",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -2239,7 +3107,7 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069015190,
+      "started_at": 1794082316079,
       "exit_code": -9,
       "stop_reason": "timeout",
       "elapsed_ms": 2005,
@@ -2255,14 +3123,14 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069017348
+      "finished_at": 1794082318246
     },
     {
       "operation": "candidate",
-      "sandbox_id": "rewind-df0019d30e974eb5be18b6866798b903",
-      "nonce": "5b0e81f50a0944aca526997cf2c00ded",
+      "sandbox_id": "rewind-6184b978b5364d458b61b204e9f54976",
+      "nonce": "662e87e54f464cf4b9872a202e692f4f",
       "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-      "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+      "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
       "input_hashes": {
         "backup.sqlite": "024ede0c644ba6df0b642653e065225927499e027683b6555d7051a3f02d5a3a",
         "current.sqlite": "56e339831745bed7e1e50ba19479cb6d617bb01ac9c2863fa589c38e4ad7eabb",
@@ -2284,10 +3152,10 @@
       },
       "policy_verified": true,
       "ok": false,
-      "started_at": 1794069017349,
+      "started_at": 1794082318246,
       "exit_code": -9,
       "stop_reason": "output_limit",
-      "elapsed_ms": 729,
+      "elapsed_ms": 710,
       "stdout_bytes": 393216,
       "stderr_bytes": 0,
       "stdout_sha256": "4354ea9737c4b5afa2e01d0f7b95769ce9a228605a6317687cffad970815bc91",
@@ -2300,7 +3168,7 @@
         "remove_exit_code": 0,
         "absence_query_exit_code": 0
       },
-      "finished_at": 1794069018234
+      "finished_at": 1794082319099
     }
   ]
 }

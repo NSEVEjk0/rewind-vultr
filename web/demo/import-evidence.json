@@ -1,0 +1,1407 @@
+{
+  "payload": {
+    "project": "Rewind",
+    "workflow": "preflight",
+    "contract": "update-existing-by-id-v1",
+    "format": "csv",
+    "status": "verified",
+    "message": "Your approved import passed. Every other value keeps today's export value.",
+    "plan": {
+      "workflow": "preflight",
+      "contract": "update-existing-by-id-v1",
+      "format": "csv",
+      "current_sha256": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+      "incoming_sha256": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3",
+      "workspace_version": 6,
+      "policy": {
+        "columns": [
+          "price"
+        ],
+        "numeric_column": "price",
+        "max_percent": 25
+      },
+      "targets": [
+        {
+          "token": "25bc4fc28be9564ea3398d6e35b24c52f96a1cdb657e4f7891ee018ab039def7",
+          "key": {
+            "type": "text",
+            "value": "0003"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "23.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "25.00"
+          },
+          "reasons": [],
+          "percent_change": "8.70",
+          "eligible": true
+        },
+        {
+          "token": "1b86ee75dbb222fd3055db44ccc34c3430951e6111553b68b23fac438996c44a",
+          "key": {
+            "type": "text",
+            "value": "0004"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "24.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "26.00"
+          },
+          "reasons": [],
+          "percent_change": "8.33",
+          "eligible": true
+        },
+        {
+          "token": "ace9be7fd008a93f377a6bfbec2000d5d7582e69268ee7547cc33751219cd034",
+          "key": {
+            "type": "text",
+            "value": "0005"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "25.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "27.00"
+          },
+          "reasons": [],
+          "percent_change": "8.00",
+          "eligible": true
+        },
+        {
+          "token": "82d96a6c76c228d5287cdcc856c0cb1daf48abd6211a65d7aea78f9a1d1520fc",
+          "key": {
+            "type": "text",
+            "value": "0006"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "26.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "28.00"
+          },
+          "reasons": [],
+          "percent_change": "7.69",
+          "eligible": true
+        },
+        {
+          "token": "e4d3c1021d0738f262e4df8ce97ca73e4a016c833d4061e565bfc66f8e591ce3",
+          "key": {
+            "type": "text",
+            "value": "0007"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "27.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "29.00"
+          },
+          "reasons": [],
+          "percent_change": "7.41",
+          "eligible": true
+        },
+        {
+          "token": "d3218439d75233b1eb51314f9999f996eb0f1cbfb1241b9b06e4a26f7e964a32",
+          "key": {
+            "type": "text",
+            "value": "0008"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "28.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "30.00"
+          },
+          "reasons": [],
+          "percent_change": "7.14",
+          "eligible": true
+        },
+        {
+          "token": "fb84c43c3d665bd88929751a4b62acc4c625b69fc73413a9397c6bc38747fa47",
+          "key": {
+            "type": "text",
+            "value": "0009"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "29.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "31.00"
+          },
+          "reasons": [],
+          "percent_change": "6.90",
+          "eligible": true
+        },
+        {
+          "token": "ac8fa1bdf963afb19af922c93ad4288f0523b0c180fe5e77adef967056d7a732",
+          "key": {
+            "type": "text",
+            "value": "0010"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "30.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "32.00"
+          },
+          "reasons": [],
+          "percent_change": "6.67",
+          "eligible": true
+        },
+        {
+          "token": "c24b6f9b4d1ef71c43de8c4b28dade301e7b382ced08cbb1cf5a542e6a06b412",
+          "key": {
+            "type": "text",
+            "value": "0011"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "31.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "33.00"
+          },
+          "reasons": [],
+          "percent_change": "6.45",
+          "eligible": true
+        },
+        {
+          "token": "43793ff495115dda2158a9e1e74f2d004b208ec36b605d378c331990c2a24e76",
+          "key": {
+            "type": "text",
+            "value": "0012"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "32.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "34.00"
+          },
+          "reasons": [],
+          "percent_change": "6.25",
+          "eligible": true
+        },
+        {
+          "token": "0930be92786bf7c9b68cc7c867eb9dc571f23206fb2bb259830872a3ae4d456b",
+          "key": {
+            "type": "text",
+            "value": "0013"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "33.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "35.00"
+          },
+          "reasons": [],
+          "percent_change": "6.06",
+          "eligible": true
+        },
+        {
+          "token": "171a745c440bf39b5339b8a2291b882f0777fab7b77c72f84ae91ddd5d204bca",
+          "key": {
+            "type": "text",
+            "value": "0014"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "34.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "36.00"
+          },
+          "reasons": [],
+          "percent_change": "5.88",
+          "eligible": true
+        },
+        {
+          "token": "8b9e4381427f16470920ba0529181d7041e5b5c41d2d319e137e90e537f604b6",
+          "key": {
+            "type": "text",
+            "value": "0015"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "35.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "37.00"
+          },
+          "reasons": [],
+          "percent_change": "5.71",
+          "eligible": true
+        },
+        {
+          "token": "d3e0288b0354fb928c9e598d8c314de639b0bb83cfd0ad2e8757b205fc969f04",
+          "key": {
+            "type": "text",
+            "value": "0016"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "36.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "38.00"
+          },
+          "reasons": [],
+          "percent_change": "5.56",
+          "eligible": true
+        },
+        {
+          "token": "188c3ce578a02b3f0a40d08d82c966c700a8d2e99a15c8911f2883b41b9ed781",
+          "key": {
+            "type": "text",
+            "value": "0017"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "37.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "39.00"
+          },
+          "reasons": [],
+          "percent_change": "5.41",
+          "eligible": true
+        },
+        {
+          "token": "956333cd8857e8b834632523dcc75369dec1a3a1696205fe109fbc4a5787c28c",
+          "key": {
+            "type": "text",
+            "value": "0018"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "38.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "40.00"
+          },
+          "reasons": [],
+          "percent_change": "5.26",
+          "eligible": true
+        },
+        {
+          "token": "8180ad7a1e09e6790e2608ce01d3f3806948c02e6de740ece87c331d33fa4b77",
+          "key": {
+            "type": "text",
+            "value": "0019"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "39.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "41.00"
+          },
+          "reasons": [],
+          "percent_change": "5.13",
+          "eligible": true
+        },
+        {
+          "token": "51cba10b3aa14da537aa6a352a0686d8ee668eb36b333f44dcea534df5afa895",
+          "key": {
+            "type": "text",
+            "value": "0020"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "40.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "42.00"
+          },
+          "reasons": [],
+          "percent_change": "5.00",
+          "eligible": true
+        },
+        {
+          "token": "79e8f7738e0dd6c816f77ce931bf0ad2a9e60054c06c4894e7ce47b9952d8202",
+          "key": {
+            "type": "text",
+            "value": "0021"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "41.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "43.00"
+          },
+          "reasons": [],
+          "percent_change": "4.88",
+          "eligible": true
+        },
+        {
+          "token": "16752c025fc7469590c50e9330d74fa97aabcdc6a8a6665e71b1b3f14203ddb6",
+          "key": {
+            "type": "text",
+            "value": "0022"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "42.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "44.00"
+          },
+          "reasons": [],
+          "percent_change": "4.76",
+          "eligible": true
+        },
+        {
+          "token": "f6b6a59d966013b229f4eefc69f0b050bd59cc20d61bafe3391651447b09a1bd",
+          "key": {
+            "type": "text",
+            "value": "0023"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "43.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "45.00"
+          },
+          "reasons": [],
+          "percent_change": "4.65",
+          "eligible": true
+        },
+        {
+          "token": "18d2e5c090b49ae4c6cda6a44241e8abd993ea179cfbbbf2504fb3e7b84b8c8e",
+          "key": {
+            "type": "text",
+            "value": "0024"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "44.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "46.00"
+          },
+          "reasons": [],
+          "percent_change": "4.55",
+          "eligible": true
+        }
+      ],
+      "scope": {
+        "format": "csv",
+        "contract": "update-existing-by-id-v1",
+        "primary_key": "product_id",
+        "cells": [
+          {
+            "key": {
+              "type": "text",
+              "value": "0003"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0004"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0005"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0006"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0007"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0008"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0009"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0010"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0011"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0012"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0013"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0014"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0015"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0016"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0017"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0018"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0019"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0020"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0021"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0022"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0023"
+            },
+            "column": "price"
+          },
+          {
+            "key": {
+              "type": "text",
+              "value": "0024"
+            },
+            "column": "price"
+          }
+        ]
+      },
+      "columns": [
+        "price"
+      ],
+      "target_count": 22,
+      "selected_rows": 22,
+      "current_rows": 24,
+      "withheld_cells": 26,
+      "unknown_ids": 1,
+      "sha256": "070e897fc36c01bbaa20fb9992acd2f662b85b132f9cf66999bd424b7b467c20"
+    },
+    "verification": {
+      "ok": true,
+      "checks": [
+        {
+          "id": "approved-csv-integrity",
+          "label": "The approved import passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "approved-columns",
+          "label": "Only the ID and approved fields are included",
+          "ok": true
+        },
+        {
+          "id": "approved-records",
+          "label": "Only records with approved changes are included",
+          "ok": true
+        },
+        {
+          "id": "approved-record-order",
+          "label": "Approved records keep their export order",
+          "ok": true
+        },
+        {
+          "id": "exact-import-values",
+          "label": "Every import value matches the exact approved plan",
+          "ok": true
+        },
+        {
+          "id": "preview-csv-integrity",
+          "label": "The import result passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "same-schema",
+          "label": "The resulting export keeps every original field",
+          "ok": true
+        },
+        {
+          "id": "same-records",
+          "label": "All existing records stay, with no additions or deletions",
+          "ok": true
+        },
+        {
+          "id": "same-record-order",
+          "label": "The resulting export keeps every record in order",
+          "ok": true
+        },
+        {
+          "id": "approved-cells",
+          "label": "Every approved update has its requested value",
+          "ok": true
+        },
+        {
+          "id": "protected-cells",
+          "label": "Every cell outside approval keeps today's value",
+          "ok": true
+        },
+        {
+          "id": "input-fingerprints",
+          "label": "Approval is bound to both uploaded files",
+          "ok": true
+        }
+      ],
+      "diff": [
+        {
+          "token": "25bc4fc28be9564ea3398d6e35b24c52f96a1cdb657e4f7891ee018ab039def7",
+          "key": {
+            "type": "text",
+            "value": "0003"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "23.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "25.00"
+          },
+          "reasons": [],
+          "percent_change": "8.70",
+          "eligible": true
+        },
+        {
+          "token": "1b86ee75dbb222fd3055db44ccc34c3430951e6111553b68b23fac438996c44a",
+          "key": {
+            "type": "text",
+            "value": "0004"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "24.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "26.00"
+          },
+          "reasons": [],
+          "percent_change": "8.33",
+          "eligible": true
+        },
+        {
+          "token": "ace9be7fd008a93f377a6bfbec2000d5d7582e69268ee7547cc33751219cd034",
+          "key": {
+            "type": "text",
+            "value": "0005"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "25.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "27.00"
+          },
+          "reasons": [],
+          "percent_change": "8.00",
+          "eligible": true
+        },
+        {
+          "token": "82d96a6c76c228d5287cdcc856c0cb1daf48abd6211a65d7aea78f9a1d1520fc",
+          "key": {
+            "type": "text",
+            "value": "0006"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "26.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "28.00"
+          },
+          "reasons": [],
+          "percent_change": "7.69",
+          "eligible": true
+        },
+        {
+          "token": "e4d3c1021d0738f262e4df8ce97ca73e4a016c833d4061e565bfc66f8e591ce3",
+          "key": {
+            "type": "text",
+            "value": "0007"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "27.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "29.00"
+          },
+          "reasons": [],
+          "percent_change": "7.41",
+          "eligible": true
+        },
+        {
+          "token": "d3218439d75233b1eb51314f9999f996eb0f1cbfb1241b9b06e4a26f7e964a32",
+          "key": {
+            "type": "text",
+            "value": "0008"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "28.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "30.00"
+          },
+          "reasons": [],
+          "percent_change": "7.14",
+          "eligible": true
+        },
+        {
+          "token": "fb84c43c3d665bd88929751a4b62acc4c625b69fc73413a9397c6bc38747fa47",
+          "key": {
+            "type": "text",
+            "value": "0009"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "29.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "31.00"
+          },
+          "reasons": [],
+          "percent_change": "6.90",
+          "eligible": true
+        },
+        {
+          "token": "ac8fa1bdf963afb19af922c93ad4288f0523b0c180fe5e77adef967056d7a732",
+          "key": {
+            "type": "text",
+            "value": "0010"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "30.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "32.00"
+          },
+          "reasons": [],
+          "percent_change": "6.67",
+          "eligible": true
+        },
+        {
+          "token": "c24b6f9b4d1ef71c43de8c4b28dade301e7b382ced08cbb1cf5a542e6a06b412",
+          "key": {
+            "type": "text",
+            "value": "0011"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "31.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "33.00"
+          },
+          "reasons": [],
+          "percent_change": "6.45",
+          "eligible": true
+        },
+        {
+          "token": "43793ff495115dda2158a9e1e74f2d004b208ec36b605d378c331990c2a24e76",
+          "key": {
+            "type": "text",
+            "value": "0012"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "32.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "34.00"
+          },
+          "reasons": [],
+          "percent_change": "6.25",
+          "eligible": true
+        },
+        {
+          "token": "0930be92786bf7c9b68cc7c867eb9dc571f23206fb2bb259830872a3ae4d456b",
+          "key": {
+            "type": "text",
+            "value": "0013"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "33.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "35.00"
+          },
+          "reasons": [],
+          "percent_change": "6.06",
+          "eligible": true
+        },
+        {
+          "token": "171a745c440bf39b5339b8a2291b882f0777fab7b77c72f84ae91ddd5d204bca",
+          "key": {
+            "type": "text",
+            "value": "0014"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "34.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "36.00"
+          },
+          "reasons": [],
+          "percent_change": "5.88",
+          "eligible": true
+        },
+        {
+          "token": "8b9e4381427f16470920ba0529181d7041e5b5c41d2d319e137e90e537f604b6",
+          "key": {
+            "type": "text",
+            "value": "0015"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "35.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "37.00"
+          },
+          "reasons": [],
+          "percent_change": "5.71",
+          "eligible": true
+        },
+        {
+          "token": "d3e0288b0354fb928c9e598d8c314de639b0bb83cfd0ad2e8757b205fc969f04",
+          "key": {
+            "type": "text",
+            "value": "0016"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "36.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "38.00"
+          },
+          "reasons": [],
+          "percent_change": "5.56",
+          "eligible": true
+        },
+        {
+          "token": "188c3ce578a02b3f0a40d08d82c966c700a8d2e99a15c8911f2883b41b9ed781",
+          "key": {
+            "type": "text",
+            "value": "0017"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "37.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "39.00"
+          },
+          "reasons": [],
+          "percent_change": "5.41",
+          "eligible": true
+        },
+        {
+          "token": "956333cd8857e8b834632523dcc75369dec1a3a1696205fe109fbc4a5787c28c",
+          "key": {
+            "type": "text",
+            "value": "0018"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "38.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "40.00"
+          },
+          "reasons": [],
+          "percent_change": "5.26",
+          "eligible": true
+        },
+        {
+          "token": "8180ad7a1e09e6790e2608ce01d3f3806948c02e6de740ece87c331d33fa4b77",
+          "key": {
+            "type": "text",
+            "value": "0019"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "39.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "41.00"
+          },
+          "reasons": [],
+          "percent_change": "5.13",
+          "eligible": true
+        },
+        {
+          "token": "51cba10b3aa14da537aa6a352a0686d8ee668eb36b333f44dcea534df5afa895",
+          "key": {
+            "type": "text",
+            "value": "0020"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "40.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "42.00"
+          },
+          "reasons": [],
+          "percent_change": "5.00",
+          "eligible": true
+        },
+        {
+          "token": "79e8f7738e0dd6c816f77ce931bf0ad2a9e60054c06c4894e7ce47b9952d8202",
+          "key": {
+            "type": "text",
+            "value": "0021"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "41.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "43.00"
+          },
+          "reasons": [],
+          "percent_change": "4.88",
+          "eligible": true
+        },
+        {
+          "token": "16752c025fc7469590c50e9330d74fa97aabcdc6a8a6665e71b1b3f14203ddb6",
+          "key": {
+            "type": "text",
+            "value": "0022"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "42.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "44.00"
+          },
+          "reasons": [],
+          "percent_change": "4.76",
+          "eligible": true
+        },
+        {
+          "token": "f6b6a59d966013b229f4eefc69f0b050bd59cc20d61bafe3391651447b09a1bd",
+          "key": {
+            "type": "text",
+            "value": "0023"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "43.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "45.00"
+          },
+          "reasons": [],
+          "percent_change": "4.65",
+          "eligible": true
+        },
+        {
+          "token": "18d2e5c090b49ae4c6cda6a44241e8abd993ea179cfbbbf2504fb3e7b84b8c8e",
+          "key": {
+            "type": "text",
+            "value": "0024"
+          },
+          "column": "price",
+          "before": {
+            "type": "text",
+            "value": "44.00"
+          },
+          "after": {
+            "type": "text",
+            "value": "46.00"
+          },
+          "reasons": [],
+          "percent_change": "4.55",
+          "eligible": true
+        }
+      ],
+      "updated_cells": 22,
+      "retained_rows": 24,
+      "withheld_cells": 26,
+      "unknown_ids": 1
+    },
+    "sandbox_runs": [
+      {
+        "operation": "demo",
+        "sandbox_id": "rewind-bd02510ef0b24981bb58deb1297c0c56",
+        "nonce": "52d7c1ec8e9745a8a4da0576d6828f5c",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {},
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081452997,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 814,
+        "stdout_bytes": 2530,
+        "stderr_bytes": 0,
+        "stdout_sha256": "73a16420c6ee84e50b303c7c0ef5980e8c45eaf200740bca2b2bc7a553b825cc",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081453909
+      },
+      {
+        "operation": "inspect",
+        "sandbox_id": "rewind-b83d4b2c489f4b7f8edb4966ffe28e42",
+        "nonce": "b2fb646567654cd897236e69abb47d52",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081453910,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 900,
+        "stdout_bytes": 6380,
+        "stderr_bytes": 0,
+        "stdout_sha256": "0e8d7ec7e7c85f0718660c1da021f512bde5c3adeec99770a026c207b72e9610",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081454892
+      },
+      {
+        "operation": "inspect",
+        "sandbox_id": "rewind-ae42ba740b01436ea268b29027a538ea",
+        "nonce": "ca5b2fe13ded43cd91489cbb523736c6",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081454894,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 770,
+        "stdout_bytes": 6661,
+        "stderr_bytes": 0,
+        "stdout_sha256": "243da4160a8ef6df7f699747288c9a2042b98ec3511a6a6c8df5a4a0312ef8c6",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081455755
+      },
+      {
+        "operation": "prepare-import",
+        "sandbox_id": "rewind-dec57210d38549ce878558c8cdac0f67",
+        "nonce": "6412cd0ac7ed40bab5ee05ac99fd6d15",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+          "incoming.csv": "dbc8923cd9ec92df0d4b25b0128802abba3d016dedc22535c99b06961af12ae3"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081475292,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 895,
+        "stdout_bytes": 457,
+        "stderr_bytes": 0,
+        "stdout_sha256": "4a6ab2f60476cb29a2299c1e47f36a20fd676ccc07d13d15490b9454710e91db",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081476276
+      },
+      {
+        "operation": "inspect",
+        "sandbox_id": "rewind-f9f8598e86ac481f882988530849a3eb",
+        "nonce": "a11bd37bb90e48b18fac7393258b3080",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081476281,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 777,
+        "stdout_bytes": 3451,
+        "stderr_bytes": 0,
+        "stdout_sha256": "c735d53adf175d373d8758fdbade87c71aa53179e1d718352678b21b4a641fc9",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081477153
+      },
+      {
+        "operation": "import-preview",
+        "sandbox_id": "rewind-4c7342001a1b4069a1316b72299695f7",
+        "nonce": "f0c7102bf72d49e1b9e71ff8af420cf8",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "ac139875754af3e382015a1e0188910aac7bab97606c4bea349d4ab2aa69d08b",
+          "incoming.csv": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081477160,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 922,
+        "stdout_bytes": 1245,
+        "stderr_bytes": 0,
+        "stdout_sha256": "3f7b7e5a84d8eb565d39daae30d6486c4cc7b7cef2c2f877cb0ecfc5dc7c56cb",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081478177
+      },
+      {
+        "operation": "inspect",
+        "sandbox_id": "rewind-9e20327007df445c9040e8cf5da6e7a2",
+        "nonce": "ed2a055fd5d8461f8bf318a9676e8758",
+        "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
+        "input_hashes": {
+          "current.csv": "7c31fdf58e0ab5884045957bd3806ae1e8687abc94df756fdcd7d8c4c9894dbd"
+        },
+        "policy": {
+          "gvisor": true,
+          "pinned_image": true,
+          "no_network": true,
+          "readonly_root": true,
+          "nonroot": true,
+          "memory_limit": true,
+          "cpu_limit": true,
+          "pid_limit": true,
+          "no_privilege": true,
+          "readonly_inputs": true,
+          "bounded_tmp": true,
+          "no_docker_logs": true
+        },
+        "policy_verified": true,
+        "ok": true,
+        "started_at": 1794081478183,
+        "exit_code": 0,
+        "stop_reason": null,
+        "elapsed_ms": 825,
+        "stdout_bytes": 6380,
+        "stderr_bytes": 0,
+        "stdout_sha256": "eb7275c60d597515b259713592c0ec6c9d20d27d9bc414d5291ed15071589d9e",
+        "runtime": "runsc",
+        "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
+        "oom_killed": false,
+        "teardown": {
+          "confirmed": true,
+          "remove_exit_code": 0,
+          "absence_query_exit_code": 0
+        },
+        "finished_at": 1794081479105
+      }
+    ],
+    "model_calls": 0,
+    "approved_import_sha256": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc",
+    "artifact_sha256": "7c31fdf58e0ab5884045957bd3806ae1e8687abc94df756fdcd7d8c4c9894dbd",
+    "original_inputs_unchanged": true,
+    "all_sandboxes_removed": true,
+    "host_attestation": false
+  },
+  "sha256": "2a1600c86046de18947c7c62addc079f89fa69658de62b39ccb32e10187a86c4"
+}

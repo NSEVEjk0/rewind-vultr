@@ -6,15 +6,15 @@ You meant to update prices. Your CSV also clears a field, resets a payment, or t
 
 You see the exact changes, decide which ones to approve, and download checked files after Rewind has run the update or repair on copies.
 
-[Open Rewind](https://rewind-vultr-ckay.vercel.app) · [Watch the recovery walkthrough](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery execution checks](web/demo/live-evidence.json)
+[Open Rewind](https://rewind-vultr-ckay.vercel.app) · [Watch the walkthrough](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Import checks](web/demo/import-evidence.json) · [Recovery checks](web/demo/live-evidence.json)
 
 Open the app and choose **Check the next import** or **Undo a bad import**. There is no email sign-in. Your browser has private access to its own workspace.
 
-![Rewind’s investigation and recovery workflow](presentation/cover.png)
+![Rewind helps you check the next import and undo the bad one](presentation/cover.png)
 
 ## The problem
 
-This is a problem [Shopify has already covered in its own documentation](https://help.shopify.com/en/manual/products/import-export/import-products). Once a product CSV import starts, you cannot cancel it. An included blank field can overwrite an existing value. Shopify tells merchants to back up their product data before importing.
+This is a problem that [Shopify has already covered in its own documentation](https://help.shopify.com/en/manual/products/import-export/import-products). Once a product CSV import starts, you cannot cancel it. An included blank field can overwrite an existing value. Shopify tells merchants to back up their product data before importing.
 
 Now imagine that happened to your business. The prices are wrong, but work keeps coming in. Someone records payments, adds new invoices and corrects a few prices manually. Yesterday’s backup has the good prices, but it does not have that newer work.
 
@@ -129,6 +129,8 @@ The app checks every approved value, every protected value, the file structure, 
 
 Recovery uses at most two model calls per workspace. An investigation uses one and leaves one for repair; manual recovery can use up to two repair attempts. Failed provider attempts count. Restarting the controller does not silently retry a model request.
 
+If the agent cannot produce a valid investigation, you can choose the damaged fields yourself. The same exact approval and independent checks still apply.
+
 The public Vercel address forwards the app to the Vultr VM. Uploaded-file parsing, import execution, AI orchestration and independent verification run on Vultr. You can also reach the [Vultr backend health endpoint](https://rewind.139.84.249.47.sslip.io/__web/api/health).
 
 ## Files you can use
@@ -205,6 +207,10 @@ For a public gateway, `scripts/build-web-gateway.py` takes a clean commit, the p
 
 ## See what actually ran
 
-The [recovery evidence](web/demo/live-evidence.json) records the genuine Vultr investigation and repair, approval, input/output fingerprints, independent checks and confirmed teardown. The walkthrough shows that recovery and an actual containment test on Vultr.
+The [import evidence](web/demo/import-evidence.json) shows 22 approved price updates applied to a copy, with 26 unwanted cell changes and one unknown ID held out. All 24 records and their payment statuses stayed intact.
+
+The [recovery evidence](web/demo/live-evidence.json) records the genuine Vultr investigation and repair, approval, input/output fingerprints, independent checks and confirmed teardown. It shows 117 prices restored while newer work stayed intact.
+
+The [containment checks](web/demo/containment-checks.json) record 55 actual gVisor runs on Vultr, including rejected broad rollbacks, checked import previews, deadline enforcement and container removal. The walkthrough shows both workflows and the executed containment result.
 
 The example files contain sample records. The checks are controller-observed execution evidence; they are not a security audit or hardware attestation. [THIRD_PARTY.md](THIRD_PARTY.md) explains the MIT-licensed ReproLab components used here.

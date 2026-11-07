@@ -95,7 +95,7 @@ try {
   await page.locator("#import-result-next").click(); assert.match(await page.locator("#import-result-page-info").innerText(), /11–20/);
   await page.reload(); await page.locator("#import-result-panel").waitFor({ state: "visible" });
   demoWorkspace = await page.evaluate(() => JSON.parse(sessionStorage.getItem("rewind-private-workspace")));
-  await writeFile(new URL("workspace.private.json", output), JSON.stringify(demoWorkspace), { mode: 0o600 });
+  if (record || process.env.REWIND_KEEP_WORKSPACE === "1") await writeFile(new URL("workspace.private.json", output), JSON.stringify(demoWorkspace), { mode: 0o600 });
   const currentResponse = await page.request.get(origin + "/api/workspaces/" + demoWorkspace.id + "/current", { headers: { Authorization: "Bearer " + demoWorkspace.token } });
   assert.equal(currentResponse.status(), 200); const currentFile = await currentResponse.body();
   await page.locator("#import-start-over").click(); await page.locator("#import-upload-toggle").click();

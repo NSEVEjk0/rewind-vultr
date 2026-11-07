@@ -1,52 +1,56 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Rewind — undo the import, keep the newer work</title><style>
+<html lang="en"><head><meta charset="utf-8"><title>Rewind — check the next import, undo the bad one</title><style>
 @page{size:13.333in 7.5in;margin:0}*{box-sizing:border-box}body{margin:0;color:#163e35;background:#f7f9f4;font-family:Arial,sans-serif}.slide{width:1280px;height:720px;padding:46px 64px;position:relative;break-after:page;overflow:hidden}.slide:last-child{break-after:auto}.brand{font-size:25px;font-weight:bold;margin-bottom:34px}.tag{font-size:13px;color:#657f73;letter-spacing:1.8px;text-transform:uppercase}h1{font-size:60px;line-height:1.07;letter-spacing:-1.6px;margin:17px 0 21px}h2{font-size:41px;letter-spacing:-1px;margin:14px 0 20px}p{font-size:22px;line-height:1.45;margin:0 0 20px}.muted{color:#657f73}.cards{display:flex;gap:20px;margin:26px 0}.card{flex:1;border:1px solid #d7e2d6;border-radius:16px;padding:20px 24px;background:white}.card b{display:block;font-size:36px;margin-bottom:8px}.card span{font-size:18px;line-height:1.4}.green{background:#e7f1e1}.foot{position:absolute;bottom:24px;font-size:13px;color:#688174;left:64px;right:64px;display:flex;justify-content:space-between;gap:25px}.status{position:absolute;top:49px;right:64px;background:#e7f1e1;color:#2c674e;padding:9px 15px;border-radius:30px;font-size:13px}.small{font-size:17px;color:#688174}.source{font-size:14px;color:#688174}.source a,.foot a{color:inherit}.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin:27px 0}.step{background:white;border:1px solid #d7e2d6;border-radius:14px;padding:20px;font-size:17px;line-height:1.5;min-height:135px}.step strong{display:block;font-size:22px;margin-bottom:9px}.step em{font-style:normal;color:#2c674e;font-weight:bold}.columns{display:flex;gap:36px}.columns>div{flex:1}.checks{font-size:22px;line-height:1.75}.check-box{background:#e7f1e1;padding:22px 25px;border-radius:16px}.code{font-family:monospace;font-size:22px;line-height:1.65;background:#173e35;color:#edf7e8;border-radius:14px;padding:24px;white-space:pre}.metric{font-size:48px;font-weight:bold;margin:5px 0}.containment-note{background:#e7f1e1;border:1px solid #c9dcc2;border-radius:15px;padding:20px 25px}.containment-note p{font-size:19px;margin:8px 0 0}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:23px}td,th{text-align:left;padding:16px;border-bottom:1px solid #d7e2d6}th{font-size:14px;color:#688174}.emphasis{color:#27775c;font-weight:bold}.right{margin-top:5px}.inline-link{font-size:16px;color:#2c674e}
 </style></head><body>
 <section class="slide">
   <div class="brand">◀◀ rewind</div><span class="status">Vultr Agent Rush · Blast Radius Zero</span>
-  <div class="tag">For shop operators, bookkeepers and people managing exported records</div>
-  <h1>Undo the bad import.<br>Keep the work done afterward.</h1>
-  <p>Wrong prices were imported. New invoices arrived, payments were recorded,<br>and a few prices were edited again. A whole-backup rollback would erase that work.</p>
-  <div class="cards"><div class="card"><b>117</b><span>damaged prices restored</span></div><div class="card green"><b>127</b><span>current records retained</span></div><div class="card green"><b>23</b><span>payment and price updates protected</span></div></div>
-  <p class="source">Shopify warns that product CSV imports cannot be canceled once started, included blank fields can overwrite values, and backups matter.<br><a href="https://help.shopify.com/en/manual/products/import-export/import-products">Source: Shopify Help Center · Importing products</a></p>
-  <div class="foot"><a href="https://rewind-vultr-ckay.vercel.app">rewind-vultr-ckay.vercel.app</a><span>CSV + SQLite · Review first · Download a checked copy</span></div>
+  <div class="tag">For shop operators, bookkeepers and teams handling bulk updates</div>
+  <h1>Check the next import.<br>Undo the bad one.</h1>
+  <p>You meant to update prices. The file also clears a field or resets a payment.<br>Catch that before import. Recover exact damaged values when a mistake gets through.</p>
+  <div class="cards"><div class="card green"><b>Before</b><span>Review and test the exact updates you want to import</span></div><div class="card green"><b>After</b><span>Restore damaged cells while keeping newer work</span></div><div class="card"><b>Every time</b><span>Use the same check before the next bulk update</span></div></div>
+  <p class="source">Shopify has already documented this problem: CSV imports cannot be canceled once started, and included blank fields can overwrite values.<br><a href="https://help.shopify.com/en/manual/products/import-export/import-products">Source: Shopify Help Center · Importing products</a></p>
+  <div class="foot"><a href="https://rewind-vultr-ckay.vercel.app">rewind-vultr-ckay.vercel.app</a><span>Open the app · Choose a workflow · Review exact changes</span></div>
 </section>
 <section class="slide">
-  <div class="brand">◀◀ rewind</div><div class="tag">Executed investigation, precise approval, independent verification</div>
-  <h2>The agent investigates. You approve the cells.</h2>
+  <div class="brand">◀◀ rewind</div><div class="tag">Before an import · A recurring check for the person responsible for updates</div>
+  <h2>You asked for new prices. Keep the other values.</h2>
   <div class="flow">
-    <div class="step"><strong>1. Inspect versions</strong>Good copy, incident checkpoint and today’s file are read by <em>trusted gVisor workers on Vultr</em>.</div>
-    <div class="step"><strong>2. Investigate</strong><em>Vultr Inference writes diagnostic code</em>. It runs in its own sandbox and compares the actual files.</div>
-    <div class="step green"><strong>3. Review the scope</strong>The controller validates the proposed cells and protects observed later edits. <em>The operator approves the exact plan.</em></div>
-    <div class="step"><strong>4. Generate the repair</strong><em>A second Vultr call</em> writes the approved recovery. Each key-and-field pair is explicit.</div>
-    <div class="step"><strong>5. Execute on copies</strong>The repair runs in <em>another gVisor container</em>. Originals stay read-only and unchanged.</div>
-    <div class="step green"><strong>6. Verify and export</strong>A fresh trusted worker inspects the result. <em>Every cell and all teardown checks must pass</em> before download.</div>
+    <div class="step"><strong>1. Bring two CSVs</strong>Today’s export and your proposed import are inspected in <em>separate gVisor containers on Vultr</em>.</div>
+    <div class="step"><strong>2. Say what should change</strong>Choose the intended fields and <em>a numeric change limit</em>, such as 25% for prices.</div>
+    <div class="step green"><strong>3. Hold mistakes out</strong>Blank overwrites, unexpected fields, large price changes and <em>unknown IDs stay out</em>.</div>
+    <div class="step"><strong>4. Approve exact cells</strong>Review every included update. <em>Both files, your rules and exact selection</em> are bound to approval.</div>
+    <div class="step"><strong>5. Execute the import</strong>Build the approved CSV and <em>apply it to a disposable copy</em> using updates to existing records by ID.</div>
+    <div class="step green"><strong>6. Check and download</strong>Fresh workers inspect both outputs. <em>Every approved and protected value</em> must match before download.</div>
   </div>
-  <p class="small">The model receives the incident description, structure and aggregate findings. Snapshot contents and extracted record values stay outside inference requests. Generated code never receives the acceptance answers.</p>
-  <div class="foot"><span>Vultr VM + Serverless Inference · At most two model calls per workspace</span><span>Human review binds fingerprints, exact cells and workspace version</span></div>
+  <p class="small"><strong>Executed example:</strong> 22 ordinary price updates included. 26 unwanted cell changes and one unknown ID excluded. All 24 records and payment statuses retained. Fixed preflight checks use no model calls.</p>
+  <div class="foot"><span>Download the approved import, its resulting export, complete changes and checks</span><span>Recheck if operational data changes</span></div>
 </section>
 <section class="slide">
-  <div class="brand">◀◀ rewind</div><div class="tag">Undo the mistake without resetting later edits</div>
-  <h2>Three prices changed again. Those stay.</h2>
-  <p>120 prices changed in the import. Only 117 still have the imported value.<br>The three overlapping edits keep today’s value.</p>
-  <table><thead><tr><th>RECORD</th><th>GOOD VERSION</th><th>AFTER THE IMPORT</th><th>TODAY’S VALUE · KEPT</th></tr></thead><tbody>
-    <tr><td>INV-0003</td><td>$28.75</td><td>$2875.00</td><td class="emphasis">$31.00 ✓</td></tr>
-    <tr><td>INV-0042</td><td>$77.50</td><td>$7750.00</td><td class="emphasis">$79.00 ✓</td></tr>
-    <tr><td>INV-0088</td><td>$135.00</td><td>$13500.00</td><td class="emphasis">$137.50 ✓</td></tr>
-  </tbody></table>
-  <div class="cards"><div class="card green"><b>7</b><span>new records retained</span></div><div class="card green"><b>20</b><span>payment updates retained</span></div><div class="card green"><b>3</b><span>later price edits retained</span></div></div>
-  <div class="foot"><span>Snapshots show observed differences; they cannot establish a complete edit history.</span><span>Two-version files use manual cell selection.</span></div>
+  <div class="brand">◀◀ rewind</div><div class="tag">After a mistake · Real AI investigation and recovery on Vultr</div>
+  <h2>The agent investigates. You approve the repair.</h2>
+  <div class="flow">
+    <div class="step"><strong>1. Inspect versions</strong>Bring the good copy, incident checkpoint and today’s file. <em>Trusted gVisor workers</em> read each version.</div>
+    <div class="step"><strong>2. Investigate the mistake</strong><em>Vultr Inference writes diagnostic code</em> that actually compares the three copies in its own sandbox.</div>
+    <div class="step green"><strong>3. Protect later edits</strong>The controller checks the proposal. <em>Observed overlaps stay unchanged</em>. You approve individual cells.</div>
+    <div class="step"><strong>4. Write the recovery</strong><em>A second Vultr call</em> writes the exact repair. Generated code receives the cell mask, not acceptance answers.</div>
+    <div class="step"><strong>5. Run on copies</strong>The repair executes in <em>another gVisor container</em>. Your originals stay unchanged.</div>
+    <div class="step green"><strong>6. Verify every value</strong>A fresh worker reads the result. The controller verifies <em>approved cells, protected values and cleanup</em>.</div>
+  </div>
+  <p class="small"><strong>Executed recovery:</strong> 117 prices restored; all 127 invoices kept, including seven newer records, twenty payment updates and three prices edited again afterward. CSV and SQLite are supported.</p>
+  <div class="foot"><span>At most two model calls · File contents and extracted record values stay outside inference</span><span>Checkpoint protects observed later edits</span></div>
 </section>
 <section class="slide">
-  <div class="brand">◀◀ rewind</div><div class="tag">Real work contained on Vultr, with output you can check</div>
-  <h2>A failed program gets stopped. A repair gets checked.</h2>
+  <div class="brand">◀◀ rewind</div><div class="tag">Contained execution and a practical reason to come back</div>
+  <h2>A result you can check. A reason to use it again.</h2>
   <div class="columns"><div>
     <div class="code">def recover(a, b, c, d):<br>    while True:<br>        pass</div>
     <div class="containment-note"><div class="metric">2 seconds</div><p>Separate runaway-code probe on Vultr.<br>Deadline enforced. Container removal confirmed.</p></div>
   </div><div class="right">
-    <div class="checks">✓ Executed diagnosis and recovery<br>✓ Correct approved replacements<br>✓ Every other value unchanged<br>✓ Same records and CSV order<br>✓ Original files unchanged<br>✓ Every temporary sandbox removed</div>
-    <p class="small" style="margin-top:20px">gVisor · no network · read-only inputs · nonroot<br>192 MiB RAM · 0.5 CPU · 48 PIDs · bounded output<br>Eight-second execution limit for ordinary worker runs</p>
-    <p class="small">CSV + SQLite · 1,000 records · 256 KiB per file<br>No account or email needed to try the live app.</p>
+    <h3 style="font-size:25px;margin:0 0 14px">Why a business would pay</h3>
+    <p style="font-size:20px">Someone has to check every price list or finance import and clean up mistakes afterward. That takes time and can affect sales or reconciliation.</p>
+    <div class="checks" style="font-size:20px;line-height:1.5">✓ Check the next bulk update before import<br>✓ Keep unintended edits out<br>✓ Recover exact mistakes and keep newer work<br>✓ Review the approved changes and evidence</div>
+    <p class="small" style="margin-top:18px">A team subscription for recurring checks and recovery is the natural commercial model. The public app is free to try.</p>
+    <p class="small">gVisor · no network · read-only inputs · nonroot<br>Every data check and every container’s removal must pass before download.</p>
   </div></div>
   <div class="foot"><a href="https://github.com/NSEVEjk0/rewind-vultr">github.com/NSEVEjk0/rewind-vultr</a><span>Source, recorded execution, recovered-file fingerprint and containment evidence</span></div>
 </section>

@@ -35,7 +35,7 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
-      - name: Actual browser inspection and plan, without inference
+      - name: Browser recovery plan and import execution, without inference
         env:
           REWIND_ACCESS_CODE: ci-fictional-example-only
           REWIND_STATE_DIR: .local/ci-state
@@ -59,4 +59,6 @@ jobs:
         if: always()
         with:
           name: rewind-verification
-          path: reports/
+          path: |
+            reports/
+            !reports/**/*.private.*

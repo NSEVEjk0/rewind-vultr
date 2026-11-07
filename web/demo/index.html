@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Rewind — undo the import, keep the later work</title>
-  <meta name="description" content="Watch Rewind investigate a bad import, restore 117 invoice prices and protect newer records, payments and later price edits on Vultr.">
+  <title>Rewind — check the next import, undo the bad one</title>
+  <meta name="description" content="Watch Rewind hold risky CSV updates out before an import, then investigate a bad import and restore 117 prices while preserving newer work on Vultr.">
   <link rel="icon" href="/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/demo/style.css">
   <script src="/demo/player.js" defer></script>
@@ -18,20 +18,20 @@
     </a>
     <a href="/">Open Rewind ↗</a>
   </nav>
-  <p class="eyebrow">Investigation, approval and checked recovery on Vultr</p>
+  <p class="eyebrow">Import checks, AI recovery and exact approval on Vultr</p>
   <div class="intro">
     <div>
-      <h1>Undo the import.<br>Keep what came after.</h1>
-      <p>A price import went wrong. Business kept moving. Rewind found 117 prices to restore and protected the records, payments and three prices edited afterward.</p>
+      <h1>Check the next import.<br>Undo the bad one.</h1>
+      <p>Before importing, hold out blank prices and unintended edits. After a mistake, restore the damaged values and keep newer work. See both workflows run on Vultr.</p>
     </div>
     <button id="play-video" type="button">Play the video ▶</button>
   </div>
-  <video id="demo-video" controls playsinline preload="metadata" poster="/demo/poster.jpg" aria-label="Rewind investigation and recovery walkthrough">
+  <video id="demo-video" controls playsinline preload="metadata" poster="/demo/poster.jpg" aria-label="Rewind import checking and AI recovery walkthrough">
     <source src="/demo/rewind-demo.mp4" type="video/mp4">
     <track kind="captions" src="/demo/rewind-captions.vtt" srclang="en" label="English" default>
     <a href="/demo/rewind-demo.mp4">Download the video</a>.
   </video>
-  <p id="player-status" class="details" aria-live="polite">Watch the investigation, review the exact repair, and see the checked result.</p>
+  <p id="player-status" class="details" aria-live="polite">See risky updates held out, exact human approval, and independently checked import and recovery results.</p>
   <div class="facts">
     <div><strong>117</strong><span>prices restored</span></div>
     <div><strong>127</strong><span>invoices kept</span></div>
@@ -44,6 +44,7 @@
     <a href="/demo/rewind-slides.pdf" download>Download the PDF</a>
     <a href="/demo/cover.png" download>Download the cover image</a>
     <a href="/demo/live-evidence.json">Read the recovery checks</a>
+    <a href="/demo/import-evidence.json">Read the import checks</a>
     <a href="/demo/recording.json">Read the recording details</a>
     <a href="/demo/containment-checks.json">Read the Vultr containment test</a>
     <a href="https://github.com/NSEVEjk0/rewind-vultr">Read the source on GitHub</a>
@@ -51,10 +52,13 @@
   </div>
   <section class="explanation">
     <h2>How you use Rewind</h2>
+    <p>Before the next import, bring today’s CSV export and the update you plan to import. Choose the intended fields and a numeric change limit. Rewind holds unwanted changes out, runs your exact approved update on a copy, and checks every resulting value. Download the approved import and the resulting export.</p>
     <p>Bring the last good version, a copy taken immediately after the mistake, and today’s file. Describe the import. Rewind investigates the copies, proposes individual cells to restore, and shows overlapping later edits that will stay.</p>
     <p>You approve the exact repair. The recovery runs in an isolated environment on Vultr, and a separate checker verifies every approved and protected value. Download the recovered CSV or SQLite copy when verification and cleanup pass.</p>
     <p>Have only two versions? Choose the damaged cells yourself. A third version is needed to identify observed later edits to those cells.</p>
     <p class="details">The walkthrough also shows an executed containment check: a program that keeps running is stopped at its deadline, and its temporary container is removed.</p>
+    <h2>Why a business would use it regularly</h2>
+    <p>Someone has to check every price list or finance import and clean up mistakes afterward. Rewind makes the next update easier to review and gives you a way to recover exact mistakes without resetting newer work. A team would pay to spend less time checking imports and repairing avoidable errors.</p>
   </section>
 </main>
 </body>

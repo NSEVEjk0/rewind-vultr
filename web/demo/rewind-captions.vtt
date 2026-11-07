@@ -1,168 +1,218 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:02.992
-An import goes wrong, but business does not stop.
+00:00:00.000 --> 00:00:03.029
+Shopify has already documented this problem: an import cannot
 
-00:00:02.992 --> 00:00:05.985
-New invoices arrive. Payments are recorded. Someone fixes a
+00:00:03.029 --> 00:00:06.058
+be canceled once it starts, and included blank fields
 
-00:00:05.985 --> 00:00:08.977
-few prices by hand. Restoring yesterday's backup would erase
+00:00:06.058 --> 00:00:09.087
+can overwrite existing values. Rewind helps you check the
 
-00:00:08.977 --> 00:00:11.970
-that later work. Rewind helps you undo the import
+00:00:09.087 --> 00:00:12.116
+next import before it runs, and undo exact damaged
 
-00:00:11.970 --> 00:00:13.632
-and keep what came afterward.
+00:00:12.116 --> 00:00:14.808
+values after a mistake while keeping newer work.
 
-00:00:14.132 --> 00:00:17.401
-I start with three versions: the last good export,
+00:00:15.320 --> 00:00:18.191
+For the next import, bring today's CSV export and
 
-00:00:17.401 --> 00:00:20.670
-a checkpoint just after the mistake, and today's file.
+00:00:18.191 --> 00:00:21.062
+the update you plan to import. Choose what should
 
-00:00:20.670 --> 00:00:23.940
-The checkpoint lets Rewind separate damaged prices from observed
+00:00:21.062 --> 00:00:23.934
+change. Here, I want prices to change, with a
 
-00:00:23.940 --> 00:00:27.209
-later edits. CSV exports and small SQLite snapshots are
+00:00:23.934 --> 00:00:26.805
+maximum increase or decrease of twenty-five percent. Payment
+statuses
 
-00:00:27.209 --> 00:00:27.572
-supported.
+00:00:26.805 --> 00:00:28.400
+should stay as they are.
 
-00:00:28.092 --> 00:00:31.315
-I describe the mistake: the import multiplied our prices
+00:00:28.920 --> 00:00:32.046
+Rewind finds twenty-two ordinary price updates. It holds out
 
-00:00:31.315 --> 00:00:34.538
-by one hundred. Vultr Serverless Inference writes an investigation
+00:00:32.046 --> 00:00:35.173
+a price multiplied by one hundred, a blank price,
 
-00:00:34.538 --> 00:00:37.761
-that reads the three copies in its own gVisor
+00:00:35.173 --> 00:00:38.299
+and twenty-four unwanted payment changes. The unknown record ID
 
-00:00:37.761 --> 00:00:40.984
-environment. The controller checks the proposed cells against
-separate
+00:00:38.299 --> 00:00:41.425
+stays out too. I can remove any other update
 
-00:00:40.984 --> 00:00:41.700
-trusted inspections.
+00:00:41.425 --> 00:00:42.120
+before approving.
 
-00:00:42.212 --> 00:00:45.420
-The investigation finds one hundred seventeen prices to restore.
+00:00:42.640 --> 00:00:45.704
+I review the exact twenty-two cells. Approval is tied
 
-00:00:45.420 --> 00:00:48.628
-Three prices changed again after the mistake, so they
+00:00:45.704 --> 00:00:48.768
+to both files, my chosen rules and the exact
 
-00:00:48.628 --> 00:00:51.837
-are protected. I can uncheck individual cells. Approval applies
+00:00:48.768 --> 00:00:51.831
+selection. Changing any of those requires a new plan.
 
-00:00:51.837 --> 00:00:54.332
-only to the exact cells I select.
+00:00:51.831 --> 00:00:54.895
+The import updates existing records by ID and preserves
 
-00:00:54.852 --> 00:00:58.215
-Before approving, I review the complete repair. A whole-backup
+00:00:54.895 --> 00:00:55.576
+other fields.
 
-00:00:58.215 --> 00:01:01.577
-replacement would remove seven newer invoices and reset twenty-
-three
+00:00:56.080 --> 00:00:59.621
+Rewind builds the approved CSV inside gVisor on Vultr,
 
-00:01:01.577 --> 00:01:04.940
-updates. Rewind keeps all one hundred twenty-seven records and
+00:00:59.621 --> 00:01:03.163
+then executes that import against a disposable copy. Fresh
 
-00:01:04.940 --> 00:01:08.302
-every value outside the repair. I approve this exact
+00:01:03.163 --> 00:01:06.704
+workers inspect both outputs. The controller independently checks
+every
 
-00:01:08.302 --> 00:01:08.676
-plan.
+00:01:06.704 --> 00:01:10.245
+approved and protected value. This recurring check makes no
 
-00:01:09.176 --> 00:01:12.547
-Vultr AI writes the approved recovery. It runs on
+00:01:10.245 --> 00:01:11.032
+model calls.
 
-00:01:12.547 --> 00:01:15.917
-disposable copies in a separate container, without network access
+00:01:11.532 --> 00:01:14.519
+The import is checked and ready. All twenty-four records
 
-00:01:15.917 --> 00:01:19.288
+00:01:14.519 --> 00:01:17.506
+and their payment statuses remain. I download the approved
+
+00:01:17.506 --> 00:01:20.493
+import and resulting export, with a complete change list.
+
+00:01:20.493 --> 00:01:23.480
+If the business data changes before importing, I check
+
+00:01:23.480 --> 00:01:25.140
+again against a fresh export.
+
+00:01:25.652 --> 00:01:28.654
+When an import has already gone wrong, I bring
+
+00:01:28.654 --> 00:01:31.656
+three versions: the last good copy, a checkpoint just
+
+00:01:31.656 --> 00:01:34.658
+after the mistake, and today's file. The checkpoint helps
+
+00:01:34.658 --> 00:01:37.659
+identify the later edits that should stay. CSV and
+
+00:01:37.659 --> 00:01:38.660
+SQLite are supported.
+
+00:01:39.172 --> 00:01:42.474
+I describe the mistake: prices were multiplied by one
+
+00:01:42.474 --> 00:01:45.775
+hundred. Vultr Serverless Inference writes diagnostic code that
+actually
+
+00:01:45.775 --> 00:01:49.077
+compares the copies in its own gVisor environment. The
+
+00:01:49.077 --> 00:01:52.379
+controller checks the proposed repair against separate trusted
+inspections,
+
+00:01:52.379 --> 00:01:54.580
+rather than trusting the agent's description.
+
+00:01:55.092 --> 00:01:58.473
+The agent proposes restoring one hundred seventeen prices. Three
+
+00:01:58.473 --> 00:02:01.853
+prices changed again afterward, so they are protected. I
+
+00:02:01.853 --> 00:02:05.234
+review and approve the exact repair. A whole-backup replacement
+
+00:02:05.234 --> 00:02:08.615
+would lose newer invoices and updates. Rewind keeps today's
+
+00:02:08.615 --> 00:02:11.244
+records and every value outside my approval.
+
+00:02:11.744 --> 00:02:14.905
+A second Vultr call writes the repair. It runs
+
+00:02:14.905 --> 00:02:18.067
+on copies in another isolated container, without network access
+
+00:02:18.067 --> 00:02:21.228
 or controller credentials. A fresh trusted worker reads the
 
-00:01:19.288 --> 00:01:22.659
-output. The controller checks every approved replacement and every
+00:02:21.228 --> 00:02:24.390
+output. The controller checks the resulting values independently.
+The
 
-00:01:22.659 --> 00:01:23.408
-protected cell.
+00:02:24.390 --> 00:02:27.200
+agent cannot mark its own repair as passed.
 
-00:01:23.908 --> 00:01:27.130
+00:02:27.704 --> 00:02:31.046
 One hundred seventeen prices are restored. All one hundred
 
-00:01:27.130 --> 00:01:30.353
-twenty-seven invoices remain. Seven newer records, twenty
-payments, and
+00:02:31.046 --> 00:02:34.388
+twenty-seven invoices remain, including seven newer records,
+twenty payment
 
-00:01:30.353 --> 00:01:33.575
-three later price edits are kept. The approved replacements
+00:02:34.388 --> 00:02:37.730
+updates and three later price edits. The replacements match
 
-00:01:33.575 --> 00:01:36.798
-match the good version. Every other cell matches today's
+00:02:37.730 --> 00:02:41.072
+the good version. Every other cell keeps today's value.
 
-00:01:36.798 --> 00:01:37.156
-file.
+00:02:41.584 --> 00:02:44.769
+I download the recovered CSV and all one hundred
 
-00:01:37.668 --> 00:01:40.655
-Here are the three overlapping prices. You can see
+00:02:44.769 --> 00:02:47.953
+seventeen changes. Every data check passed, the originals stayed
 
-00:01:40.655 --> 00:01:43.642
-the good value, the value after the mistake, and
+00:02:47.953 --> 00:02:51.138
+unchanged, and all seven temporary containers were removed before
 
-00:01:43.642 --> 00:01:46.629
-today's value. Today's price wins. Rewind leaves those cells
+00:02:51.138 --> 00:02:54.322
+download became available. You get a checked copy to
 
-00:01:46.629 --> 00:01:49.284
-alone, preserving the work done after the import.
+00:02:54.322 --> 00:02:55.384
+review and apply.
 
-00:01:49.788 --> 00:01:53.676
-Both model requests used Vultr Inference. Seven isolated runs
+00:02:55.904 --> 00:02:59.257
+This separate containment test also ran on Vultr. A
 
-00:01:53.676 --> 00:01:57.564
-completed, including the investigation, recovery, and separate
-result inspection.
+00:02:59.257 --> 00:03:02.611
+program tries to keep running. Rewind stops it at
 
-00:01:57.564 --> 00:02:01.452
-The data checks passed, the original files stayed unchanged,
+00:03:02.611 --> 00:03:05.964
+the two-second deadline and confirms removal. The broader checks
 
-00:02:01.452 --> 00:02:05.340
-and every temporary container was removed before download became
+00:03:05.964 --> 00:03:09.318
+also reject whole-backup replacements and unchecked imports. All
+fifty-five
 
-00:02:05.340 --> 00:02:05.772
-available.
+00:03:09.318 --> 00:03:10.808
+test containers were removed.
 
-00:02:06.272 --> 00:02:09.687
-I download the recovered CSV and complete change list.
+00:03:11.308 --> 00:03:14.017
+Why would a business pay? Someone has to check
 
-00:02:09.687 --> 00:02:13.102
-The evidence includes the approved plan, file fingerprints, real
+00:03:14.017 --> 00:03:16.726
+each supplier price list or finance import, and clean
 
-00:02:13.102 --> 00:02:16.517
-model response identifiers, and confirmed container removal.
-Rewind returns
+00:03:16.726 --> 00:03:19.435
+up mistakes afterward. Rewind helps that person review routine
 
-00:02:16.517 --> 00:02:19.933
-a checked copy. The operator decides when to apply
+00:03:19.435 --> 00:03:22.144
+updates and recover precise errors while keeping newer work.
 
-00:02:19.933 --> 00:02:20.312
-it.
+00:03:22.144 --> 00:03:24.853
+That is a recurring job with a clear reason
 
-00:02:20.832 --> 00:02:23.715
-This separate containment check ran on the same Vultr
-
-00:02:23.715 --> 00:02:26.598
-worker. A program tries to keep running. The sandbox
-
-00:02:26.598 --> 00:02:29.481
-stops it at the two-second deadline and verifies that
-
-00:02:29.481 --> 00:02:32.364
-its container is gone. Recovery tests also rejected a
-
-00:02:32.364 --> 00:02:35.247
-whole-backup replacement and a blind price reset that would
-
-00:02:35.247 --> 00:02:36.528
-erase the later edits.
+00:03:24.853 --> 00:03:25.756
+to come back.

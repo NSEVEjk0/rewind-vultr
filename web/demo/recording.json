@@ -2,28 +2,29 @@
   "completed": true,
   "sample_invoice_inputs": true,
   "actual_vultr_recovery": true,
+  "actual_vultr_import_preflight": true,
   "live_app_url": "https://rewind-vultr-ckay.vercel.app",
   "model_calls": 2,
   "model_attempts": 1,
   "diagnosis_provider": {
     "name": "vultr-serverless-inference",
     "model": "glm-5.3-flash",
-    "response_id": "chatcmpl-992a8021-87ea-48b2-9a60-f8e50039c69e",
+    "response_id": "chatcmpl-7d061e66-5d86-4666-bd11-1b3adf75c1ea",
     "usage": {
       "prompt_tokens": 716,
-      "completion_tokens": 642,
-      "total_tokens": 1358
+      "completion_tokens": 941,
+      "total_tokens": 1657
     }
   },
   "provider": [
     {
       "name": "vultr-serverless-inference",
       "model": "glm-5.3-flash",
-      "response_id": "chatcmpl-72851c9f-74e6-4721-a929-eabab29053dc",
+      "response_id": "chatcmpl-135bfa52-5001-42f8-b5a0-60e8bab96eac",
       "usage": {
         "prompt_tokens": 554,
-        "completion_tokens": 948,
-        "total_tokens": 1502
+        "completion_tokens": 729,
+        "total_tokens": 1283
       }
     }
   ],
@@ -80,17 +81,101 @@
   },
   "sandbox_runs": 7,
   "all_sandboxes_removed": true,
-  "evidence_sha256": "3cfef820b46577d60a6ad3897bf6c5dede496313ce0d9bec3b74e507f716a5a5",
+  "evidence_sha256": "da97667ed9c7eaf6f9183e70fe3f0fcc6a9df89769b6fc11e11bf55ccaeb564e",
   "artifact_sha256": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384",
-  "source_video_sha256": "eae2cd092121265db78d01504d2c78662bf7aca121ccf3d9248155e29f370d8f",
-  "mp4_sha256": "b5156797b008147d0f15a19cb6e46ac0f3ca77aadb662b3eb6b19644c9bd5738",
-  "duration_seconds": 157.053047,
+  "source_video_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+  "import_preflight": {
+    "model_calls": 0,
+    "sandbox_runs": 7,
+    "contract": "update-existing-by-id-v1",
+    "evidence_sha256": "2a1600c86046de18947c7c62addc079f89fa69658de62b39ccb32e10187a86c4",
+    "approved_import_sha256": "af1abbd4ec76f08c8bb69eaf0aa12277ea7f37f052d0844a2ed54fd3b98899fc",
+    "artifact_sha256": "7c31fdf58e0ab5884045957bd3806ae1e8687abc94df756fdcd7d8c4c9894dbd",
+    "verification": {
+      "ok": true,
+      "checks": [
+        {
+          "id": "approved-csv-integrity",
+          "label": "The approved import passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "approved-columns",
+          "label": "Only the ID and approved fields are included",
+          "ok": true
+        },
+        {
+          "id": "approved-records",
+          "label": "Only records with approved changes are included",
+          "ok": true
+        },
+        {
+          "id": "approved-record-order",
+          "label": "Approved records keep their export order",
+          "ok": true
+        },
+        {
+          "id": "exact-import-values",
+          "label": "Every import value matches the exact approved plan",
+          "ok": true
+        },
+        {
+          "id": "preview-csv-integrity",
+          "label": "The import result passed a fresh CSV inspection",
+          "ok": true
+        },
+        {
+          "id": "same-schema",
+          "label": "The resulting export keeps every original field",
+          "ok": true
+        },
+        {
+          "id": "same-records",
+          "label": "All existing records stay, with no additions or deletions",
+          "ok": true
+        },
+        {
+          "id": "same-record-order",
+          "label": "The resulting export keeps every record in order",
+          "ok": true
+        },
+        {
+          "id": "approved-cells",
+          "label": "Every approved update has its requested value",
+          "ok": true
+        },
+        {
+          "id": "protected-cells",
+          "label": "Every cell outside approval keeps today's value",
+          "ok": true
+        },
+        {
+          "id": "input-fingerprints",
+          "label": "Approval is bound to both uploaded files",
+          "ok": true
+        }
+      ],
+      "updated_cells": 22,
+      "retained_rows": 24,
+      "withheld_cells": 26,
+      "unknown_ids": 1
+    },
+    "source_video_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+    "all_sandboxes_removed": true
+  },
+  "download_from_existing_verified_workspace": {
+    "artifact_sha256": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384",
+    "complete_changes_verified": true,
+    "model_requests": 0
+  },
+  "mp4_sha256": "209c0e0db5a6eaaaf7bceb82a9af4b4381ade1c297b389a27a39792c7585faa9",
+  "duration_seconds": 206.288985,
   "narration": "Microsoft Edge TTS, en-US-AndrewNeural",
-  "editing": "Actual live screenshots and the recorded successful Vultr diagnosis/recovery. Downloads were separately recorded from that same completed workspace. Recorded movements are slowed to fit narration. The final segment renders an actual completed fixed-program containment test. No additional model request was made for editing or verification.",
+  "editing": "Project slides and actual recordings of the successful Vultr import check, AI investigation and AI recovery. Downloads were separately recorded from the same completed recovery workspace. Recorded movements are slowed to fit narration. The containment segment renders an actual completed fixed-program test. No additional model call was made for editing or verification.",
   "containment_test": {
     "reference_programs_only": true,
     "executed_on_vultr": true,
-    "sandbox_runs": 38,
+    "sandbox_runs": 55,
     "deadline_seconds": 2,
     "observed_elapsed_ms": 2005,
     "stop_reason": "timeout",
@@ -101,117 +186,155 @@
       "name": "problem",
       "source_start_seconds": null,
       "source_end_seconds": null,
-      "source_kind": "actual-live-app-screenshot",
+      "source_kind": "project-slide",
+      "source_sha256": "7fa641ece72ff25b74630c3ae46907bdcddadc91c42fbfcb7273fab39aaa319b",
       "film_start_seconds": 0.0,
-      "film_seconds": 14.132,
-      "narration_seconds": 13.632,
-      "text": "An import goes wrong, but business does not stop. New invoices arrive. Payments are recorded. Someone fixes a few prices by hand. Restoring yesterday's backup would erase that later work. Rewind helps you undo the import and keep what came afterward."
+      "film_seconds": 15.32,
+      "narration_seconds": 14.808,
+      "text": "Shopify has already documented this problem: an import cannot be canceled once it starts, and included blank fields can overwrite existing values. Rewind helps you check the next import before it runs, and undo exact damaged values after a mistake while keeping newer work."
     },
     {
-      "name": "versions",
-      "source_start_seconds": 9.071,
-      "source_end_seconds": 11.69,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 14.132,
-      "film_seconds": 13.96,
-      "narration_seconds": 13.44,
-      "text": "I start with three versions: the last good export, a checkpoint just after the mistake, and today's file. The checkpoint lets Rewind separate damaged prices from observed later edits. CSV exports and small SQLite snapshots are supported."
+      "name": "import-inputs",
+      "source_start_seconds": 10.8,
+      "source_end_seconds": 14.4,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+      "film_start_seconds": 15.32,
+      "film_seconds": 13.6,
+      "narration_seconds": 13.08,
+      "text": "For the next import, bring today's CSV export and the update you plan to import. Choose what should change. Here, I want prices to change, with a maximum increase or decrease of twenty-five percent. Payment statuses should stay as they are."
     },
     {
-      "name": "investigation",
-      "source_start_seconds": 11.69,
-      "source_end_seconds": 17.563,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 28.092,
+      "name": "import-held-changes",
+      "source_start_seconds": 14.4,
+      "source_end_seconds": 17.2,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+      "film_start_seconds": 28.92,
+      "film_seconds": 13.72,
+      "narration_seconds": 13.2,
+      "text": "Rewind finds twenty-two ordinary price updates. It holds out a price multiplied by one hundred, a blank price, and twenty-four unwanted payment changes. The unknown record ID stays out too. I can remove any other update before approving."
+    },
+    {
+      "name": "import-exact-approval",
+      "source_start_seconds": 21.0,
+      "source_end_seconds": 29.55,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+      "film_start_seconds": 42.64,
+      "film_seconds": 13.44,
+      "narration_seconds": 12.936,
+      "text": "I review the exact twenty-two cells. Approval is tied to both files, my chosen rules and the exact selection. Changing any of those requires a new plan. The import updates existing records by ID and preserves other fields."
+    },
+    {
+      "name": "import-execution",
+      "source_start_seconds": 29.6,
+      "source_end_seconds": 35.761,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+      "film_start_seconds": 56.08,
+      "film_seconds": 15.452,
+      "narration_seconds": 14.952,
+      "text": "Rewind builds the approved CSV inside gVisor on Vultr, then executes that import against a disposable copy. Fresh workers inspect both outputs. The controller independently checks every approved and protected value. This recurring check makes no model calls."
+    },
+    {
+      "name": "import-result-downloads",
+      "source_start_seconds": 37.8,
+      "source_end_seconds": 40.501,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "ee94752aa5663308368c3734d8b6763e21911f4da006edb8f290e2e7328bd66b",
+      "film_start_seconds": 71.532,
       "film_seconds": 14.12,
       "narration_seconds": 13.608,
-      "text": "I describe the mistake: the import multiplied our prices by one hundred. Vultr Serverless Inference writes an investigation that reads the three copies in its own gVisor environment. The controller checks the proposed cells against separate trusted inspections."
+      "text": "The import is checked and ready. All twenty-four records and their payment statuses remain. I download the approved import and resulting export, with a complete change list. If the business data changes before importing, I check again against a fresh export."
     },
     {
-      "name": "selection",
-      "source_start_seconds": 17.948,
-      "source_end_seconds": 22.35,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 42.211999999999996,
-      "film_seconds": 12.64,
-      "narration_seconds": 12.12,
-      "text": "The investigation finds one hundred seventeen prices to restore. Three prices changed again after the mistake, so they are protected. I can uncheck individual cells. Approval applies only to the exact cells I select."
+      "name": "recovery-versions",
+      "source_start_seconds": 7.543,
+      "source_end_seconds": 10.18,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+      "film_start_seconds": 85.652,
+      "film_seconds": 13.52,
+      "narration_seconds": 13.008,
+      "text": "When an import has already gone wrong, I bring three versions: the last good copy, a checkpoint just after the mistake, and today's file. The checkpoint helps identify the later edits that should stay. CSV and SQLite are supported."
     },
     {
-      "name": "approval",
-      "source_start_seconds": 22.35,
-      "source_end_seconds": 24.851,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 54.852,
-      "film_seconds": 14.324,
-      "narration_seconds": 13.824,
-      "text": "Before approving, I review the complete repair. A whole-backup replacement would remove seven newer invoices and reset twenty-three updates. Rewind keeps all one hundred twenty-seven records and every value outside the repair. I approve this exact plan."
+      "name": "ai-investigation",
+      "source_start_seconds": 10.18,
+      "source_end_seconds": 21.752,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+      "film_start_seconds": 99.172,
+      "film_seconds": 15.92,
+      "narration_seconds": 15.408,
+      "text": "I describe the mistake: prices were multiplied by one hundred. Vultr Serverless Inference writes diagnostic code that actually compares the copies in its own gVisor environment. The controller checks the proposed repair against separate trusted inspections, rather than trusting the agent's description."
     },
     {
-      "name": "recovery",
-      "source_start_seconds": 24.851,
-      "source_end_seconds": 35.821,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 69.176,
-      "film_seconds": 14.732,
-      "narration_seconds": 14.232,
-      "text": "Vultr AI writes the approved recovery. It runs on disposable copies in a separate container, without network access or controller credentials. A fresh trusted worker reads the output. The controller checks every approved replacement and every protected cell."
+      "name": "recovery-approval",
+      "source_start_seconds": 22.145,
+      "source_end_seconds": 29.526,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+      "film_start_seconds": 115.092,
+      "film_seconds": 16.652,
+      "narration_seconds": 16.152,
+      "text": "The agent proposes restoring one hundred seventeen prices. Three prices changed again afterward, so they are protected. I review and approve the exact repair. A whole-backup replacement would lose newer invoices and updates. Rewind keeps today's records and every value outside my approval."
     },
     {
-      "name": "result",
-      "source_start_seconds": 35.821,
-      "source_end_seconds": 38.812,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 83.908,
-      "film_seconds": 13.76,
-      "narration_seconds": 13.248,
-      "text": "One hundred seventeen prices are restored. All one hundred twenty-seven invoices remain. Seven newer records, twenty payments, and three later price edits are kept. The approved replacements match the good version. Every other cell matches today's file."
+      "name": "ai-recovery",
+      "source_start_seconds": 29.526,
+      "source_end_seconds": 36.982,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+      "film_start_seconds": 131.744,
+      "film_seconds": 15.96,
+      "narration_seconds": 15.456,
+      "text": "A second Vultr call writes the repair. It runs on copies in another isolated container, without network access or controller credentials. A fresh trusted worker reads the output. The controller checks the resulting values independently. The agent cannot mark its own repair as passed."
     },
     {
-      "name": "protected-edits",
-      "source_start_seconds": 38.812,
-      "source_end_seconds": 41.407,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 97.668,
-      "film_seconds": 12.12,
-      "narration_seconds": 11.616,
-      "text": "Here are the three overlapping prices. You can see the good value, the value after the mistake, and today's value. Today's price wins. Rewind leaves those cells alone, preserving the work done after the import."
+      "name": "recovery-result",
+      "source_start_seconds": 36.982,
+      "source_end_seconds": 42.746,
+      "source_kind": "actual-live-screen-recording",
+      "source_sha256": "6b244b723ec061470a7dc248c2c93406f4772458e2a238608aab9b3ea92836cf",
+      "film_start_seconds": 147.704,
+      "film_seconds": 13.88,
+      "narration_seconds": 13.368,
+      "text": "One hundred seventeen prices are restored. All one hundred twenty-seven invoices remain, including seven newer records, twenty payment updates and three later price edits. The replacements match the good version. Every other cell keeps today's value."
     },
     {
-      "name": "verification",
-      "source_start_seconds": 41.407,
-      "source_end_seconds": 44.606,
-      "source_kind": "actual-screen-recording",
-      "film_start_seconds": 109.78800000000001,
-      "film_seconds": 16.484,
-      "narration_seconds": 15.984,
-      "text": "Both model requests used Vultr Inference. Seven isolated runs completed, including the investigation, recovery, and separate result inspection. The data checks passed, the original files stayed unchanged, and every temporary container was removed before download became available."
+      "name": "recovery-downloads",
+      "source_start_seconds": 6.332,
+      "source_end_seconds": 9.21,
+      "source_kind": "actual-screen-recording-of-downloads-from-completed-workspace",
+      "source_sha256": "4b6e9f9c70a5b8f91eb4622a0b1c5041f01a550e996d32fa891d18fbe9faa96f",
+      "film_start_seconds": 161.584,
+      "film_seconds": 14.32,
+      "narration_seconds": 13.8,
+      "text": "I download the recovered CSV and all one hundred seventeen changes. Every data check passed, the originals stayed unchanged, and all seven temporary containers were removed before download became available. You get a checked copy to review and apply."
     },
     {
-      "name": "download",
-      "source_start_seconds": 5.604,
-      "source_end_seconds": 8.676,
-      "source_kind": "actual-screen-recording-of-downloads-from-the-completed-workspace",
-      "film_start_seconds": 126.27200000000002,
-      "film_seconds": 14.56,
-      "narration_seconds": 14.04,
-      "text": "I download the recovered CSV and complete change list. The evidence includes the approved plan, file fingerprints, real model response identifiers, and confirmed container removal. Rewind returns a checked copy. The operator decides when to apply it.",
-      "source_video_sha256": "5d3faa44e03a01666de80479ceb98a034a61096ba3544fa5d811b910fd23ff09"
-    },
-    {
-      "name": "containment",
+      "name": "vultr-containment",
       "source_start_seconds": null,
       "source_end_seconds": null,
       "source_kind": "actual-browser-rendering-of-recorded-Vultr-test-result",
-      "film_start_seconds": 140.83200000000002,
-      "film_seconds": 16.2,
-      "narration_seconds": 15.696,
-      "text": "This separate containment check ran on the same Vultr worker. A program tries to keep running. The sandbox stops it at the two-second deadline and verifies that its container is gone. Recovery tests also rejected a whole-backup replacement and a blind price reset that would erase the later edits."
+      "source_sha256": "ff061dce50c7806ef6f75f67e74e79d3adf9c497eda6690dbd885618ff07e9f2",
+      "film_start_seconds": 175.904,
+      "film_seconds": 15.404,
+      "narration_seconds": 14.904,
+      "text": "This separate containment test also ran on Vultr. A program tries to keep running. Rewind stops it at the two-second deadline and confirms removal. The broader checks also reject whole-backup replacements and unchecked imports. All fifty-five test containers were removed."
+    },
+    {
+      "name": "why-a-team-would-pay",
+      "source_start_seconds": null,
+      "source_end_seconds": null,
+      "source_kind": "project-slide",
+      "source_sha256": "033030c89135022f9d354f7b7dc3fad3dd3e1b9540745c0488687758c928b2a8",
+      "film_start_seconds": 191.308,
+      "film_seconds": 14.96,
+      "narration_seconds": 14.448,
+      "text": "Why would a business pay? Someone has to check each supplier price list or finance import, and clean up mistakes afterward. Rewind helps that person review routine updates and recover precise errors while keeping newer work. That is a recurring job with a clear reason to come back."
     }
-  ],
-  "download_from_existing_verified_workspace": {
-    "artifact_sha256": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384",
-    "complete_changes_verified": true,
-    "model_requests": 0
-  }
+  ]
 }

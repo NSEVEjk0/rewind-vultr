@@ -4049,7 +4049,7 @@
       "current_sha256": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
       "checkpoint_sha256": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
       "workspace_version": 12,
-      "diagnosis_sha256": "ad571b3e41d62e5e8ca70966b64ff40a587f90f63c8ad2eca772a738e0296ac8",
+      "diagnosis_sha256": "99e93da9612eebe2420a30db2d1f38bbbad5a3226a94b985a0b4abc5a6c12692",
       "history": {
         "checkpoint_available": true,
         "note": "Changes observed after the incident are protected. Snapshots cannot reveal edits that returned to the same value.",
@@ -4494,39 +4494,39 @@
         "lost_current_rows": 7,
         "reverted_protected_updates": 23
       },
-      "sha256": "9ab7437a534e61042402b5db7ea243bdaadf031c5974c48a7325c0304ad58ecc"
+      "sha256": "33a5e612fb42e4cf77fe12d91687a5f1b291924a3260637ad61d8ea5210eadc3"
     },
     "diagnosis": {
       "status": "proposed",
       "model_calls": 1,
       "attempt": {
-        "code": "import csv\n\n\ndef _read_csv(path):\n    with open(path, 'r', encoding='utf-8-sig', newline='') as f:\n        return {row['invoice_id']: row for row in csv.DictReader(f)}\n\n\ndef diagnose(backup_path, checkpoint_path, current_path, context):\n    backup = _read_csv(backup_path)\n    checkpoint = _read_csv(checkpoint_path)\n    current = _read_csv(current_path)\n\n    # The incident multiplied prices by 100; only the price column changed\n    # between backup and checkpoint. Payment_status changes happened later\n    # and must be kept, so they are not touched.\n    affected_columns = ['price']\n\n    cells = []\n    for key in backup:\n        if key not in checkpoint or key not in current:\n            continue\n        before = backup[key]\n        after = checkpoint[key]\n        for col in affected_columns:\n            if before.get(col) != after.get(col):\n                cells.append({\n                    'key': {'type': 'text', 'value': key},\n                    'column': col,\n                })\n                if len(cells) >= 1000:\n                    break\n        if len(cells) >= 1000:\n            break\n\n    summary = (\n        \"The bad import multiplied the price column by 100 for all 120 records \"\n        \"that existed at the time; comparing the last good backup with the \"\n        \"checkpoint right after the import confirmed price changed on every \"\n        \"record while customer, payment_status and created_on did not change \"\n        \"during the incident. The proposed cells revert price on records \"\n        \"present in all three versions, excluding the 7 records created after \"\n        \"the incident and any record missing today. Records whose price was \"\n        \"edited again after the incident are still included because the \"\n        \"controller independently protects overlaps. Later payment_status \"\n        \"updates are left untouched, and no files were modified.\"\n    )\n    return {'cells': cells, 'summary': summary}\n",
-        "explanation": "The diagnosis reads the three CSV copies with csv.DictReader (utf-8-sig, newline=''), keys rows by the literal invoice_id string, and compares the last good backup against the checkpoint taken right after the bad import. Only the price column differs between those two versions, matching the reported 100x multiplication, so price is the affected field. For each record present in all three versions whose price changed between backup and checkpoint, one cell is proposed to revert it; the 7 post-incident records and any record absent today are excluded, later payment_status edits are preserved, and no file is modified.",
-        "sha256": "a66d588374a470ab87353517a10023967de37a7d4a21f9b21dbffb43362d979f",
+        "code": "import csv, json, sqlite3\n\n\ndef _read_csv(path, pk):\n    rows = {}\n    with open(path, 'r', encoding='utf-8-sig', newline='') as f:\n        for r in csv.DictReader(f):\n            k = r.get(pk)\n            if k is not None:\n                rows[k] = r\n    return rows\n\n\ndef _read_sqlite(path, table, pk):\n    rows = {}\n    con = sqlite3.connect('file:%s?mode=ro&immutable=1' % path, uri=True)\n    try:\n        cur = con.execute('SELECT * FROM \"%s\"' % table.replace('\"', '\"\"'))\n        names = [d[0] for d in cur.description]\n        for row in cur.fetchall():\n            d = dict(zip(names, row))\n            k = d.get(pk)\n            if k is not None:\n                rows[str(k)] = d\n    finally:\n        con.close()\n    return rows\n\n\ndef _load(path, fmt, table, pk):\n    if fmt == 'csv':\n        return _read_csv(path, pk)\n    return _read_sqlite(path, table, pk)\n\n\ndef _key_type(value):\n    if isinstance(value, int):\n        return 'integer'\n    try:\n        int(str(value))\n        return 'integer'\n    except (ValueError, TypeError):\n        return 'text'\n\n\ndef diagnose(backup_path, checkpoint_path, current_path, context):\n    fmt = context.get('format', 'csv')\n    table = context.get('table', 'records')\n    pk = context.get('primary_key', 'id')\n    columns = context.get('columns', [])\n\n    good = _load(backup_path, fmt, table, pk)\n    after = _load(checkpoint_path, fmt, table, pk)\n    today = _load(current_path, fmt, table, pk)\n\n    # Affected fields: those that actually changed between backup and checkpoint.\n    affected = []\n    for col in columns:\n        name = col['name'] if isinstance(col, dict) else col\n        changed = False\n        for k, row in after.items():\n            g = good.get(k)\n            if g is not None and str(g.get(name)) != str(row.get(name)):\n                changed = True\n                break\n        if changed:\n            affected.append(name)\n\n    cells = []\n    for k in sorted(after.keys(), key=lambda x: str(x)):\n        if k not in good or k not in today:\n            continue\n        for name in affected:\n            if str(good[k].get(name)) != str(after[k].get(name)):\n                cells.append({\n                    'key': {'type': _key_type(k), 'value': str(k)},\n                    'column': name,\n                })\n\n    cells = cells[:1000]\n\n    summary = (\n        \"Compared the last good backup, the checkpoint right after the bad \"\n        \"import, and today's file. The import changed the price column \"\n        \"(values were multiplied by 100); customer, payment_status and \"\n        \"created_on were not touched by the import itself. We listed the \"\n        \"price cells that the import changed for records present in all \"\n        \"three versions, so they can be restored to their good values, \"\n        \"while any price or payment_status edits made after the incident \"\n        \"are left alone. Records added after the incident are excluded. \"\n        \"No files were modified.\"\n    )\n\n    return {'cells': cells, 'summary': summary}\n",
+        "explanation": "The bad import multiplied the price column by 100; the diagnostic compares backup, checkpoint and current CSV files and lists the incident-changed price cells for records present in all three versions, excluding post-incident additions and leaving later edits untouched.",
+        "sha256": "b9d9ffbbd9a9b934240f4be63091c83393e0b2d7e88a401a033a8bd91a0bd965",
         "provider": {
           "name": "vultr-serverless-inference",
           "model": "glm-5.3-flash",
-          "response_id": "chatcmpl-992a8021-87ea-48b2-9a60-f8e50039c69e",
+          "response_id": "chatcmpl-7d061e66-5d86-4666-bd11-1b3adf75c1ea",
           "usage": {
             "prompt_tokens": 716,
-            "completion_tokens": 642,
-            "total_tokens": 1358
+            "completion_tokens": 941,
+            "total_tokens": 1657
           }
         },
         "data_sent": "Your incident description, file format, table/field names and types, and trusted aggregate change counts. No snapshot contents or extracted row values and record IDs are automatically included.",
-        "source_sha256": "a66d588374a470ab87353517a10023967de37a7d4a21f9b21dbffb43362d979f"
+        "source_sha256": "b9d9ffbbd9a9b934240f4be63091c83393e0b2d7e88a401a033a8bd91a0bd965"
       },
       "sandbox_run": {
         "operation": "diagnose",
-        "sandbox_id": "rewind-8aae9ace7c734d6d8deeeff98ff9fb7d",
-        "nonce": "dbacc8d8bce9495ab631a0eee2dd151a",
+        "sandbox_id": "rewind-95560174ed8c4cb29120a7bb2abe771a",
+        "nonce": "65412019db74406f90a18165cf82d643",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
           "checkpoint.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
           "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
-          "diagnose.py": "a66d588374a470ab87353517a10023967de37a7d4a21f9b21dbffb43362d979f"
+          "diagnose.py": "b9d9ffbbd9a9b934240f4be63091c83393e0b2d7e88a401a033a8bd91a0bd965"
         },
         "policy": {
           "gvisor": true,
@@ -4544,13 +4544,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069267965,
+        "started_at": 1794082003728,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 998,
-        "stdout_bytes": 7944,
+        "elapsed_ms": 814,
+        "stdout_bytes": 7819,
         "stderr_bytes": 0,
-        "stdout_sha256": "2827ba0a02226abe90fadbf6a400209ad75f8a97758316aeeaa3240c66f7c940",
+        "stdout_sha256": "c4505013673bc9465d774eca5bf1738ac1454852b3429d024968a57a0781ba2b",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -4559,10 +4559,10 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069269059
+        "finished_at": 1794082004627
       },
       "proposal": {
-        "summary": "The bad import multiplied the price column by 100 for all 120 records that existed at the time; comparing the last good backup with the checkpoint right after the import confirmed price changed on every record while customer, payment_status and created_on did not change during the incident. The proposed cells revert price on records present in all three versions, excluding the 7 records created after the incident and any record missing today. Records whose price was edited again after the incident are still included because the controller independently protects overlaps. Later payment_status updates are left untouched, and no files were modified.",
+        "summary": "Compared the last good backup, the checkpoint right after the bad import, and today's file. The import changed the price column (values were multiplied by 100); customer, payment_status and created_on were not touched by the import itself. We listed the price cells that the import changed for records present in all three versions, so they can be restored to their good values, while any price or payment_status edits made after the incident are left alone. Records added after the incident are excluded. No files were modified.",
         "cells": [
           {
             "token": "014b23851a8d5d3e21ca1e330f83f3c253dbcfe1c88c6855406f9c5a48b6b33a",
@@ -9616,7 +9616,7 @@
         "backup_sha256": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
         "checkpoint_sha256": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
         "current_sha256": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
-        "sha256": "ad571b3e41d62e5e8ca70966b64ff40a587f90f63c8ad2eca772a738e0296ac8"
+        "sha256": "99e93da9612eebe2420a30db2d1f38bbbad5a3226a94b985a0b4abc5a6c12692"
       },
       "message": "117 cells can be restored; 3 overlapping later edits will stay."
     },
@@ -11548,17 +11548,17 @@
     "attempts": [
       {
         "number": 1,
-        "source_sha256": "86786239f506cf2167f4fe4c1e90a3f02158c667733872ad8c8690158cec8965",
-        "code": "import csv, shutil, sqlite3\n\ndef _qident(name):\n    return '\"' + str(name).replace('\"', '\"\"') + '\"'\n\ndef recover(backup_path, current_path, output_path, scope):\n    fmt = scope.get('format')\n    pk = scope['primary_key']\n    cells = scope.get('cells') or []\n\n    if fmt == 'csv':\n        with open(current_path, 'r', encoding='utf-8-sig', newline='') as f:\n            reader = csv.DictReader(f)\n            fieldnames = list(reader.fieldnames or [])\n            rows = list(reader)\n        with open(backup_path, 'r', encoding='utf-8-sig', newline='') as f:\n            backup_rows = {}\n            for r in csv.DictReader(f):\n                k = r.get(pk)\n                if k is not None and k not in backup_rows:\n                    backup_rows[k] = r\n\n        for cell in cells:\n            key = cell['key']\n            kval = key['value']\n            if key['type'] == 'integer':\n                kval = str(int(kval))\n            col = cell['column']\n            if kval in backup_rows and col in backup_rows[kval] and col in fieldnames:\n                for row in rows:\n                    if row.get(pk) == kval:\n                        row[col] = backup_rows[kval][col]\n                        break\n\n        with open(output_path, 'w', encoding='utf-8', newline='') as f:\n            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')\n            writer.writeheader()\n            for row in rows:\n                writer.writerow({c: row.get(c, '') for c in fieldnames})\n\n    elif fmt == 'sqlite':\n        shutil.copyfile(current_path, output_path)\n        src = sqlite3.connect('file:' + backup_path.replace('?', '%3f') + '?mode=ro&immutable=1', uri=True)\n        dst = sqlite3.connect(output_path)\n        try:\n            for cell in cells:\n                key = cell['key']\n                kval = key['value']\n                if key['type'] == 'integer':\n                    kval = int(kval)\n                col = cell['column']\n                table = scope.get('table') or 'records'\n                cur = src.execute(\n                    'SELECT ' + _qident(col) + ' FROM ' + _qident(table) +\n                    ' WHERE ' + _qident(pk) + ' = ?', (kval,))\n                got = cur.fetchone()\n                if got is not None:\n                    dst.execute(\n                        'UPDATE ' + _qident(table) + ' SET ' + _qident(col) +\n                        ' = ? WHERE ' + _qident(pk) + ' = ?', (got[0], kval))\n            dst.commit()\n        finally:\n            dst.close()\n            src.close()\n    else:\n        raise ValueError('unsupported format: %r' % (fmt,))\n",
-        "explanation": "The program repairs only the individually approved cells. For CSV, it reads the current file with csv.DictReader (utf-8-sig, newline='') so every value stays an exact string — leading zeros, decimals, whitespace, commas, Unicode, newlines and empty strings are preserved and nothing is converted. It builds a lookup of backup records by primary key, then for each entry in scope.cells it finds the current row with that same key and copies just that one column's value from the backup. It never combines the keys and columns summaries into a Cartesian product. All current rows are written back in their original order with the original fieldnames using csv.DictWriter (utf-8, newline=''), so every unapproved cell, key and column name is untouched. For SQLite, the current database is copied to the output first (schema and counters preserved), the backup is opened read-only/immutable, and each approved cell is applied with a parameterized UPDATE using quoted identifiers; the output connection is committed and closed before returning. No network, printing, or wholesale copying of the backup occurs.",
+        "source_sha256": "b9d6f8603405f7b7a51404daf93071c3fe8fd17ce9921f7ecd8f451abcfa275b",
+        "code": "import csv, json\n\n\ndef recover(backup_path, current_path, output_path, scope):\n    fmt = scope.get(\"format\")\n    if fmt != \"csv\":\n        raise ValueError(\"unsupported format: %r\" % fmt)\n\n    cells = scope.get(\"cells\") or []\n    # Map primary key value -> {column: backup_value}, only approved cells.\n    repairs = {}\n    for cell in cells:\n        key = cell[\"key\"]\n        ktype = key.get(\"type\")\n        kval = key.get(\"value\")\n        if ktype == \"integer\":\n            kval = str(int(kval))\n        col = cell[\"column\"]\n        repairs.setdefault(kval, {})[col] = None  # placeholder; filled below\n\n    # Read backup values for the approved (key, column) pairs only.\n    with open(backup_path, \"r\", encoding=\"utf-8-sig\", newline=\"\") as bf:\n        reader = csv.DictReader(bf)\n        backup_rows = {r[reader.fieldnames[0]]: r for r in reader}\n\n    for kval, cols in repairs.items():\n        brow = backup_rows.get(kval)\n        if brow is None:\n            raise ValueError(\"backup record not found for key %r\" % kval)\n        for col in cols:\n            if col not in brow:\n                raise ValueError(\"column %r not in backup\" % col)\n            cols[col] = brow[col]\n\n    with open(current_path, \"r\", encoding=\"utf-8-sig\", newline=\"\") as cf:\n        reader = csv.DictReader(cf)\n        fieldnames = list(reader.fieldnames)\n        rows = list(reader)\n\n    applied = 0\n    for row in rows:\n        kval = row.get(fieldnames[0])\n        if kval in repairs:\n            for col, val in repairs[kval].items():\n                if col in row:\n                    row[col] = val\n                    applied += 1\n\n    with open(output_path, \"w\", encoding=\"utf-8\", newline=\"\") as of:\n        writer = csv.DictWriter(of, fieldnames=fieldnames)\n        writer.writeheader()\n        writer.writerows(rows)\n\n    return {\"applied_cells\": applied, \"requested_cells\": len(cells)}\n",
+        "explanation": "The program repairs only the individually approved cells listed in scope.cells. It never combines the keys and columns summaries into a Cartesian product. It reads the backup with csv.DictReader (utf-8-sig, newline='') and the current file the same way, then writes the current rows in their original order with the current fieldnames using csv.DictWriter (utf-8, newline=''). For each approved cell, it finds the backup record whose primary key matches the record's key and copies just that one column's value, leaving every other cell, every other record, and the column names untouched. All values stay as exact strings, so leading zeros, decimals, whitespace, commas, quotes, Unicode, newlines, and empty strings are preserved; nothing is converted to numbers or evaluated. If a needed key or column is missing from the backup, it raises an error instead of guessing.",
         "provider": {
           "name": "vultr-serverless-inference",
           "model": "glm-5.3-flash",
-          "response_id": "chatcmpl-72851c9f-74e6-4721-a929-eabab29053dc",
+          "response_id": "chatcmpl-135bfa52-5001-42f8-b5a0-60e8bab96eac",
           "usage": {
             "prompt_tokens": 554,
-            "completion_tokens": 948,
-            "total_tokens": 1502
+            "completion_tokens": 729,
+            "total_tokens": 1283
           }
         },
         "data_sent": "File format, table/field names and types, approved field names, record count and cell count. No file contents, row values or record IDs.",
@@ -13493,10 +13493,10 @@
     "sandbox_runs": [
       {
         "operation": "demo",
-        "sandbox_id": "rewind-0dda93e92f9848128623c4a4d038b409",
-        "nonce": "e38d303699df4aeead260fe0678cf2ca",
+        "sandbox_id": "rewind-05f1a226cb6442c09ddcf6e5f8aa5808",
+        "nonce": "6c75983c8bdc4d02b5a96402109cca17",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {},
         "policy": {
           "gvisor": true,
@@ -13514,13 +13514,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069256921,
+        "started_at": 1794081987101,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 844,
+        "elapsed_ms": 823,
         "stdout_bytes": 27144,
         "stderr_bytes": 0,
-        "stdout_sha256": "8db0081527ffc58f06d3e6e24b9e9dd9eba0c6e61a0645257ce28a91e9b2c7e1",
+        "stdout_sha256": "7371a0dd5c99a3116e99dd8af740073ba8a9f242fa47ad0604e75e271a47f8a5",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13529,14 +13529,14 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069257864
+        "finished_at": 1794081988022
       },
       {
         "operation": "inspect",
-        "sandbox_id": "rewind-69fd5ec8e3e84e34b8953b85e569ff60",
-        "nonce": "ebd97a2890444440b20091077b70b32a",
+        "sandbox_id": "rewind-14eefc7b70404fc8adf79142a9d73216",
+        "nonce": "6eeca7d2a962417995b6bb099262e3c3",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "current.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13"
         },
@@ -13556,13 +13556,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069257865,
+        "started_at": 1794081988023,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 936,
+        "elapsed_ms": 780,
         "stdout_bytes": 36671,
         "stderr_bytes": 0,
-        "stdout_sha256": "83e2f912e2196c6cd0a44cde0c36f7e18cc8d2e7b6aa17d3a38da3464c0a618f",
+        "stdout_sha256": "219a2a3bde7df33ce2ca9652e9c7a26916d4010b1d9bbc6ddb01d64ef6fc57e5",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13571,14 +13571,14 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069258899
+        "finished_at": 1794081988904
       },
       {
         "operation": "inspect",
-        "sandbox_id": "rewind-ac203c18960c4a4c94eb1c831db29caa",
-        "nonce": "7474c57d0b224a80a8e4fa783900c00f",
+        "sandbox_id": "rewind-a3e048bb4ff34de58417220fe5e35e6b",
+        "nonce": "2a6a484920f44d8e8441b2daa93272b8",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "current.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4"
         },
@@ -13598,13 +13598,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069258901,
+        "started_at": 1794081988907,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 767,
+        "elapsed_ms": 788,
         "stdout_bytes": 36911,
         "stderr_bytes": 0,
-        "stdout_sha256": "eb355ada12938309a51aa333f606c65093b95bd5e477ef155e47436dc0d9a083",
+        "stdout_sha256": "775ab38d13285bef666ff6f6cfd0134b8f8cb433e6499f234362b0de9ea23061",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13613,14 +13613,14 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069259769
+        "finished_at": 1794081989779
       },
       {
         "operation": "inspect",
-        "sandbox_id": "rewind-e87f02d191654f5891d6d8f95db7d1f7",
-        "nonce": "b6535d41e42b429fa13d340f58358c2a",
+        "sandbox_id": "rewind-81572f1a92a94ce88f4b3d24d0b8f496",
+        "nonce": "e9c7942e9595438c8e737d662af53e87",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838"
         },
@@ -13640,13 +13640,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069259772,
+        "started_at": 1794081989782,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 802,
+        "elapsed_ms": 742,
         "stdout_bytes": 38965,
         "stderr_bytes": 0,
-        "stdout_sha256": "77f4c718a1df21c770da215cf127879990aed2db5f10bdbc1236d4fb66053c58",
+        "stdout_sha256": "6465cc8690c5d05e5dd03ff7b0cb97c755c0d6e1663d064cc262c00c62dc83aa",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13655,19 +13655,19 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069260677
+        "finished_at": 1794081990623
       },
       {
         "operation": "diagnose",
-        "sandbox_id": "rewind-8aae9ace7c734d6d8deeeff98ff9fb7d",
-        "nonce": "dbacc8d8bce9495ab631a0eee2dd151a",
+        "sandbox_id": "rewind-95560174ed8c4cb29120a7bb2abe771a",
+        "nonce": "65412019db74406f90a18165cf82d643",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
           "checkpoint.csv": "6f63bb5db9e56535604d8980cf53666cf230bf488d7d5e8918ad9b36895655b4",
           "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
-          "diagnose.py": "a66d588374a470ab87353517a10023967de37a7d4a21f9b21dbffb43362d979f"
+          "diagnose.py": "b9d9ffbbd9a9b934240f4be63091c83393e0b2d7e88a401a033a8bd91a0bd965"
         },
         "policy": {
           "gvisor": true,
@@ -13685,13 +13685,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069267965,
+        "started_at": 1794082003728,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 998,
-        "stdout_bytes": 7944,
+        "elapsed_ms": 814,
+        "stdout_bytes": 7819,
         "stderr_bytes": 0,
-        "stdout_sha256": "2827ba0a02226abe90fadbf6a400209ad75f8a97758316aeeaa3240c66f7c940",
+        "stdout_sha256": "c4505013673bc9465d774eca5bf1738ac1454852b3429d024968a57a0781ba2b",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13700,18 +13700,18 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069269059
+        "finished_at": 1794082004627
       },
       {
         "operation": "candidate",
-        "sandbox_id": "rewind-67b7663b152f494db89be8d7c4595115",
-        "nonce": "a5a02db2492744e1937910d1ca866ff2",
+        "sandbox_id": "rewind-03b700ee8cfb45399e9a548a94f9083d",
+        "nonce": "2688f09276a2469db63be4d0034c20bf",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "backup.csv": "48e2b63ad998f4a69cdb0b61f25f0fd0fdb1b396d369a3fa78648e68c6266a13",
           "current.csv": "55b71d11878fdb8a84e08b50a4120a31c8e6b8d5b1764d5e2d92f6d1c6e40838",
-          "repair.py": "86786239f506cf2167f4fe4c1e90a3f02158c667733872ad8c8690158cec8965"
+          "repair.py": "b9d6f8603405f7b7a51404daf93071c3fe8fd17ce9921f7ecd8f451abcfa275b"
         },
         "policy": {
           "gvisor": true,
@@ -13729,13 +13729,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069285169,
+        "started_at": 1794082017741,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 841,
+        "elapsed_ms": 787,
         "stdout_bytes": 9189,
         "stderr_bytes": 0,
-        "stdout_sha256": "671923a295eb88c1ee4a6693c06c45bbecf1a9a20565a705f8097ff2a39fac20",
+        "stdout_sha256": "4a1f22842c70532a8acaad666b82d5ef0f0fd6c215ab9d7a9ac51a690b93911c",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13744,14 +13744,14 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069286097
+        "finished_at": 1794082018617
       },
       {
         "operation": "inspect",
-        "sandbox_id": "rewind-8747174a626242e7854b8ba129052e12",
-        "nonce": "b872d9a4d2de448084cb16be904e3018",
+        "sandbox_id": "rewind-41e7b60d6424468f830b05b66b90cede",
+        "nonce": "3097fe8baf4844ebbd58a55b6bcf99e7",
         "image_ref": "python:3.12-slim-bookworm@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
-        "worker_sha256": "2ba94fabbecf45773ae314980bfd777e4414d81096146562efa7c39a7d717142",
+        "worker_sha256": "81d1fc11c16c7cb64ebe28ca38d613f497166c41afd72ffde32973fd72ad11ec",
         "input_hashes": {
           "current.csv": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384"
         },
@@ -13771,13 +13771,13 @@
         },
         "policy_verified": true,
         "ok": true,
-        "started_at": 1794069286123,
+        "started_at": 1794082018644,
         "exit_code": 0,
         "stop_reason": null,
-        "elapsed_ms": 810,
+        "elapsed_ms": 747,
         "stdout_bytes": 38731,
         "stderr_bytes": 0,
-        "stdout_sha256": "86bbfc9b3602e412f2b086d570edd105fcc8e25b14587141e273c2c0f7c205e0",
+        "stdout_sha256": "2ef7b702465e24cda738e17881b1fe79862d962fcff89ccc4332c133509a1410",
         "runtime": "runsc",
         "image_id": "sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487",
         "oom_killed": false,
@@ -13786,7 +13786,7 @@
           "remove_exit_code": 0,
           "absence_query_exit_code": 0
         },
-        "finished_at": 1794069287033
+        "finished_at": 1794082019484
       }
     ],
     "artifact_sha256": "1dc9e487d07c77e678d2b34a53e4e3ae2721d2b03d8658ba7ea9a9da76a48384",
@@ -13794,5 +13794,5 @@
     "all_sandboxes_removed": true,
     "host_attestation": false
   },
-  "sha256": "3cfef820b46577d60a6ad3897bf6c5dede496313ce0d9bec3b74e507f716a5a5"
+  "sha256": "da97667ed9c7eaf6f9183e70fe3f0fcc6a9df89769b6fc11e11bf55ccaeb564e"
 }
