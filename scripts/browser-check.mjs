@@ -17,7 +17,7 @@ const startedAt = Date.now(), stages = [];
 const mark = name => stages.push({ name, seconds: (Date.now() - startedAt) / 1000 });
 const linger = async () => { if (record) await page.waitForTimeout(2500); };
 const canonical = value => Array.isArray(value) ? "[" + value.map(canonical).join(",") + "]" : value && typeof value === "object" ? "{" + Object.keys(value).sort().map(key => JSON.stringify(key) + ":" + canonical(value[key])).join(",") + "}" : JSON.stringify(value);
-let completed = false, result, accessRequired;
+let completed = false, result, accessRequired, privateCode;
 try {
   await page.goto(origin); mark("opened");
   assert.match(await page.title(), /Rewind/);
@@ -36,8 +36,8 @@ try {
     if (live) assert.equal(config.available, true, "The real Vultr inference connection is unavailable.");
     await page.getByRole("button", { name: "Try the bad-import example" }).click();
     if (accessRequired) {
-      const code = (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
-      await page.getByLabel("Access code", { exact: true }).fill(code);
+      privateCode = (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
+      await page.getByLabel("Access code", { exact: true }).fill(privateCode);
       await page.getByRole("button", { name: "Continue", exact: true }).click();
     } else assert.equal(await page.locator("#access-dialog").isVisible(), false, "Public app requested an access code.");
     await page.getByRole("button", { name: "Investigate this import" }).waitFor({ state: "visible", timeout: 60000 });
@@ -112,7 +112,11 @@ try {
       await page.getByRole("heading", { name: "Undo a bad import. Keep today’s work." }).waitFor();
       assert.equal(await page.evaluate(() => sessionStorage.getItem("rewind-private-workspace")), null);
       // The legacy SQLite example remains usable through the unchanged API.
-      await page.evaluate(async () => saveWorkspace(await api("/api/example", {})));
+      await page.evaluate(() => withAccess(async () => saveWorkspace(await api("/api/example", {}))));
+      if (accessRequired) {
+        await page.getByLabel("Access code", { exact: true }).fill(privateCode);
+        await page.getByRole("button", { name: "Continue", exact: true }).click();
+      }
       await page.locator("#selection-panel").waitFor({ state: "visible", timeout: 60000 });
       assert.equal(await page.locator("#selection-count").innerText(), "120 of 120 cells selected");
       await page.getByRole("button", { name: "Review proposed repair" }).click();
