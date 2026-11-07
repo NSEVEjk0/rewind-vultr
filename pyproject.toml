@@ -1,7 +1,7 @@
 [project]
 name = "rewind-recovery"
 version = "0.1.0"
-description = "Restore damaged database fields while keeping newer records and updates."
+description = "Check CSV imports before applying them and recover damaged cells while preserving newer work."
 requires-python = ">=3.12"
 dependencies = []
 

@@ -10,14 +10,16 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 from .contract import MAX_TARGETS, ScopeError, compare, compatible, make_plan
-from .evidence import sha256_bytes
+from .evidence import canonical, sha256_bytes
+from .import_pipeline import run_preflight
 from .pipeline import InspectionError, decode_file, inspect_input, public_run, removed_and_isolated, run_diagnosis, run_recovery
+from .preflight import IMPORT_CONTRACT, REQUIRED_CHECKS, compatible_import, make_import_plan, review_import
 from .provider import VultrProvider
 from .sandbox import Sandbox, SandboxUnavailable
 from .store import AdmissionDenied, Store
 
 WEB = Path(__file__).resolve().parent.parent / "web"
-MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|diagnose|recover|delete|evidence|database|backup|checkpoint|current))?")
+MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|diagnose|recover|delete|evidence|database|backup|checkpoint|current|incoming|import-review|import-plan|preflight|approved-import))?")
 
 
 class Controller:
@@ -61,26 +63,46 @@ class Controller:
                 format = value.get("format", "sqlite")
                 if operation == "inspect":
                     runs = []
+                    preflight = value.get("workflow") == "preflight"
+                    names = ("current", "incoming") if preflight else ("backup", * (("checkpoint",) if value.get("has_checkpoint") else ()), "current")
                     if value["example"]:
                         run = self.sandbox.run("demo", scope={"format": format, "scenario": value.get("scenario", "legacy")})
                         if not run["ok"]:
                             raise InspectionError("The example files could not be created in their isolated environment.", run=public_run(run))
                         runs.append(public_run(run))
-                        for name in ("backup", "current", * (("checkpoint",) if value.get("has_checkpoint") else ())):
+                        for name in names:
                             (path / (name + "." + format)).write_bytes(decode_file(run["payload"][name], format))
                     versions = {}
-                    for name in ("backup", * (("checkpoint",) if value.get("has_checkpoint") else ()), "current"):
+                    for name in names:
                         snapshot, run = inspect_input((path / (name + "." + format)).read_bytes(), self.sandbox,
                                                        format=format, primary_key=value.get("primary_key", ""))
                         versions[name] = snapshot
                         runs.append(run)
                         self.store.update(workspace_id, inspection_runs=runs)
-                        if name != "backup":
+                        if preflight and name == "incoming":
+                            compatible_import(versions["current"], snapshot)
+                        elif not preflight and name != "backup":
                             compatible(versions["backup"], snapshot)
                     self.store.update(workspace_id, status="ready",
-                        message="All three versions passed inspection. Describe the mistake to investigate, or choose the fields yourself." if value.get("has_checkpoint") else
+                        message="Both files passed inspection. Choose what this import is supposed to update." if preflight else
+                                "All three versions passed inspection. Describe the mistake to investigate, or choose the fields yourself." if value.get("has_checkpoint") else
                                 "Both versions passed inspection. Choose the damaged cells to restore.",
                         **versions, inspection_runs=runs)
+                elif operation == "preflight":
+                    current_raw = (path / "current.csv").read_bytes()
+                    incoming_raw = (path / "incoming.csv").read_bytes()
+                    evidence, approved, artifact = run_preflight(current=value["current"], incoming=value["incoming"],
+                        current_raw=current_raw, incoming_raw=incoming_raw, plan=value["import_plan"],
+                        prior_runs=value["inspection_runs"], sandbox=self.sandbox,
+                        progress=lambda stage, message: self.store.update(workspace_id, status=stage, message=message))
+                    if (path / "current.csv").read_bytes() != current_raw or (path / "incoming.csv").read_bytes() != incoming_raw:
+                        raise InspectionError("An uploaded file changed during the import check. No download is available.")
+                    if approved is not None and artifact is not None:
+                        (path / "approved.csv").write_bytes(approved)
+                        (path / "verified.csv").write_bytes(artifact)
+                    payload = evidence["payload"]
+                    self.store.update(workspace_id, status=payload["status"], active_operation=None,
+                                      message=payload["message"], evidence=evidence)
                 elif operation == "diagnose":
                     diagnosis, runs = run_diagnosis(backup=value["backup"], checkpoint=value["checkpoint"], current=value["current"],
                         backup_raw=(path / ("backup." + format)).read_bytes(), checkpoint_raw=(path / ("checkpoint." + format)).read_bytes(),
@@ -109,7 +131,7 @@ class Controller:
                     self.store.update(workspace_id, status=payload["status"], active_operation=None, message=payload["message"], evidence=evidence)
             except (InspectionError, ScopeError) as error:
                 failed_run = getattr(error, "run", None)
-                changes = {"status": "failed", "message": str(error)[:350]}
+                changes = {"status": "failed", "active_operation": None, "message": str(error)[:350]}
                 if failed_run:
                     changes["failed_inspection_run"] = failed_run
                     if not failed_run.get("teardown", {}).get("confirmed"):
@@ -221,6 +243,8 @@ class Handler(BaseHTTPRequestHandler):
                             "model": controller.provider.model, "access_required": not controller.public_demo, "daily_limit": None,
                             "max_file_bytes": 256 * 1024, "max_rows": 1000, "demo_available": (WEB / "demo/index.html").is_file(),
                             "formats": ["csv", "sqlite"], "checkpoint_supported": True, "max_model_calls": 2, "max_target_cells": MAX_TARGETS,
+                            "preflight_supported": True, "preflight_available": controller.inspection_available,
+                            "import_contract": IMPORT_CONTRACT,
                             "data_sent": "Your incident description, file structure and aggregate change counts are sent to Vultr AI. Files, row values and record IDs stay in the isolated copies."})
             return
         match = MATCH.fullmatch(path)
@@ -235,9 +259,34 @@ class Handler(BaseHTTPRequestHandler):
                     self.json(409, {"error": "There is no completed recovery evidence yet."})
                 else:
                     self.json(200, value["evidence"])
-            elif operation in {"database", "backup", "checkpoint", "current"}:
+            elif operation in {"database", "backup", "checkpoint", "current", "incoming", "approved-import"}:
                 format = value.get("format", "sqlite")
-                if operation == "database":
+                preflight_download = value.get("workflow") == "preflight" and operation in {"database", "approved-import"}
+                if operation == "approved-import" and not preflight_download:
+                    self.json(409, {"error": "This workspace contains a recovery, not an approved import."})
+                    return
+                if preflight_download:
+                    evidence = value.get("evidence", {}).get("payload", {})
+                    verification = evidence.get("verification") or {}
+                    checks = verification.get("checks") or []
+                    if (value["status"] != "verified" or evidence.get("workflow") != "preflight"
+                            or evidence.get("contract") != IMPORT_CONTRACT or not evidence.get("original_inputs_unchanged")
+                            or not evidence.get("all_sandboxes_removed") or not verification.get("ok")
+                            or not REQUIRED_CHECKS <= {check.get("id") for check in checks}
+                            or not all(check.get("ok") for check in checks)
+                            or not removed_and_isolated(evidence.get("sandbox_runs") or [])
+                            or value.get("evidence", {}).get("sha256") != sha256_bytes(canonical(evidence))):
+                        self.json(409, {"error": "An import can be downloaded only after every independent check and cleanup passes."})
+                        return
+                    source = controller.store.path(workspace_id)
+                    plan = evidence["plan"]
+                    inputs = {"current": source / "current.csv", "incoming": source / "incoming.csv"}
+                    if (any(not target.is_file() or target.is_symlink() for target in inputs.values())
+                            or any(sha256_bytes(target.read_bytes()) != plan[name + "_sha256"] for name, target in inputs.items())):
+                        self.json(409, {"error": "The uploaded files differ from the approved fingerprints."})
+                        return
+                    filename = "approved.csv" if operation == "approved-import" else "verified.csv"
+                elif operation == "database":
                     evidence = value.get("evidence", {}).get("payload", {})
                     verification = evidence.get("verification") or {}
                     checks = verification.get("checks") or []
@@ -259,11 +308,14 @@ class Handler(BaseHTTPRequestHandler):
                     self.json(409, {"error": "The database copy is not ready."})
                     return
                 raw = target.read_bytes()
-                expected = (evidence.get("artifact_sha256") if operation == "database" else value.get(operation, {}).get("file_sha256"))
+                expected = (evidence.get("approved_import_sha256") if operation == "approved-import" else
+                            evidence.get("artifact_sha256") if operation == "database" else value.get(operation, {}).get("file_sha256"))
                 if sha256_bytes(raw) != expected:
                     self.json(409, {"error": "The file differs from the checked fingerprint."})
                     return
                 self.send(200, raw, "text/csv; charset=utf-8" if format == "csv" else "application/vnd.sqlite3",
+                          "rewind-import-preview.csv" if preflight_download and operation == "database" else
+                          "rewind-approved-import.csv" if operation == "approved-import" else
                           "rewind-recovered." + format if operation == "database" else "rewind-" + operation + "." + format)
             elif operation is None:
                 self.json(200, value)
@@ -319,6 +371,27 @@ class Handler(BaseHTTPRequestHandler):
                     raise AdmissionDenied("The bounded queue is full.")
                 self.json(202, admission)
                 return
+            if path in {"/api/imports", "/api/import-example"}:
+                if not self.has_access(require_inference=False):
+                    return
+                if path == "/api/import-example":
+                    if request:
+                        raise ValueError("The import example takes no fields.")
+                    admission = controller.store.create(None, None, example=True, format="csv", primary_key="product_id",
+                                                        workflow="preflight", scenario="preflight")
+                else:
+                    if (set(request) != {"current", "incoming", "primary_key"}
+                            or not isinstance(request["primary_key"], str) or not 1 <= len(request["primary_key"]) <= 100):
+                        raise ScopeError("Upload today's CSV, the proposed import and their shared unique ID column.")
+                    admission = controller.store.create(None, decode_file(request["current"], "csv"), format="csv",
+                        primary_key=request["primary_key"], incoming=decode_file(request["incoming"], "csv"), workflow="preflight")
+                try:
+                    controller.queue.put_nowait((admission["id"], "inspect"))
+                except queue.Full:
+                    controller.store.update(admission["id"], status="failed", message="The bounded queue is full.")
+                    raise AdmissionDenied("The bounded queue is full.")
+                self.json(202, admission)
+                return
             match = MATCH.fullmatch(path)
             if not match:
                 self.json(404, {"error": "Action not found."})
@@ -333,6 +406,42 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError("The delete action takes no fields.")
                 controller.store.delete(workspace_id, self.token())
                 self.json(200, {"deleted": True})
+                return
+            if operation == "preflight":
+                if not self.has_access(require_inference=False):
+                    return
+                if set(request) != {"plan_sha256"}:
+                    raise ScopeError("Approve the exact import plan currently shown.")
+                controller.store.reserve_preflight(workspace_id, self.token(), request["plan_sha256"])
+                try:
+                    controller.queue.put_nowait((workspace_id, "preflight"))
+                except queue.Full:
+                    controller.store.update(workspace_id, status="failed", message="The bounded queue is full; no import was run.")
+                    raise AdmissionDenied("The bounded queue is full.")
+                self.json(202, {"status": "queued"})
+                return
+            if operation in {"import-review", "import-plan"}:
+                with controller.store.lock:
+                    value = self.workspace(workspace_id)
+                    if (value.get("workflow") != "preflight" or value["status"] != "ready"
+                            or type(request.get("expected_version")) is not int or request["expected_version"] != value["version"]):
+                        self.json(409, {"error": "The import workspace changed. Review its current files and selection."})
+                        return
+                    if operation == "import-review":
+                        if set(request) != {"policy", "expected_version"}:
+                            raise ScopeError("Choose the intended update fields and numeric limit.")
+                        review = review_import(value["current"], value["incoming"], request["policy"])
+                        controller.store.update(workspace_id, import_review=review, import_plan=None)
+                    else:
+                        if set(request) != {"targets", "expected_version"} or not value.get("import_review"):
+                            raise ScopeError("Review the import before choosing exact cells to approve.")
+                        plan = make_import_plan(value["current"], value["incoming"], value["import_review"]["policy"],
+                            request["targets"], workspace_version=value["version"]+1)
+                        controller.store.update(workspace_id, import_plan=plan)
+                self.json(200, self.workspace(workspace_id))
+                return
+            if value.get("workflow") == "preflight":
+                self.json(409, {"error": "Use the import review and preview actions for this workspace."})
                 return
             if operation == "recover":
                 if not self.has_access() or not controller.available:

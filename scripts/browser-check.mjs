@@ -28,7 +28,7 @@ try {
   await page.screenshot({ path: new URL("mobile.png", output).pathname, fullPage: true });
   await page.setViewportSize({ width: 1512, height: 982 });
   await page.getByRole("button", { name: "How it works" }).click();
-  assert.ok(await page.getByRole("heading", { name: "Restore only what went wrong." }).isVisible());
+  assert.ok(await page.getByRole("heading", { name: "Check the next import. Undo the bad one." }).isVisible());
   await page.getByRole("button", { name: "Got it" }).click(); mark("explained");
   if (live || planOnly) {
     const config = await (await page.request.get(origin + "/api/config")).json(); accessRequired = config.access_required;
@@ -87,7 +87,7 @@ try {
       // Exercise real file uploads without a checkpoint, then delete this owned test workspace.
       await page.getByRole("button", { name: "New recovery", exact: true }).click();
       await page.getByRole("button", { name: "Use my own files", exact: true }).click();
-      await page.getByLabel("Unique record ID column").fill("invoice_id");
+      await page.locator("#key-input").fill("invoice_id");
       for (const name of ["backup", "current"]) await page.locator("#" + name + "-file").setInputFiles({ name: name + ".csv", mimeType: "text/csv", buffer: files[name] });
       await page.getByRole("button", { name: "Inspect my files" }).click();
       await page.locator("#selection-panel").waitFor({ state: "visible", timeout: 60000 });

@@ -11,6 +11,8 @@ from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from rewind.contract import compare, incident_changes, make_plan, validate_diagnosis, verify_candidate
 from rewind.pipeline import decode_file, inspect_input, public_run
+from rewind.import_pipeline import run_preflight
+from rewind.preflight import make_import_plan, review_import, verify_import
 from rewind.sandbox import Sandbox
 
 REFERENCE = '''import shutil, sqlite3
@@ -150,6 +152,63 @@ def main():
                 checks[label] = verification
             upgrades[format] = {"diagnostic_source": "fixed-reference-program", "proposed_restorations": 117,
                                 "protected_overlaps": 3, "outcomes": checks}
+        import_demo = sandbox.run("demo", scope={"format": "csv", "scenario": "preflight"})
+        require(import_demo["ok"], "The import-check example could not be created in gVisor.")
+        import_runs = [public_run(import_demo)]
+        import_raw = {name: decode_file(import_demo["payload"][name], "csv") for name in ("current", "incoming")}
+        import_snapshots = {}
+        for name, data in import_raw.items():
+            import_snapshots[name], run = inspect_input(data, sandbox, format="csv", primary_key="product_id")
+            import_runs.append(run)
+        policy = {"columns": ["price"], "numeric_column": "price", "max_percent": 25}
+        review = review_import(import_snapshots["current"], import_snapshots["incoming"], policy)
+        require((review["eligible_count"], review["held_count"], len(review["unknown_ids"])) == (22, 26, 1),
+                "The import check did not hold the blank, 100x price, payment changes and unknown ID.")
+        import_plan = make_import_plan(import_snapshots["current"], import_snapshots["incoming"], policy,
+            [{"token": item["token"], "column": item["column"]} for item in review["changes"] if item["eligible"]])
+        import_evidence, approved_raw, preview_raw = run_preflight(current=import_snapshots["current"], incoming=import_snapshots["incoming"],
+            current_raw=import_raw["current"], incoming_raw=import_raw["incoming"], plan=import_plan,
+            prior_runs=import_runs, sandbox=sandbox)
+        require(import_evidence["payload"]["status"] == "verified" and approved_raw is not None and preview_raw is not None,
+                "The actual approved import execution failed its independent checks.")
+        require(import_evidence["payload"]["verification"]["retained_rows"] == 24, "The import changed the current record set.")
+        runs.extend(import_evidence["payload"]["sandbox_runs"])
+        # Deliberately execute an unchecked reference with all price/payment cells.
+        # It is a verifier test, never an application fallback or approved plan.
+        known = {row["key"]["value"] for row in import_snapshots["current"]["rows"]}
+        unchecked_scope = {"contract": import_plan["contract"], "primary_key": "product_id",
+            "cells": [{"key": row["key"], "column": name} for row in import_snapshots["incoming"]["rows"]
+                      if row["key"]["value"] in known for name in ("price", "payment_status")]}
+        unchecked = sandbox.run("prepare-import", {"current.csv": import_raw["current"], "incoming.csv": import_raw["incoming"]}, scope=unchecked_scope)
+        require(unchecked["ok"], "The unchecked import reference did not return its bounded artifact.")
+        unchecked_raw = decode_file(unchecked["payload"]["artifact"], "csv")
+        unchecked_import, run = inspect_input(unchecked_raw, sandbox, format="csv", primary_key="product_id")
+        runs.extend([public_run(unchecked), run])
+        unchecked_execution = sandbox.run("import-preview", {"current.csv": import_raw["current"], "incoming.csv": unchecked_raw},
+                                         scope={"contract": import_plan["contract"], "primary_key": "product_id"})
+        require(unchecked_execution["ok"], "The unchecked update reference did not execute on its disposable copy.")
+        unchecked_preview, run = inspect_input(decode_file(unchecked_execution["payload"]["artifact"], "csv"), sandbox,
+                                              format="csv", primary_key="product_id")
+        runs.extend([public_run(unchecked_execution), run])
+        rejected_import = verify_import(import_snapshots["current"], import_snapshots["incoming"], unchecked_import, unchecked_preview, import_plan)
+        require(not rejected_import["ok"], "An import that erased a price and reset paid statuses was accepted.")
+        unknown_execution = sandbox.run("import-preview", {"current.csv": import_raw["current"], "incoming.csv": import_raw["incoming"]},
+                                       scope={"contract": import_plan["contract"], "primary_key": "product_id"})
+        require(not unknown_execution["ok"], "An unknown ID was silently added to the export.")
+        runs.append(public_run(unknown_execution))
+        partial_raw = b"product_id,price\r\n0003,25.50\r\n"
+        partial, run = inspect_input(partial_raw, sandbox, format="csv", primary_key="product_id")
+        partial_review = review_import(import_snapshots["current"], partial, policy)
+        partial_plan = make_import_plan(import_snapshots["current"], partial, policy,
+            [{"token": item["token"], "column": item["column"]} for item in partial_review["changes"] if item["eligible"]])
+        partial_evidence, _, _ = run_preflight(current=import_snapshots["current"], incoming=partial,
+            current_raw=import_raw["current"], incoming_raw=partial_raw, plan=partial_plan, prior_runs=[*import_runs, run], sandbox=sandbox)
+        require(partial_evidence["payload"]["status"] == "verified", "An import with omitted fields failed to preserve the export.")
+        runs.extend([run, *partial_evidence["payload"]["sandbox_runs"][len(import_runs)+1:]])
+        import_outcomes = {"approved_updates": 22, "held_changes": 26, "unknown_ids_held": 1, "records_kept": 24,
+                           "verification": import_evidence["payload"]["verification"],
+                           "unchecked_import_rejected": rejected_import, "partial_columns_verified": True,
+                           "model_calls": 0}
         csv_rejections = []
         invalid_csv = [
             ("duplicate-key", b"id,value\n001,a\n001,b\n"),
@@ -199,9 +258,9 @@ def recover(backup_path, current_path, output_path, scope):
             runs.append(public_run(run))
         require(all(run["policy_verified"] and run["teardown"]["confirmed"] for run in runs), "One owned sandbox policy or teardown failed.")
         (output / "isolation-verification.json").write_text(json.dumps({"live_inference": False,
-            "reference_programs_only": True, "outcomes": outcomes, "checkpoint_workflows": upgrades,
+            "reference_programs_only": True, "outcomes": outcomes, "checkpoint_workflows": upgrades, "import_preflight": import_outcomes,
             "csv_rejections": csv_rejections, "csv_literal_values_preserved": True, "sandbox_runs": runs}, indent=2))
-        print("Actual gVisor checks passed: SQLite and CSV recovery, executed diagnosis, 117 repairs with 3 overlaps and 23 updates protected, rejected broad rollbacks, CSV validation, containment, limits and removal of all " + str(len(runs)) + " sandboxes.")
+        print("Actual gVisor checks passed: CSV/SQLite recovery, 117 repairs with protected overlaps, 22 checked import updates with 26 changes held, rejected unchecked imports and broad rollbacks, containment, limits and removal of all " + str(len(runs)) + " sandboxes.")
 
 
 if __name__ == "__main__":

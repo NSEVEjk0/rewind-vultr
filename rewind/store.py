@@ -64,7 +64,8 @@ class Store:
         return sum(json.loads(path.read_text())["status"] in ACTIVE for path in self.root.glob("*/workspace.json"))
 
     def create(self, backup: bytes | None, current: bytes | None, checkpoint: bytes | None = None, *,
-               format: str = "sqlite", primary_key: str = "", example: bool = False, scenario: str = "legacy") -> dict:
+               format: str = "sqlite", primary_key: str = "", example: bool = False, scenario: str = "legacy",
+               workflow: str = "recovery", incoming: bytes | None = None) -> dict:
         with self.lock:
             active = self.active_count()
             if active >= 4:
@@ -73,18 +74,21 @@ class Store:
             workspace_id, token = secrets.token_hex(16), secrets.token_urlsafe(32)
             path = self.path(workspace_id)
             path.mkdir(mode=0o700)
-            if backup is not None and current is not None:
+            if backup is not None:
                 (path / ("backup." + format)).write_bytes(backup)
+            if current is not None:
                 (path / ("current." + format)).write_bytes(current)
-                if checkpoint is not None:
-                    (path / ("checkpoint." + format)).write_bytes(checkpoint)
+            if checkpoint is not None:
+                (path / ("checkpoint." + format)).write_bytes(checkpoint)
+            if incoming is not None:
+                (path / "incoming.csv").write_bytes(incoming)
             value = {"id": workspace_id, "token_sha256": sha256_bytes(token.encode()), "status": "inspecting",
                      "message": "Reading the file versions in separate temporary environments.", "example": example,
-                     "format": format, "primary_key": primary_key, "scenario": scenario,
+                     "format": format, "primary_key": primary_key, "scenario": scenario, "workflow": workflow,
                      "has_checkpoint": checkpoint is not None or scenario == "overlap", "model_calls": 0,
                      "created_at": int(time.time() * 1000), "events": [], "version": 1}
             atomic_json(path / "workspace.json", value)
-            return {"id": workspace_id, "token": token, "status": value["status"]}
+            return {"id": workspace_id, "token": token, "status": value["status"], "workflow": workflow}
 
     def read(self, workspace_id: str, token: str) -> dict | None:
         try:
@@ -114,7 +118,7 @@ class Store:
         with self.lock:
             value = self.read(workspace_id, token)
             plan = (value.get("plan") or {}) if value else {}
-            if (not value or value["status"] != "ready" or plan.get("sha256") != plan_sha256
+            if (not value or value.get("workflow") == "preflight" or value["status"] != "ready" or plan.get("sha256") != plan_sha256
                     or plan.get("workspace_version") is not None and plan["workspace_version"] != value["version"]
                     or value.get("model_calls", 0) >= 2):
                 raise AdmissionDenied("The selected recovery changed or is already running. Review it again.")
@@ -144,6 +148,19 @@ class Store:
             if count >= 2:
                 raise AdmissionDenied("The two-call model budget has been used.")
             self.update(workspace_id, model_calls=count + 1)
+
+    def reserve_preflight(self, workspace_id: str, token: str, plan_sha256: str) -> dict:
+        with self.lock:
+            value = self.read(workspace_id, token)
+            plan = (value.get("import_plan") or {}) if value else {}
+            if (not value or value.get("workflow") != "preflight" or value["status"] != "ready"
+                    or plan.get("sha256") != plan_sha256 or plan.get("workspace_version") != value["version"]):
+                raise AdmissionDenied("The import selection changed or is already running. Review it again.")
+            if self.active_count() >= 4:
+                raise AdmissionDenied("The four-place inspection and execution queue is full.")
+            self.admit("preflights")
+            self.update(workspace_id, status="queued", active_operation="preflight", message="Your approved import preview is queued.")
+            return value
 
     def delete(self, workspace_id: str, token: str):
         with self.lock:

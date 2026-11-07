@@ -175,6 +175,24 @@ def csv_example() -> dict:
 
 def demo_files(context: dict | None = None) -> dict:
     context = context or {}
+    if context.get("scenario") == "preflight":
+        files = {}
+        names = ["product_id", "product", "price", "payment_status"]
+        today, incoming = [], []
+        for number in range(1, 25):
+            price = str(20 + number) + ".00"
+            today.append([str(number).zfill(4), "Sample product " + str(number), price, "paid"])
+            incoming.append([str(number).zfill(4), "Sample product " + str(number),
+                             str(22 + number) + ".00", "unpaid"])
+        incoming[0][2] = "2100.00"
+        incoming[1][2] = ""
+        incoming.append(["9999", "Unknown product", "30.00", "unpaid"])
+        for name, records in [("current", today), ("incoming", incoming)]:
+            stream = io.StringIO(newline="")
+            writer = csv.writer(stream, lineterminator="\r\n")
+            writer.writerow(names); writer.writerows(records)
+            files[name] = base64.b64encode(stream.getvalue().encode()).decode()
+        return files
     if context.get("format") == "csv":
         return csv_example()
     backup = Path("/tmp/backup.sqlite")
@@ -235,6 +253,54 @@ def run_diagnostic(context: dict) -> dict:
     return result
 
 
+def write_csv_artifact(names: list[str], rows: list[dict]) -> dict:
+    stream = io.StringIO(newline="")
+    writer = csv.writer(stream, lineterminator="\r\n")
+    writer.writerow(names)
+    writer.writerows([[row["values"][name]["value"] for name in names] for row in rows])
+    raw = stream.getvalue().encode("utf-8")
+    if not 1 <= len(raw) <= MAX_FILE:
+        raise ValueError("The checked CSV exceeds the file size limit.")
+    return {"artifact": base64.b64encode(raw).decode()}
+
+
+def run_import(context: dict, *, prepare: bool) -> dict:
+    if context.get("contract") != "update-existing-by-id-v1":
+        raise ValueError("Use the supported update-existing-records import contract.")
+    key = context["primary_key"]
+    current = inspect_csv(Path("/work/current.csv"), key)
+    incoming = inspect_csv(Path("/work/incoming.csv"), key)
+    names = [column["name"] for column in current["columns"]]
+    fields = [column["name"] for column in incoming["columns"]]
+    if not set(fields) <= set(names):
+        raise ValueError("Every import field must exist in today's export.")
+    now = {row["key"]["value"]: row for row in current["rows"]}
+    next_rows = {row["key"]["value"]: row for row in incoming["rows"]}
+    if prepare:
+        cells = context.get("cells")
+        if not isinstance(cells, list) or not 1 <= len(cells) <= 1000:
+            raise ValueError("Use a bounded exact import selection.")
+        selected_fields, selected_keys, seen = set(), set(), set()
+        for item in cells:
+            identity, name = item["key"]["value"], item["column"]
+            if (item["key"]["type"] != "text" or identity not in now or identity not in next_rows
+                    or name not in fields or name == key or (identity, name) in seen):
+                raise ValueError("An approved import cell is invalid.")
+            seen.add((identity, name)); selected_fields.add(name); selected_keys.add(identity)
+            now[identity]["values"][name] = next_rows[identity]["values"][name]
+        names = [key, *[name for name in names if name in selected_fields]]
+        rows = [row for row in current["rows"] if row["key"]["value"] in selected_keys]
+    else:
+        if set(next_rows) - set(now):
+            raise ValueError("New IDs cannot be added by this update-only import.")
+        for identity, row in next_rows.items():
+            for name in fields:
+                if name != key:
+                    now[identity]["values"][name] = row["values"][name]
+        rows = current["rows"]
+    return write_csv_artifact(names, rows)
+
+
 def main():
     request = json.loads(sys.stdin.buffer.read(128 * 1024 + 1))
     nonce = request["nonce"]
@@ -249,6 +315,8 @@ def main():
             payload = run_candidate(request["scope"])
         elif operation == "diagnose":
             payload = run_diagnostic(request["scope"])
+        elif operation in {"prepare-import", "import-preview"}:
+            payload = run_import(request["scope"], prepare=operation == "prepare-import")
         else:
             raise ValueError("Unsupported worker operation.")
         response = {"nonce": nonce, "ok": True, "payload": payload}

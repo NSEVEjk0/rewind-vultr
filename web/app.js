@@ -14,9 +14,10 @@ function show(id, visible) { $(id).hidden = !visible; }
 function node(tag, text, className) { const item = document.createElement(tag); if (text !== undefined) item.textContent = text; if (className) item.className = className; return item; }
 function cellValue(cell, column) {
   if (!cell || cell.type === "null") return "—";
+  if (cell.value === "") return "(empty)";
   if (state.view?.example && column === "price_cents" && cell.type === "integer") return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(Number(cell.value) / 100);
   if (state.view?.example && column === "price") return "$" + cell.value;
-  return cell.value === "" ? "(empty)" : cell.value;
+  return cell.value;
 }
 async function api(path, body) {
   const headers = {};
@@ -41,14 +42,15 @@ function withAccess(callback, requireInference = false) {
 }
 function saveWorkspace(value) {
   clearTimeout(state.timer);
+  resetPreflight();
   comparisonRequest++;
   state.workspace = { id: value.id, token: value.token };
   sessionStorage.setItem(storageKey, JSON.stringify(state.workspace));
   state.initialized = null; state.proposal = null; state.editing = false; state.manual = false;
   state.selected.clear(); state.columns.clear(); state.comparison = null; state.page = 0; state.planPage = 0; state.resultPage = 0; state.protectedPages = {};
   state.view = null; renderRows();
-  for (const id of ["selection-panel", "plan-panel", "result-panel", "findings-panel", "diagnosis-panel", "privacy-actions"]) show(id, false);
-  show("welcome", false); show("workspace", true); void poll();
+  for (const id of ["selection-panel", "plan-panel", "result-panel", "findings-panel", "diagnosis-panel", "privacy-actions", "import-policy-panel", "import-review-panel", "import-plan-panel", "import-progress", "import-result-panel"]) show(id, false);
+  show("welcome", false); show("workspace", value.workflow !== "preflight"); show("import-workspace", value.workflow === "preflight"); void poll();
 }
 async function poll() {
   clearTimeout(state.timer); if (!state.workspace) return;
@@ -74,7 +76,10 @@ function proposalComparison(proposal) {
   return { choices: [...rows.values()], overlaps: proposal.overlaps, already_restored: proposal.already_restored, checkpoint_available: true };
 }
 async function render(view) {
+  if (view.workflow === "preflight") { renderPreflight(view); return; }
   state.view = view; show("welcome", false); show("workspace", true);
+  show("import-workspace", false); state.mode = "recovery"; $("workspace-kind").textContent = "Data recovery";
+  $("nav-import").classList.remove("active"); $("nav-recovery").classList.add("active");
   $("workspace-label").textContent = view.example ? "BAD-IMPORT EXAMPLE · YOUR RECOVERY WORKSPACE" : "YOUR RECOVERY";
   $("workspace-message").textContent = view.message;
   $("start-over").disabled = progressStates.has(view.status);
@@ -84,6 +89,7 @@ async function render(view) {
     else { $(name + "-count").textContent = "Reading…"; show("download-" + name, false); }
   }
   const busy = progressStates.has(view.status), ready = view.status === "ready";
+  $("nav-import").disabled = busy; $("nav-recovery").disabled = busy;
   show("privacy-actions", !busy);
   const proposed = view.diagnosis?.status === "proposed" ? view.diagnosis.proposal : null;
   if (ready && state.initialized !== view.id) {
@@ -258,7 +264,7 @@ function renderResult(payload) {
   $("runtime-details").replaceChildren();
   const provider = payload.attempts.at(-1)?.provider;
   const lines = ["Provider: Vultr Serverless Inference · " + (provider?.model || ""), "Model calls: " + payload.model_calls + " of at most 2. " + (payload.diagnosis?.status === "proposed" ? "One investigation and one approved recovery." : "Manual repair workflow."),
-    "Isolated runs: " + payload.sandbox_runs.length + ". gVisor · no network · nonroot · 192 MiB · 0.5 CPU · 48 PIDs · 8-second deadline.",
+    "Isolated runs: " + payload.sandbox_runs.length + ". gVisor · no network · nonroot · bounded execution.",
     "Generated investigation, generated repair and trusted result inspection use separate containers.",
     "Recovered file SHA-256: " + payload.artifact_sha256, "Vultr repair response: " + (provider?.response_id || "not supplied"),
     "These checks are observed by the controller. Snapshots do not authenticate a complete edit history."];
@@ -293,9 +299,9 @@ function saveChanges() {
   const csv = rows.map(row => row.map(value => '"' + String(value).replaceAll('"', '""') + '"').join(",")).join("\r\n") + "\r\n";
   saveBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), "rewind-changes.csv");
 }
-async function encodeFile(file) {
-  const minimum = $("format-select").value === "csv" ? 1 : 512;
-  if (!file || file.size < minimum || file.size > 256 * 1024) throw new Error("Choose a good version and today’s file, up to 256 KiB each.");
+async function encodeFile(file, format = $("format-select").value) {
+  const minimum = format === "csv" ? 1 : 512;
+  if (!file || file.size < minimum || file.size > 256 * 1024) throw new Error("Choose a file up to 256 KiB for each required version.");
   const bytes = new Uint8Array(await file.arrayBuffer()); let binary = ""; for (const value of bytes) binary += String.fromCharCode(value); return btoa(binary);
 }
 async function chooseManually() {
@@ -340,7 +346,7 @@ $("review-button").addEventListener("click", () => perform(async () => {
 }, $("review-button")));
 $("edit-selection").addEventListener("click", () => { state.editing = true; void render(state.view); });
 $("recover-button").addEventListener("click", () => withAccess(() => perform(async () => { await api(workspacePath("/recover"), { plan_sha256: state.view.plan.sha256 }); await poll(); }, $("recover-button")), true));
-function clearWorkspace() { clearTimeout(state.timer); comparisonRequest++; sessionStorage.removeItem(storageKey); state.workspace = null; state.view = null; notice(""); show("welcome", true); show("workspace", false); show("privacy-actions", false); window.scrollTo({ top: 0, behavior: "smooth" }); }
+function clearWorkspace() { clearTimeout(state.timer); comparisonRequest++; sessionStorage.removeItem(storageKey); sessionStorage.removeItem(storageKey + ":import-selection"); state.workspace = null; state.view = null; resetPreflight(); notice(""); show("welcome", true); show("workspace", false); show("import-workspace", false); show("privacy-actions", false); $("nav-import").disabled = false; $("nav-recovery").disabled = false; welcomeWorkflow(state.mode || "recovery"); window.scrollTo({ top: 0, behavior: "smooth" }); }
 $("start-over").addEventListener("click", clearWorkspace);
 $("delete-workspace").addEventListener("click", () => $("delete-dialog").showModal());
 $("delete-cancel").addEventListener("click", () => $("delete-dialog").close());
@@ -363,4 +369,5 @@ async function initialize() {
     if (saved) { const value = JSON.parse(saved); if (/^[a-f0-9]{32}$/.test(value.id) && typeof value.token === "string") { state.workspace = value; void poll(); } }
   } catch { $("connection").replaceChildren(node("i"), node("span", "Worker not connected")); }
 }
+initializePreflight();
 void initialize();
