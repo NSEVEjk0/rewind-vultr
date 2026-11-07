@@ -21,9 +21,10 @@ MATCH = re.compile(r"/api/workspaces/([a-f0-9]{32})(?:/(compare|plan|recover|evi
 
 
 class Controller:
-    def __init__(self, state: Path, origin: str, access_code: str, daily_limit: int):
+    def __init__(self, state: Path, origin: str, access_code: str, daily_limit: int, *, public_demo: bool = False):
         self.origin = origin.rstrip("/")
         self.access_code = access_code
+        self.public_demo = public_demo
         self.provider = VultrProvider.from_environment()
         self.sandbox = Sandbox(state / "work")
         self.store = Store(state / "workspaces", daily_limit=daily_limit)
@@ -39,17 +40,17 @@ class Controller:
             self.readiness = str(error)
         if self.sandbox_ready and not self.provider.configured:
             self.readiness = "Live recovery is unavailable while the Vultr connection is being configured."
-        elif self.sandbox_ready and not self.access_code:
+        elif self.sandbox_ready and not self.access_code and not self.public_demo:
             self.readiness = "Live recovery is unavailable until the private demo access code is configured."
         threading.Thread(target=self.work, daemon=True, name="rewind-recovery").start()
 
     @property
     def available(self):
-        return self.sandbox_ready and self.provider.configured and bool(self.access_code)
+        return self.sandbox_ready and self.provider.configured and (self.public_demo or bool(self.access_code))
 
     @property
     def inspection_available(self):
-        return self.sandbox_ready and bool(self.access_code)
+        return self.sandbox_ready and (self.public_demo or bool(self.access_code))
 
     def work(self):
         while True:
@@ -198,7 +199,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/config":
             self.json(200, {"available": controller.available, "inspection_available": controller.inspection_available,
                             "message": "The Vultr recovery worker is connected." if controller.available else controller.readiness,
-                            "model": controller.provider.model, "access_required": True, "daily_limit": controller.store.daily_limit,
+                            "model": controller.provider.model, "access_required": not controller.public_demo, "daily_limit": controller.store.daily_limit,
                             "max_file_bytes": 256 * 1024, "max_rows": 1000, "demo_available": (WEB / "demo/index.html").is_file(),
                             "data_sent": "Only table/column names and types, selected columns and record count are sent to Vultr AI."})
             return
@@ -330,7 +331,7 @@ class Handler(BaseHTTPRequestHandler):
         if not (controller.available if require_inference else controller.inspection_available):
             self.json(503, {"error": controller.readiness})
             return False
-        if not hmac.compare_digest(self.headers.get("X-Rewind-Access", ""), controller.access_code):
+        if not controller.public_demo and not hmac.compare_digest(self.headers.get("X-Rewind-Access", ""), controller.access_code):
             self.json(403, {"error": "Enter the private demo access code to use the recovery worker."})
             return False
         return True
@@ -340,7 +341,8 @@ def main():
     os.umask(0o077)
     state = Path(os.environ.get("REWIND_STATE_DIR", ".local/state"))
     controller = Controller(state, os.environ.get("REWIND_ORIGIN", "http://127.0.0.1:18182"),
-                            os.environ.get("REWIND_ACCESS_CODE", ""), int(os.environ.get("REWIND_DAILY_RECOVERIES", "4")))
+                            os.environ.get("REWIND_ACCESS_CODE", ""), int(os.environ.get("REWIND_DAILY_RECOVERIES", "4")),
+                            public_demo=os.environ.get("REWIND_PUBLIC_DEMO", "0") == "1")
     server = Server((os.environ.get("REWIND_HOST", "127.0.0.1"), int(os.environ.get("REWIND_PORT", "18182"))), controller)
     server.serve_forever()
 

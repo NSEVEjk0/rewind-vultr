@@ -8,6 +8,8 @@ For example, an import multiplies 120 invoice prices by 100. Since the backup, y
 
 [Open Rewind](https://rewind.139.84.249.47.sslip.io) · [Watch the narrated demo](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery evidence](web/demo/live-evidence.json)
 
+The hosted demo is open to try without a shared access code. Its existing limits are twelve inspections and four recoveries per day across the demo. Each browser keeps private access to its own workspace.
+
 ![Rewind's database recovery workflow](presentation/cover.png)
 
 ## The problem
@@ -86,7 +88,7 @@ sudo bash infra/install-gvisor.sh
 cp .env.example .env
 ```
 
-Add your Vultr Inference key and a private demo access code to `.env`. Load that file through your service manager or shell, then run:
+Add your Vultr Inference key and a private demo access code to `.env`. Private access is the default for a new installation. Set `REWIND_PUBLIC_DEMO=1` to allow people to try it without a shared code; the queue, daily limits and private workspace capabilities still apply. Load that file through your service manager or shell, then run:
 
 ```sh
 python3 -m rewind.server
@@ -126,10 +128,11 @@ sudo python3 -m rewind.deploy \
   --hostname rewind.139.84.249.47.sslip.io \
   --provider-env /etc/reprolab/reprolab.env \
   --caddy-config /etc/caddy/reprolab.Caddyfile \
-  --caddy-service reprolab-https.service
+  --caddy-service reprolab-https.service \
+  --public-demo
 ```
 
-Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private reviewer code and sandbox cleanup timer. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
+Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private access code and sandbox cleanup timer. `--public-demo` enables access without asking users for that code and preserves the existing admission limits. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
 
 ## What has been demonstrated
 
@@ -141,7 +144,7 @@ The [video](https://rewind-vultr-ckay.vercel.app/demo/) shows the working app wi
 | A fixed program that runs forever stopped at the two-second test deadline; its container was removed | [Vultr containment checks](web/demo/containment-checks.json) |
 | Network access and writes to inputs blocked; controller credentials and Docker socket unavailable; output limit enforced | [Vultr containment checks](web/demo/containment-checks.json) |
 | Whole-backup replacement rejected; a selective reference recovery accepted; all ten test containers removed | [Vultr containment checks](web/demo/containment-checks.json) |
-| Twenty-three unit tests, actual browser selection and live recovery checks passed | [Tests](tests/), [browser verifier](scripts/browser-check.mjs) |
+| Thirty unit tests, actual browser selection and live recovery checks passed | [Tests](tests/), [browser verifier](scripts/browser-check.mjs) |
 
 The final video segment shows the recorded result of the separate containment test. Those fixed probes make no model requests. The recording details distinguish the original recovery footage, narration and containment segment. These are prototype checks and containment evidence, not a security audit.
 

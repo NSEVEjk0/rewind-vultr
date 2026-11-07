@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 
 process.umask(0o077);
@@ -8,13 +9,13 @@ const origin = process.env.REWIND_TEST_URL || "http://127.0.0.1:18182";
 const live = process.argv.includes("--live");
 const planOnly = process.argv.includes("--plan-only");
 const record = process.argv.includes("--record");
-const output = new URL("../reports/", import.meta.url);
+const output = process.env.REWIND_REPORT_DIR ? pathToFileURL(process.env.REWIND_REPORT_DIR.replace(/\/?$/, "/")) : new URL("../reports/", import.meta.url);
 await mkdir(output, { recursive: true, mode: 0o700 });
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1512, height: 982 }, locale: "en-US", timezoneId: "UTC",
   acceptDownloads: true, ...(record ? { recordVideo: { dir: new URL("videos/", output).pathname, size: { width: 1512, height: 982 } } } : {}) });
 const page = await context.newPage();
-let completed = false, result;
+let completed = false, result, accessRequired;
 try {
   await page.goto(origin);
   assert.match(await page.title(), /Rewind/);
@@ -30,12 +31,17 @@ try {
   if (live || planOnly) {
     const configResponse = await page.request.get(origin + "/api/config");
     const config = await configResponse.json();
+    accessRequired = config.access_required;
     assert.equal(config.inspection_available, true, "The real isolated inspection worker is unavailable.");
     if (live) assert.equal(config.available, true, "The real isolated Vultr recovery is unavailable.");
-    const code = (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
     await page.getByRole("button", { name: "Try the invoice example" }).click();
-    await page.getByLabel("Demo access code", { exact: true }).fill(code);
-    await page.getByRole("button", { name: "Continue", exact: true }).click();
+    if (accessRequired) {
+      const code = (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
+      await page.getByLabel("Demo access code", { exact: true }).fill(code);
+      await page.getByRole("button", { name: "Continue", exact: true }).click();
+    } else {
+      assert.equal(await page.locator("#access-dialog").isVisible(), false, "The public demo asked for a shared access code.");
+    }
     await page.getByRole("button", { name: "Review my selection" }).waitFor({ state: "visible", timeout: 55000 });
     assert.equal(await page.locator("#selection-count").innerText(), "120 of 120 changed records selected");
     await page.screenshot({ path: new URL("selected-cells.png", output).pathname, fullPage: true });
@@ -101,13 +107,13 @@ try {
     }
   }
   completed = true;
-  console.log(live ? "Actual Vultr recovery passed: 120 prices restored, 127 invoices retained, 7 newer invoices and 20 payment updates preserved. All sandboxes removed; downloaded artifact matches its checked fingerprint." : planOnly ? "Actual sandboxed database inspection and selection plan passed: 120 selected price cells, 127 current invoices, 7 newer invoices and 20 payment updates. Unconfigured recovery is disabled and rejected by the server. No model call was started." : "Actual browser layout and explanation checks passed. No recovery or model call was started.");
+  console.log(live ? "Actual Vultr recovery passed: 120 prices restored, 127 invoices retained, 7 newer invoices and 20 payment updates preserved. All sandboxes removed; downloaded artifact matches its checked fingerprint." : planOnly ? "Actual sandboxed database inspection and selection plan passed: 120 selected price cells, 127 current invoices, 7 newer invoices and 20 payment updates. No model call was started." : "Actual browser layout and explanation checks passed. No recovery or model call was started.");
 } catch (error) {
   await page.screenshot({ path: new URL("incomplete.png", output).pathname, fullPage: true }).catch(() => {});
   console.error("Browser verification failed (" + error.name + "). Private diagnostics are in reports/. No retry was started.");
   process.exitCode = 1;
 } finally {
-  await writeFile(new URL("browser-verification.json", output), JSON.stringify({ at: new Date().toISOString(), origin, live, planOnly, record, completed, evidenceSha256: result?.sha256 }, null, 2));
+  await writeFile(new URL("browser-verification.json", output), JSON.stringify({ at: new Date().toISOString(), origin, live, planOnly, record, completed, accessRequired, evidenceSha256: result?.sha256 }, null, 2));
   await context.close();
   await browser.close();
 }

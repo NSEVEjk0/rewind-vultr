@@ -34,7 +34,7 @@ async function perform(callback, button) {
 }
 function withAccess(callback, requireInference = false) {
   if (!(requireInference ? state.config?.available : state.config?.inspection_available)) { notice(state.config?.message || "Live recovery is not connected yet."); return; }
-  if (state.access) { void perform(callback); return; }
+  if (!state.config.access_required || state.access) { void perform(callback); return; }
   state.pending = callback;
   $("access-dialog").showModal();
   $("access-input").focus();

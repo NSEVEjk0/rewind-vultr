@@ -197,7 +197,8 @@ def install(args):
     private_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     settings = {"VULTR_INFERENCE_API_KEY": key, "VULTR_INFERENCE_MODEL": model, "REWIND_ACCESS_CODE": code,
         "REWIND_ORIGIN": "https://" + host, "REWIND_HOST": "127.0.0.1", "REWIND_PORT": "18182",
-        "REWIND_STATE_DIR": str(state), "REWIND_DAILY_RECOVERIES": "4"}
+        "REWIND_STATE_DIR": str(state), "REWIND_DAILY_RECOVERIES": "4",
+        "REWIND_PUBLIC_DEMO": "1" if args.public_demo else previous.get("REWIND_PUBLIC_DEMO", "0")}
     raw_env = "# Rewind managed environment\n" + "".join(name + "=" + json.dumps(value) + "\n" for name,value in settings.items())
     atomic_write(env_path, raw_env.encode(), private=True)
     atomic_write(private_dir / "reviewer-access.txt", (code + "\n").encode(), private=True)
@@ -236,10 +237,14 @@ def install(args):
             raise RuntimeError("Rewind route reload failed; the original HTTPS configuration was restored.") from None
     require(command(["systemctl", "is-active", args.caddy_service]) == "active", "HTTPS service availability was not confirmed.")
     report = {"source_sha256":manifest["source_sha256"],"url":"https://"+host,"private_reviewer_code_file":str(private_dir/"reviewer-access.txt"),
-        "existing_proxy_bytes_preserved":proposed_proxy.startswith(original_proxy),"live_inference_recorded":False,"checked_at":int(time.time())}
+        "existing_proxy_bytes_preserved":proposed_proxy.startswith(original_proxy),"live_inference_recorded":False,
+        "public_demo":settings["REWIND_PUBLIC_DEMO"] == "1","checked_at":int(time.time())}
     atomic_write(private_dir / "deployment.json", canonical(report)+b"\n", private=True)
     print("Rewind is ready at https://" + host + ". Existing HTTPS configuration was preserved.")
-    print("Read the reviewer code privately from /etc/rewind/reviewer-access.txt. Record one genuine recovery before submission.")
+    if settings["REWIND_PUBLIC_DEMO"] == "1":
+        print("Public demo access is enabled. No shared access code is required; admission limits and workspace capabilities still apply.")
+    else:
+        print("Read the demo access code privately from /etc/rewind/reviewer-access.txt.")
 
 
 def main():
@@ -248,6 +253,7 @@ def main():
     parser.add_argument("--provider-env", type=Path, required=True)
     parser.add_argument("--caddy-config", type=Path, required=True)
     parser.add_argument("--caddy-service", required=True)
+    parser.add_argument("--public-demo", action="store_true", help="Enable bounded public access without a shared demo code.")
     args = parser.parse_args()
     os.umask(0o077)
     try:

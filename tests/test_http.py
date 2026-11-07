@@ -1,4 +1,6 @@
 import http.client
+import json
+import queue
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -7,7 +9,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from rewind.server import Handler
+from rewind.server import Controller, Handler
+from rewind.store import Store
 
 
 class VideoRangeTests(unittest.TestCase):
@@ -115,6 +118,136 @@ class VideoRangeTests(unittest.TestCase):
                 self.assertEqual(body, original_body)
                 self.assertNotIn("Content-Range", headers)
                 self.assertNotIn("Accept-Ranges", headers)
+
+
+class PublicDemoTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = TemporaryDirectory()
+        # Use the real HTTP handler and admission store, with no execution worker.
+        # These requests exercise access and quotas without making model calls.
+        self.controller = Controller.__new__(Controller)
+        self.controller.origin = "https://rewind.example"
+        self.controller.access_code = "test-only-shared-code"
+        self.controller.public_demo = True
+        self.controller.sandbox_ready = True
+        self.controller.readiness = "The recovery worker is unavailable."
+        self.controller.provider = SimpleNamespace(configured=True, model="test-model")
+        self.controller.store = Store(Path(self.temporary.name), daily_limit=1)
+        self.controller.queue = queue.Queue(maxsize=4)
+        self.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self.server.controller = self.controller
+        self.thread = Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+
+    def tearDown(self):
+        self.server.shutdown()
+        self.thread.join(timeout=5)
+        self.server.server_close()
+        self.temporary.cleanup()
+
+    def request(self, method, path, body=None, headers=None):
+        headers = dict(headers or {})
+        if method == "POST":
+            headers.setdefault("Origin", self.controller.origin)
+            headers["Content-Type"] = "application/json"
+        client = http.client.HTTPConnection(*self.server.server_address, timeout=5)
+        try:
+            client.request(method, path, body=None if body is None else json.dumps(body), headers=headers)
+            response = client.getresponse()
+            return response.status, json.loads(response.read())
+        finally:
+            client.close()
+
+    def ready_workspace(self):
+        status, admission = self.request("POST", "/api/example", {})
+        self.assertEqual(status, 202)
+        self.controller.queue.get_nowait()
+        self.controller.queue.task_done()
+        self.controller.store.update(admission["id"], status="ready", plan={"sha256": "f" * 64})
+        return admission
+
+    def test_public_config_and_example_need_no_shared_code(self):
+        self.controller.access_code = ""
+        status, config = self.request("GET", "/api/config")
+        self.assertEqual(status, 200)
+        self.assertFalse(config["access_required"])
+        self.assertTrue(config["available"])
+        self.assertTrue(config["inspection_available"])
+        self.assertEqual(config["daily_limit"], 1)
+        status, admission = self.request("POST", "/api/example", {})
+        self.assertEqual(status, 202)
+        self.assertEqual(self.controller.queue.get_nowait(), (admission["id"], "inspect"))
+
+    def test_private_mode_still_requires_the_shared_code(self):
+        self.controller.public_demo = False
+        status, config = self.request("GET", "/api/config")
+        self.assertEqual(status, 200)
+        self.assertTrue(config["access_required"])
+        for headers in [{}, {"X-Rewind-Access": "wrong"}]:
+            status, _ = self.request("POST", "/api/example", {}, headers)
+            self.assertEqual(status, 403)
+        status, _ = self.request("POST", "/api/example", {}, {"X-Rewind-Access": self.controller.access_code})
+        self.assertEqual(status, 202)
+
+    def test_public_workspaces_and_downloads_still_require_their_capability(self):
+        status, admission = self.request("POST", "/api/example", {})
+        self.assertEqual(status, 202)
+        path = "/api/workspaces/" + admission["id"]
+        for suffix in ["", "/evidence", "/database", "/backup", "/current"]:
+            for headers in [{}, {"Authorization": "Bearer another-browser-token"}]:
+                status, _ = self.request("GET", path + suffix, headers=headers)
+                self.assertEqual(status, 404)
+        status, value = self.request("GET", path, headers={"Authorization": "Bearer " + admission["token"]})
+        self.assertEqual(status, 200)
+        self.assertEqual(value["id"], admission["id"])
+        self.assertNotIn("token_sha256", value)
+
+    def test_public_requests_still_reject_foreign_origins(self):
+        status, _ = self.request("POST", "/api/example", {}, {"Origin": "https://another.example"})
+        self.assertEqual(status, 403)
+        self.assertTrue(self.controller.queue.empty())
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["uploads"], 0)
+
+    def test_public_inspection_allowance_is_preserved(self):
+        for _ in range(12):
+            self.ready_workspace()
+        status, _ = self.request("POST", "/api/example", {})
+        self.assertEqual(status, 429)
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["uploads"], 12)
+
+    def test_public_recovery_requires_approved_plan_and_keeps_the_daily_limit(self):
+        admission = self.ready_workspace()
+        path = "/api/workspaces/" + admission["id"] + "/recover"
+        headers = {"Authorization": "Bearer " + admission["token"]}
+        status, _ = self.request("POST", path, {"plan_sha256": "f" * 64})
+        self.assertEqual(status, 404)
+        status, _ = self.request("POST", path, {"plan_sha256": "changed"}, headers)
+        self.assertEqual(status, 429)
+        status, _ = self.request("POST", path, {"plan_sha256": "f" * 64}, headers)
+        self.assertEqual(status, 202)
+        status, _ = self.request("POST", path, {"plan_sha256": "f" * 64}, headers)
+        self.assertEqual(status, 429)
+        self.assertEqual(self.controller.queue.get_nowait(), (admission["id"], "recover"))
+        self.controller.queue.task_done()
+        second = self.ready_workspace()
+        status, _ = self.request("POST", "/api/workspaces/" + second["id"] + "/recover",
+                                 {"plan_sha256": "f" * 64}, {"Authorization": "Bearer " + second["token"]})
+        self.assertEqual(status, 429)
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["recoveries"], 1)
+
+    def test_public_mode_still_requires_ready_isolation_and_configured_inference(self):
+        self.controller.sandbox_ready = False
+        status, _ = self.request("POST", "/api/example", {})
+        self.assertEqual(status, 503)
+        self.assertTrue(self.controller.queue.empty())
+        self.controller.sandbox_ready = True
+        self.controller.provider.configured = False
+        admission = self.ready_workspace()
+        status, _ = self.request("POST", "/api/workspaces/" + admission["id"] + "/recover",
+                                 {"plan_sha256": "f" * 64}, {"Authorization": "Bearer " + admission["token"]})
+        self.assertEqual(status, 503)
+        self.assertTrue(self.controller.queue.empty())
+        self.assertEqual(json.loads(self.controller.store.admission_path.read_text())["recoveries"], 0)
 
 
 if __name__ == "__main__":
