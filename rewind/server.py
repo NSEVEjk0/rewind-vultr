@@ -137,9 +137,39 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def send(self, status, body, content_type="application/json; charset=utf-8", filename=None):
+        video = status == 200 and content_type == "video/mp4"
+        content_range = None
+        if video:
+            total = len(body)
+            ranges = self.headers.get_all("Range", [])
+            if len(ranges) == 1:
+                unit, separator, interval = ranges[0].strip().partition("=")
+                # Unknown units and multiple ranges use the ordinary full response.
+                if unit.lower() == "bytes" and "," not in interval:
+                    match = re.fullmatch(r"([0-9]{0,20})-([0-9]{0,20})", interval) if separator and len(interval) <= 128 else None
+                    first, last = 0, -1
+                    if match and any(match.groups()):
+                        start, end = match.groups()
+                        if start:
+                            first = int(start)
+                            last = min(int(end), total - 1) if end else total - 1
+                        elif int(end) > 0:
+                            first, last = max(0, total - int(end)), total - 1
+                    if first <= last and first < total:
+                        status = 206
+                        content_range = f"bytes {first}-{last}/{total}"
+                        body = body[first:last + 1]
+                    else:
+                        status = 416
+                        content_range = f"bytes */{total}"
+                        body = b""
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
+        if video:
+            self.send_header("Accept-Ranges", "bytes")
+        if content_range:
+            self.send_header("Content-Range", content_range)
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Referrer-Policy", "no-referrer")
