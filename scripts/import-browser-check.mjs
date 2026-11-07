@@ -26,10 +26,18 @@ async function screenshot(name, mobile = false) {
   if (mobile) await page.setViewportSize({ width: 1512, height: 982 });
 }
 async function downloaded(id, name) { const event = page.waitForEvent("download"); await page.locator("#" + id).click(); const item = await event; await item.saveAs(new URL(name, output).pathname); return readFile(new URL(name, output)); }
-let completed = false, result, demoWorkspace;
+let completed = false, result, demoWorkspace, accessRequired = false, privateCode;
+async function authorizePrivateRequest() {
+  if (!(await page.locator("#access-dialog").isVisible())) return;
+  assert.equal(accessRequired, true, "The public import workflow requested an access code.");
+  privateCode ||= (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
+  await page.locator("#access-input").fill(privateCode);
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+}
 try {
   await page.goto(origin); await page.locator("#connection.ready").waitFor({ timeout: 30000 });
   const config = await (await page.request.get(origin + "/api/config")).json();
+  accessRequired = config.access_required;
   assert.equal(config.preflight_available, true);
   await page.locator("#import-mode").click();
   assert.equal(await page.locator("#import-start").isVisible(), true);
@@ -37,8 +45,7 @@ try {
   await screenshot("import-home"); await screenshot("import-home-mobile", true); mark("opened"); await linger();
   await page.locator("#import-example-button").click();
   if (config.access_required) {
-    const access = (await readFile(process.env.REWIND_ACCESS_FILE || new URL("../.local/demo-access.txt", import.meta.url), "utf8")).trim();
-    await page.locator("#access-input").fill(access); await page.getByRole("button", { name: "Continue", exact: true }).click();
+    await authorizePrivateRequest();
   } else assert.equal(await page.locator("#access-dialog").isVisible(), false);
   await page.locator("#import-policy-panel").waitFor({ state: "visible", timeout: 60000 });
   assert.equal(await page.locator('#import-columns input[value="price"]').isChecked(), true);
@@ -77,6 +84,7 @@ try {
   const denied = await page.evaluate(async () => { const workspace = JSON.parse(sessionStorage.getItem("rewind-private-workspace")); return (await fetch("/api/workspaces/" + workspace.id + "/approved-import", { headers: { Authorization: "Bearer " + workspace.token } })).status; });
   assert.equal(denied, 409, "Download was allowed before execution and independent checks.");
   await page.locator("#import-approve").click();
+  await authorizePrivateRequest();
   await page.locator("#import-result-panel").waitFor({ state: "visible", timeout: 60000 }); mark("verified");
   value = await view(); result = value.evidence;
   assert.equal(hash(canonical(result.payload)), result.sha256);
@@ -102,7 +110,8 @@ try {
   await page.locator("#import-key-input").fill("product_id");
   await page.locator("#import-current-file").setInputFiles({ name: "today.csv", mimeType: "text/csv", buffer: currentFile });
   await page.locator("#import-incoming-file").setInputFiles({ name: "price-update.csv", mimeType: "text/csv", buffer: Buffer.from("product_id,price\r\n0003,25.50\r\n") });
-  await page.locator("#import-inspect-button").click(); await page.locator("#import-policy-panel").waitFor({ state: "visible", timeout: 60000 });
+  await page.locator("#import-inspect-button").click(); await authorizePrivateRequest();
+  await page.locator("#import-policy-panel").waitFor({ state: "visible", timeout: 60000 });
   await page.locator('#import-columns input[value="price"]').check(); await page.locator("#import-numeric").selectOption("price");
   await page.locator("#import-check-button").click(); await page.locator("#import-review-panel").waitFor({ state: "visible" });
   assert.equal(await page.locator("#import-selection-count").innerText(), "1 update included");
@@ -110,7 +119,8 @@ try {
   assert.match(await page.locator("#import-policy-note").innerText(), /rules changed/);
   await page.locator("#import-check-button").click(); await page.locator("#import-review-panel").waitFor({ state: "visible" });
   await page.locator("#import-plan-button").click(); await page.locator("#import-plan-panel").waitFor({ state: "visible" });
-  await page.locator("#import-approve").click(); await page.locator("#import-result-panel").waitFor({ state: "visible", timeout: 60000 });
+  await page.locator("#import-approve").click(); await authorizePrivateRequest();
+  await page.locator("#import-result-panel").waitFor({ state: "visible", timeout: 60000 });
   const uploaded = await view(); assert.equal(uploaded.model_calls, 0); assert.equal(uploaded.evidence.payload.verification.updated_cells, 1); assert.equal(uploaded.evidence.payload.verification.retained_rows, 24);
   assert.equal(uploaded.evidence.payload.verification.diff[0].key.value, "0003");
   await screenshot("uploaded-partial-import"); await screenshot("uploaded-partial-import-mobile", true);
