@@ -14,6 +14,7 @@ import sys
 import tempfile
 import urllib.request
 import time
+from urllib.parse import urlsplit
 from .evidence import canonical, sha256_bytes
 from .runtime import atomic_write, command, require
 from .sandbox import capture
@@ -57,18 +58,56 @@ def private_environment(path):
     return environment(path.read_text())
 
 
-def proxy_plan(original, host):
+def public_origin(value):
+    require(isinstance(value, str) and not any(character.isspace() or ord(character) < 32 or ord(character) == 127
+                                              for character in value),
+            "Use an HTTPS public origin without whitespace or control characters.")
+    parts = urlsplit(value)
+    require(parts.scheme == "https" and parts.hostname and not parts.username and not parts.password
+            and parts.port in {None, 443} and parts.path in {"", "/"} and not parts.query and not parts.fragment,
+            "Use an HTTPS public origin without a path, credentials or query.")
+    hostname(parts.hostname)
+    return "https://" + parts.netloc.lower()
+
+
+def proxy_block(host, origin=None, *, redirect_legacy=True):
     host = hostname(host)
     begin = "# BEGIN Rewind route: " + host + "\n"
     end = "# END Rewind route: " + host + "\n"
-    block = (begin + host + " {\n"
-             "    reverse_proxy 127.0.0.1:18182\n"
-             "    header Referrer-Policy no-referrer\n"
-             "    header X-Content-Type-Options nosniff\n"
-             "}\n" + end).encode()
+    if origin and public_origin(origin) != "https://" + host:
+        origin = public_origin(origin)
+        fallback = "        redir " + origin + "{uri} 307\n" if redirect_legacy else "        reverse_proxy 127.0.0.1:18182\n"
+        body = ("    handle_path /__web/* {\n"
+                "        reverse_proxy 127.0.0.1:18182\n"
+                "    }\n    handle {\n" + fallback + "    }\n")
+    else:
+        body = "    reverse_proxy 127.0.0.1:18182\n"
+    return (begin + host + " {\n" + body
+            + "    header Referrer-Policy no-referrer\n"
+            + "    header X-Content-Type-Options nosniff\n"
+            + "}\n" + end).encode()
+
+
+def proxy_plan(original, host, origin=None, *, redirect_legacy=True):
+    host = hostname(host)
+    begin = "# BEGIN Rewind route: " + host + "\n"
+    end = "# END Rewind route: " + host + "\n"
+    block = proxy_block(host, origin, redirect_legacy=redirect_legacy)
     if block in original:
         require(original.count(block) == 1, "Duplicate Rewind routes need operator review.")
         return original
+    if begin.encode() in original:
+        require(original.count(begin.encode()) == 1 and original.count(end.encode()) == 1,
+                "Duplicate or incomplete Rewind routes need operator review.")
+        start = original.index(begin.encode())
+        stop = original.index(end.encode(), start) + len(end.encode())
+        existing = original[start:stop]
+        candidates = {proxy_block(host), proxy_block(host, origin, redirect_legacy=False)}
+        prior = re.search(rb"redir (https://[^\s{}]+)\{uri\} 307", existing)
+        if prior:
+            candidates.add(proxy_block(host, prior.group(1).decode()))
+        require(existing in candidates, "The existing managed Rewind route differs from the supported app routes.")
+        return original[:start] + block + original[stop:]
     require(host.encode() not in original and b"# BEGIN Rewind route:" not in original,
             "An existing route conflicts with the requested Rewind hostname.")
     return original + (b"\n" if not original.endswith(b"\n") else b"") + b"\n" + block
@@ -117,7 +156,13 @@ def install(args):
     require(command(["systemctl", "show", args.caddy_service, "--property=CanReload", "--value"]) == "yes",
             "The HTTPS service must support reload; it will not be restarted.")
     original_proxy = config.read_bytes()
-    proposed_proxy = proxy_plan(original_proxy, host)
+    private_dir = Path("/etc/rewind")
+    require(not private_dir.is_symlink(), "Rewind private configuration directory must not be linked.")
+    env_path = private_dir / "rewind.env"
+    check_managed(env_path, "# Rewind managed environment\n")
+    previous = private_environment(env_path) if env_path.exists() else {}
+    origin = public_origin(args.public_origin or previous.get("REWIND_ORIGIN", "https://" + host))
+    proposed_proxy = proxy_plan(original_proxy, host, origin)
     proxy_metadata = config.stat()
     caddy = shutil.which("caddy")
     require(caddy is not None, "The existing Caddy binary is required.")
@@ -196,7 +241,7 @@ def install(args):
                 shutil.rmtree(stage)
     private_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     settings = {"VULTR_INFERENCE_API_KEY": key, "VULTR_INFERENCE_MODEL": model, "REWIND_ACCESS_CODE": code,
-        "REWIND_ORIGIN": "https://" + host, "REWIND_HOST": "127.0.0.1", "REWIND_PORT": "18182",
+        "REWIND_ORIGIN": origin, "REWIND_HOST": "127.0.0.1", "REWIND_PORT": "18182",
         "REWIND_STATE_DIR": str(state),
         "REWIND_PUBLIC_DEMO": "1" if args.public_demo else previous.get("REWIND_PUBLIC_DEMO", "0")}
     raw_env = "# Rewind managed environment\n" + "".join(name + "=" + json.dumps(value) + "\n" for name,value in settings.items())
@@ -236,11 +281,11 @@ def install(args):
             command(["systemctl", "reload", args.caddy_service])
             raise RuntimeError("Rewind route reload failed; the original HTTPS configuration was restored.") from None
     require(command(["systemctl", "is-active", args.caddy_service]) == "active", "HTTPS service availability was not confirmed.")
-    report = {"source_sha256":manifest["source_sha256"],"url":"https://"+host,"private_reviewer_code_file":str(private_dir/"reviewer-access.txt"),
+    report = {"source_sha256":manifest["source_sha256"],"url":origin,"backend_hostname":host,"private_reviewer_code_file":str(private_dir/"reviewer-access.txt"),
         "existing_proxy_bytes_preserved":proposed_proxy.startswith(original_proxy),"live_inference_recorded":False,
         "public_demo":settings["REWIND_PUBLIC_DEMO"] == "1","checked_at":int(time.time())}
     atomic_write(private_dir / "deployment.json", canonical(report)+b"\n", private=True)
-    print("Rewind is ready at https://" + host + ". Existing HTTPS configuration was preserved.")
+    print("Rewind is ready at " + origin + ". Existing unrelated HTTPS configuration was preserved.")
     if settings["REWIND_PUBLIC_DEMO"] == "1":
         print("Public demo access is enabled without a shared code or daily trial quota. Each workspace still needs its private capability.")
     else:
@@ -254,6 +299,7 @@ def main():
     parser.add_argument("--caddy-config", type=Path, required=True)
     parser.add_argument("--caddy-service", required=True)
     parser.add_argument("--public-demo", action="store_true", help="Enable bounded public access without a shared demo code.")
+    parser.add_argument("--public-origin", help="Canonical HTTPS app origin when using a separate web domain.")
     args = parser.parse_args()
     os.umask(0o077)
     try:

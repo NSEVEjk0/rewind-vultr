@@ -6,7 +6,7 @@ Rewind helps you restore damaged prices or other database values from a good bac
 
 For example, an import multiplies 120 invoice prices by 100. Since the backup, your team has added seven invoices and marked twenty invoices paid. Rewind restores the 120 prices and keeps all 127 invoices and the twenty payment updates. That recovery has been run and checked on Vultr.
 
-[Open Rewind](https://rewind.139.84.249.47.sslip.io) · [Watch the narrated demo](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery evidence](web/demo/live-evidence.json)
+[Open Rewind](https://rewind-vultr-ckay.vercel.app) · [Watch the narrated demo](https://rewind-vultr-ckay.vercel.app/demo/) · [Slides](https://rewind-vultr-ckay.vercel.app/demo/rewind-slides.pdf) · [Recovery evidence](web/demo/live-evidence.json)
 
 The hosted demo is open to try without a shared access code or daily trial quota. You can repeat the example or try your own snapshots. Each browser keeps private access to its own workspace.
 
@@ -121,11 +121,12 @@ This requests a real Vultr recovery. The recorder never starts an automatic seco
 
 ## Deploy beside ReproLab
 
-Build a release with `python3 scripts/build-release.py`. Copy the archive to the Vultr VM, verify its reported SHA-256, and unpack it into a private staging directory. The installer supports an existing ReproLab Caddy service and a new hostname such as `rewind.139.84.249.47.sslip.io`:
+Build a release with `python3 scripts/build-release.py`. Copy the archive to the Vultr VM, verify its reported SHA-256, and unpack it into a private staging directory. The installer supports an existing ReproLab Caddy service and an HTTPS backend hostname:
 
 ```sh
 sudo python3 -m rewind.deploy \
-  --hostname rewind.139.84.249.47.sslip.io \
+  --hostname rewind-backend.example.com \
+  --public-origin https://rewind-vultr-ckay.vercel.app \
   --provider-env /etc/reprolab/reprolab.env \
   --caddy-config /etc/caddy/reprolab.Caddyfile \
   --caddy-service reprolab-https.service \
@@ -133,6 +134,8 @@ sudo python3 -m rewind.deploy \
 ```
 
 Inspect the actual provider environment path and Caddy service on your VM first. The installer preserves the existing proxy configuration and adds only Rewind's route. It creates a separate service, state directory, private access code and sandbox cleanup timer. `--public-demo` enables access without asking users for that code. There is no daily trial quota. It reloads the proxy and starts only Rewind. Conflicting files, users, runtimes or routes stop installation.
+
+The public Vercel URL serves the full application through an external rewrite to the Vultr backend. The controller, database inspection, generated-code execution and checks all remain on Vultr. `scripts/build-web-gateway.py` assembles the Vercel assets from a clean commit: pass the public `--origin`, HTTPS backend `--upstream`, and a fresh `--output` directory, then deploy that directory. The backend strips `/__web/` for proxied requests and redirects its ordinary public links to the canonical origin. Recorded media and the source ZIP remain directly available on Vercel.
 
 ## What has been demonstrated
 
@@ -144,7 +147,7 @@ The [video](https://rewind-vultr-ckay.vercel.app/demo/) shows the working app wi
 | A fixed program that runs forever stopped at the two-second test deadline; its container was removed | [Vultr containment checks](web/demo/containment-checks.json) |
 | Network access and writes to inputs blocked; controller credentials and Docker socket unavailable; output limit enforced | [Vultr containment checks](web/demo/containment-checks.json) |
 | Whole-backup replacement rejected; a selective reference recovery accepted; all ten test containers removed | [Vultr containment checks](web/demo/containment-checks.json) |
-| Thirty unit tests, actual browser selection and live recovery checks passed | [Tests](tests/), [browser verifier](scripts/browser-check.mjs) |
+| Thirty-two unit tests, actual browser selection and live recovery checks passed | [Tests](tests/), [browser verifier](scripts/browser-check.mjs) |
 
 The final video segment shows the recorded result of the separate containment test. Those fixed probes make no model requests. The recording details distinguish the original recovery footage, narration and containment segment. These are prototype checks and containment evidence, not a security audit.
 
